@@ -36,6 +36,12 @@ Route::group(['middleware' => ['auth'], 'prefix' => 'watchlist', 'as' => 'watchl
 });
 
 
+Route::group(['middleware' => ['auth'], 'prefix' => 'releases', 'as' => 'releases.'], function () {
+    Route::get('index', 'ControllerReleases@index')->name('index');
+    Route::post('create', 'ControllerReleases@create')->name('create');
+});
+
+
 Route::get('/hire_me', function () {
     return view('hire_me');
 })->name('hire_me');
