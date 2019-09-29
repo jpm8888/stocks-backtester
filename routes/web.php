@@ -31,8 +31,6 @@ Route::group(['middleware' => ['auth'], 'prefix' => 'feature', 'as' => 'feature.
 
 Route::group(['middleware' => ['auth'], 'prefix' => 'watchlist', 'as' => 'watchlist.'], function () {
     Route::get('index', 'ControllerWatchlist@index')->name('index');
-//    Route::get('create', 'ControllerChangePassword@index')->name('create');
-//    Route::post('update', 'ControllerChangePassword@update')->name('update');
 });
 
 
