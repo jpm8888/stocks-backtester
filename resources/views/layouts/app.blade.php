@@ -56,6 +56,9 @@
                                 </a>
 
                                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+
+                                    <a class="dropdown-item" href="{{ route('user.password') }}">Change Password</a>
+
                                     <a class="dropdown-item" href="/logout_kite">
                                         {{ __('Logout From Kite') }}
                                     </a>

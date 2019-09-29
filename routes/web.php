@@ -15,3 +15,9 @@ Route::get('/login_with_kite', 'HomeController@login_with_kite')->name('login_wi
 Route::get('/logout_kite', 'HomeController@logout_kite')->name('logout_kite');
 
 Route::get('/refresh_instruments', 'HomeController@refresh_instruments')->name('refresh_instruments');
+
+
+Route::group(['middleware' => ['auth'], 'prefix' => 'user', 'as' => 'user.'], function () {
+    Route::get('change/password', 'Auth\ControllerChangePassword@index')->name('password');
+    Route::post('change/password/update', 'Auth\ControllerChangePassword@update')->name('password.update');
+});
