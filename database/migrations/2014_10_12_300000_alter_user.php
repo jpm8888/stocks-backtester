@@ -9,14 +9,20 @@ class AlterUser extends Migration
     public function up()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->string('kite_request_token');
+            $table->string('broker');
+            $table->string('user_id');
+            $table->string('access_token');
+            $table->string('public_token');
         });
     }
 
     public function down()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn('kite_request_token');
+            $table->dropColumn('broker');
+            $table->dropColumn('user_id');
+            $table->dropColumn('access_token');
+            $table->dropColumn('public_token');
         });
     }
 }
