@@ -21,3 +21,21 @@ Route::group(['middleware' => ['auth'], 'prefix' => 'user', 'as' => 'user.'], fu
     Route::get('change/password', 'Auth\ControllerChangePassword@index')->name('password');
     Route::post('change/password/update', 'Auth\ControllerChangePassword@update')->name('password.update');
 });
+
+
+Route::group(['middleware' => ['auth'], 'prefix' => 'feature', 'as' => 'feature.'], function () {
+    Route::get('index', 'ControllerFeatureRequest@index')->name('index');
+    Route::post('create', 'ControllerFeatureRequest@create')->name('create');
+});
+
+
+Route::group(['middleware' => ['auth'], 'prefix' => 'watchlist', 'as' => 'watchlist.'], function () {
+    Route::get('index', 'ControllerWatchlist@index')->name('index');
+//    Route::get('create', 'ControllerChangePassword@index')->name('create');
+//    Route::post('update', 'ControllerChangePassword@update')->name('update');
+});
+
+
+Route::get('/hire_me', function () {
+    return view('hire_me');
+})->name('hire_me');

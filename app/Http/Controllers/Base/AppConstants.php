@@ -10,6 +10,8 @@ namespace App\Http\Controllers\Base;
 
 class AppConstants
 {
+    const BUILD_VERSION = '1.0.1';
+
     const KITE_HOST = 'https://api.kite.trade';
     const KITE_API_KEY = 'dd5a9gbv38hfy9gx';
     const KITE_API_SECRET = 'q7nsjbg8hpsu5qbzgsi0p8kty0hvbspw';
