@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Base\AppConstants;
+use App\ModelInstrument;
 use Exception;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
@@ -69,4 +70,55 @@ class HomeController extends Controller
         $user->save();
         return true;
     }
+
+
+    //very heavy task do not use more frequently
+    public function refresh_instruments(){
+        $user = Auth::user();
+        $token = $user->access_token;
+        $client = new Client(['base_uri' => AppConstants::KITE_HOST, 'timeout'  => 0.0,]);
+        try{
+            $response = $client->get('/instruments', [
+                'headers' => [
+                    'Accept' => 'text/csv',
+                    'X-Kite-Version' => AppConstants::KITE_VERSION,
+                    'Authorization' => 'Token ' . $token,
+                ],
+            ]);
+
+            $data = $response->getBody()->getContents();
+            $lines = explode(PHP_EOL, $data);
+            ModelInstrument::query()->truncate();
+            for ($i = 1; $i < count($lines) - 1; $i++){
+                $array = str_getcsv($lines[$i]);
+                $instrument = new ModelInstrument();
+                $x = 0;
+                $instrument->instrument_token = $array[$x];
+                $instrument->exchange_token = $array[++$x];
+                $instrument->tradingsymbol = $array[++$x];
+                $instrument->name = $array[++$x];
+                $instrument->last_price = $array[++$x];
+                $instrument->expiry = $array[++$x];
+                $instrument->strike = $array[++$x];
+                $instrument->tick_size = $array[++$x];
+                $instrument->lot_size = $array[++$x];
+                $instrument->instrument_type = $array[++$x];
+                $instrument->segment = $array[++$x];
+                $instrument->exchange = $array[++$x];
+                $instrument->save();
+            }
+            $count = ModelInstrument::count();
+            return response()->json([
+               'status' => 1,
+               'msg' => $count . ' instruments added.',
+            ]);
+        }catch (Exception $e){
+            return response()->json([
+                'status' => 0,
+                'msg' => $e->getMessage(),
+            ]);
+        }
+
+    }
+
 }
