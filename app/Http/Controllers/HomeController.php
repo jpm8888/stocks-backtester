@@ -24,6 +24,13 @@ class HomeController extends Controller
         return view('home', $data);
     }
 
+    public function logout_kite(){
+        $user = Auth::user();
+        $user->access_token = '';
+        $user->save();
+        return Redirect::to('/home');
+    }
+
     public function login_with_kite(Request $request){
         $user = Auth::user();
         if ($request->has('request_token')){
