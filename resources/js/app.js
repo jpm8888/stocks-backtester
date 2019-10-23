@@ -13,3 +13,6 @@ require('./bootstrap');
  */
 
 require('./components/Example');
+
+
+require('./components/nifty_live_oi/ComponentNiftyLiveOIIndex');

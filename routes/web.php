@@ -33,6 +33,11 @@ Route::group(['middleware' => ['auth'], 'prefix' => 'watchlist', 'as' => 'watchl
     Route::get('index', 'ControllerWatchlist@index')->name('index');
 });
 
+Route::group(['middleware' => ['auth'], 'prefix' => 'nifty_live_oi', 'as' => 'nifty_live_oi.'], function () {
+    Route::get('index', 'ControllerNiftyLiveOI@index')->name('index');
+    Route::get('fetch', 'ControllerNiftyLiveOI@fetch')->name('fetch');
+});
+
 
 Route::group(['middleware' => ['auth'], 'prefix' => 'releases', 'as' => 'releases.'], function () {
     Route::get('index', 'ControllerReleases@index')->name('index');
