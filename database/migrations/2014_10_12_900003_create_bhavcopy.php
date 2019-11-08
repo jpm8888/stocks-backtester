@@ -4,11 +4,11 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateEodFno extends Migration
+class CreateBhavCopy extends Migration
 {
     public function up()
     {
-        Schema::create("eod_fno", function (Blueprint $table) {
+        Schema::create("bhavcopy", function (Blueprint $table) {
             $table->integerIncrements('id');
             $table->string('segment')->index('eod_fno_segment');
             $table->string('instrument_type')->index('eod_instrument_type');
@@ -35,6 +35,6 @@ class CreateEodFno extends Migration
     }
 
     public function down(){
-        Schema::dropIfExists("eod_fno");
+        Schema::dropIfExists("bhavcopy");
     }
 }
