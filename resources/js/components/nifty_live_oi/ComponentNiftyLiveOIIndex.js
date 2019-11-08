@@ -1,24 +1,25 @@
 import React, {Component} from 'react';
-import ReactDOM from "react-dom";
+import ReactDOM from 'react-dom';
+import {Provider} from 'react-redux';
+import store from "./store";
+import ViewTable from "./views/ViewTable";
+import ViewOptions from "./views/ViewOptions";
 
-export default class ComponentNiftyLiveOIIndex extends Component {
+class ComponentNiftyLiveOIIndex extends Component {
     render() {
         return (
-            <div className="container">
-                <div className="row justify-content-center">
-                    <div className="col-md-8">
-                        <div className="card">
-                            <div className="card-header">Example1 Component</div>
-
-                            <div className="card-body">I'm an example component!</div>
-                        </div>
-                    </div>
-                </div>
+            <div>
+                <ViewOptions/>
+                <ViewTable/>
             </div>
         );
     }
 }
 
 if (document.getElementById('div_nifty_live_oi')) {
-    ReactDOM.render(<ComponentNiftyLiveOIIndex />, document.getElementById('div_nifty_live_oi'));
+    ReactDOM.render(
+        <Provider store={store}>
+            <ComponentNiftyLiveOIIndex/>
+        </Provider>
+        , document.getElementById('div_nifty_live_oi'));
 }

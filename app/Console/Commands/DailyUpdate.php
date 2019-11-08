@@ -3,12 +3,14 @@
 namespace App\Console\Commands;
 
 use App\Http\Controllers\Base\AppConstants;
+use App\ModelExpiryDates;
 use App\ModelInstrument;
 use App\ModelLog;
 use App\User;
 use Exception;
 use GuzzleHttp\Client;
 use Illuminate\Console\Command;
+use Illuminate\Support\Carbon;
 
 class DailyUpdate extends Command
 {
@@ -19,6 +21,11 @@ class DailyUpdate extends Command
     }
 
     public function handle(){
+//        $this->refresh_instruments();
+        $this->update_expiry_dates();
+    }
+
+    private function refresh_instruments(){
         $user = User::where('id', 1)->first();
         $token = $user->access_token;
         $client = new Client(['base_uri' => AppConstants::KITE_HOST, 'timeout'  => 0.0,]);
@@ -65,5 +72,26 @@ class DailyUpdate extends Command
             $model_log->msg = $e->getMessage();
             $model_log->save();
         }
+    }
+
+    private function update_expiry_dates(){
+        $now = Carbon::now();
+        ModelExpiryDates::truncate();
+        $dates = ModelInstrument::select('expiry')
+            ->segment(AppConstants::SEGMENT_NFO_OPT)
+            ->lotSize(75)
+            ->tradingsymbol('NIFTY%')
+            ->expiryGreaterThan($now)
+            ->groupBy('expiry')
+            ->orderBy('expiry')
+            ->get();
+
+        foreach ($dates as $d){
+            $e = new ModelExpiryDates();
+            $e->expiry_date = $d['expiry'];
+            $e->type = 'weekly';
+            $e->save();
+        }
+        $this->info('Expiry dates updated...');
     }
 }
