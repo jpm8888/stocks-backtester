@@ -22,7 +22,7 @@ class DailyUpdate extends Command
 
     public function handle(){
 //        $this->refresh_instruments();
-        $this->update_expiry_dates();
+//        $this->update_expiry_dates();
     }
 
     private function refresh_instruments(){
