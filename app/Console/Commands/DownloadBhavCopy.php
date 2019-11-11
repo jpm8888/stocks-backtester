@@ -9,6 +9,7 @@ use Exception;
 use GuzzleHttp\Client;
 use Illuminate\Console\Command;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
 
@@ -20,15 +21,31 @@ class DownloadBhavCopy extends Command
         parent::__construct();
     }
 
+    private function get_date($yesterday){
+        if (!$yesterday) $yesterday = Carbon::now()->subDay();
+
+        if($yesterday->dayOfWeek == Carbon::SATURDAY || $yesterday->dayOfWeek == Carbon::SUNDAY)
+            return $this->get_date($yesterday->subDay());
+        else
+            return $yesterday;
+    }
+
+    private function set_null_date(){
+        DB::update('update bhavcopy set expiry_date = ? where expiry_date = ?',[null,'1970-01-01']);
+    }
+
     public function handle(){
-        $filename = 'combined_report' . Carbon::now()->subDay()->format('dmY');
+
+        $date = $this->get_date(null);
+        $this->info('Trying to download for date : ' . $date->format('d-m-Y'));
+        $filename = 'combined_report' . $date->format('dmY');
         $url = "https://www.nseindia.com/archives/combine_report/$filename.zip";
-//        $url = "https://www.nseindia.com/archives/equities/csqr/CSQR_N2019207_0711201911.csv";
-//        $flag = $this->download_bhav_copy($url);
-//        if (!$flag) return false;
-//        $this->extract_zip();
+        $flag = $this->download_bhav_copy($url);
+        if (!$flag) return false;
+        $this->extract_zip();
         $this->import_to_database($filename . '.xlsx');
-//        $this->delete_temp();
+        $this->delete_temp();
+        $this->set_null_date();
     }
 
     private function import_to_database($filename){
@@ -37,9 +54,6 @@ class DownloadBhavCopy extends Command
         $this->output->title('Starting import');
         (new ExcelModelBhavCopy)->withOutput($this->output)->import("temp/bhavcopy_extracted/$filename");
         $this->output->success('Import successful');
-
-//        $array = Excel::import(new ExcelModelBhavCopy, "temp/bhavcopy_extracted/$filename");
-//        $this->info('Imported records : ' . count($array));
     }
 
     private function extract_zip(){

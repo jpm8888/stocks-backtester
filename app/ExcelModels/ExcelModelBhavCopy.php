@@ -26,7 +26,12 @@ class ExcelModelBhavCopy implements ToModel, WithChunkReading, WithBatchInserts,
         $delta_oi_pct = 0;
 
         try{
-            $delta_oi_pct = ($delta_oi * 100) / ($oi - $delta_oi);
+            if ($delta_oi > 0){
+                $delta_oi_pct = ($delta_oi * 100) / ($oi);
+            }else{
+                $delta_oi_pct = ($delta_oi * 100) / ($oi - $delta_oi);
+            }
+
         }catch (\Exception $e){
             $delta_oi_pct = 0;
         }
@@ -34,6 +39,9 @@ class ExcelModelBhavCopy implements ToModel, WithChunkReading, WithBatchInserts,
 
         $expiry_date = \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row['expiry_date']);
         $bhavcopy_date = \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row['bhavcopy_date']);
+
+        if ($expiry_date == '1970-01-01') $expiry_date = null;
+        if ($bhavcopy_date == '1970-01-01') $bhavcopy_date = null;
 
         $model = new ModelBhavCopy([
             'segment'               => $row['segment'],

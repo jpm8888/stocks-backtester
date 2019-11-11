@@ -17,7 +17,7 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         $schedule->command('daily:update')->dailyAt('08:30');
-        $schedule->command('download:bhavcopy')->dailyAt('00:00');
+        $schedule->command('download:bhavcopy')->dailyAt('03:00');
     }
 
     protected function commands(){
