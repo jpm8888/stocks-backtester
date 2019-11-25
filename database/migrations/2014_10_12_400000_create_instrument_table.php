@@ -10,18 +10,18 @@ class CreateInstrumentTable extends Migration
     {
         Schema::create('instrument', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('instrument_token');
-            $table->string('exchange_token');
-            $table->string('tradingsymbol');
-            $table->string('name');
-            $table->string('last_price');
-            $table->string('expiry');
-            $table->float('strike');
-            $table->float('tick_size');
-            $table->integer('lot_size');
-            $table->string('instrument_type');
-            $table->string('segment');
-            $table->string('exchange');
+            $table->string('instrument_token')->nullable();
+            $table->string('exchange_token')->nullable();
+            $table->string('tradingsymbol')->nullable();
+            $table->string('name')->nullable();
+            $table->string('last_price')->nullable();
+            $table->string('expiry')->nullable();
+            $table->float('strike')->nullable();
+            $table->float('tick_size')->nullable();
+            $table->integer('lot_size')->nullable();
+            $table->string('instrument_type')->nullable();
+            $table->string('segment')->nullable();
+            $table->string('exchange')->nullable();
         });
     }
 
