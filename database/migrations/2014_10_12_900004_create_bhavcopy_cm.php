@@ -10,6 +10,7 @@ class CreateBhavCopyCM extends Migration
     {
         Schema::create("bhavcopy_cm", function (Blueprint $table) {
             $table->bigIncrements('id');
+            $table->string('symbol')->nullable();
             $table->string('series')->nullable();
             $table->double('open')->nullable();
             $table->double('high')->nullable();
