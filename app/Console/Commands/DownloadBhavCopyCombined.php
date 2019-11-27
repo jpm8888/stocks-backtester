@@ -2,8 +2,8 @@
 
 namespace App\Console\Commands;
 
-use App\ExcelModels\ExcelModelBhavCopy;
-use App\ModelBhavCopy;
+use App\ExcelModels\ExcelModelBhavCopyCombined;
+use App\ModelBhavCopyCombined;
 use Chumper\Zipper\Zipper;
 use Exception;
 use GuzzleHttp\Client;
@@ -13,10 +13,10 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
 
-class DownloadBhavCopy extends Command
+class DownloadBhavCopyCombined extends Command
 {
-    protected $signature = 'download:bhavcopy';
-    protected $description = 'Download bhavcopy from NSE website.';
+    protected $signature = 'download:bhavcopy_combined';
+    protected $description = 'Download bhavcopy combined from NSE website.';
     public function __construct(){
         parent::__construct();
     }
@@ -31,7 +31,7 @@ class DownloadBhavCopy extends Command
     }
 
     private function set_null_date(){
-        DB::update('update bhavcopy set expiry_date = ? where expiry_date = ?',[null,'1970-01-01']);
+        DB::update('update bhavcopy_combined set expiry_date = ? where expiry_date = ?',[null,'1970-01-01']);
     }
 
     public function handle(){
@@ -51,9 +51,9 @@ class DownloadBhavCopy extends Command
 
     private function import_to_database($filename){
         $this->info('Importing records...');
-        ModelBhavCopy::truncate();
+        ModelBhavCopyCombined::truncate();
         $this->output->title('Starting import');
-        (new ExcelModelBhavCopy)->withOutput($this->output)->import("temp/bhavcopy_extracted/$filename");
+        (new ExcelModelBhavCopyCombined)->withOutput($this->output)->import("temp/bhavcopy_extracted/$filename");
         $this->output->success('Import successful');
     }
 

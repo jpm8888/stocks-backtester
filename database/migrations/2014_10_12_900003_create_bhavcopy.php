@@ -8,7 +8,7 @@ class CreateBhavCopy extends Migration
 {
     public function up()
     {
-        Schema::create("bhavcopy", function (Blueprint $table) {
+        Schema::create("bhavcopy_combined", function (Blueprint $table) {
             $table->integerIncrements('id');
             $table->string('segment')->index('eod_fno_segment')->nullable();
             $table->string('instrument_type')->index('eod_instrument_type')->nullable();
@@ -35,6 +35,6 @@ class CreateBhavCopy extends Migration
     }
 
     public function down(){
-        Schema::dropIfExists("bhavcopy");
+        Schema::dropIfExists("bhavcopy_combined");
     }
 }

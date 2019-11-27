@@ -8,7 +8,7 @@
 namespace App\ExcelModels;
 
 
-use App\ModelBhavCopy;
+use App\ModelBhavCopyCombined;
 use Maatwebsite\Excel\Concerns\Importable;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithBatchInserts;
@@ -16,7 +16,7 @@ use Maatwebsite\Excel\Concerns\WithChunkReading;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Concerns\WithProgressBar;
 
-class ExcelModelBhavCopy implements ToModel, WithChunkReading, WithBatchInserts, WithHeadingRow, WithProgressBar {
+class ExcelModelBhavCopyCombined implements ToModel, WithChunkReading, WithBatchInserts, WithHeadingRow, WithProgressBar {
 
     use Importable;
     public function model(array $row)
@@ -43,7 +43,7 @@ class ExcelModelBhavCopy implements ToModel, WithChunkReading, WithBatchInserts,
         if ($expiry_date == '1970-01-01') $expiry_date = null;
         if ($bhavcopy_date == '1970-01-01') $bhavcopy_date = null;
 
-        $model = new ModelBhavCopy([
+        $model = new ModelBhavCopyCombined([
             'segment'               => $row['segment'],
             'instrument_type'       => $row['instrument_type'],
             'symbol'                => $row['symbol'],

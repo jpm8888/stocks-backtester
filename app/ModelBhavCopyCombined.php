@@ -4,9 +4,9 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class ModelBhavCopy extends Model
+class ModelBhavCopyCombined extends Model
 {
     public $timestamps = true;
-    protected $table = 'bhavcopy';
+    protected $table = 'bhavcopy_combined';
     protected $guarded = [];
 }

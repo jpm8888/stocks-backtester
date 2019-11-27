@@ -10,14 +10,14 @@ class Kernel extends ConsoleKernel
 
     protected $commands = [
         Commands\DailyUpdate::class,
-        Commands\DownloadBhavCopy::class,
+        Commands\DownloadBhavCopyCombined::class,
     ];
 
 
     protected function schedule(Schedule $schedule)
     {
         $schedule->command('daily:update')->dailyAt('08:30');
-        $schedule->command('download:bhavcopy')->dailyAt('03:00');
+        $schedule->command('download:bhavcopy_combined')->dailyAt('03:00');
     }
 
     protected function commands(){
