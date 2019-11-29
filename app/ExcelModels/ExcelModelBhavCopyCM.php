@@ -9,6 +9,7 @@ namespace App\ExcelModels;
 
 
 use App\ModelBhavCopyCM;
+use Carbon\Carbon;
 use Maatwebsite\Excel\Concerns\Importable;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithBatchInserts;
@@ -22,10 +23,7 @@ class ExcelModelBhavCopyCM implements ToModel, WithChunkReading, WithBatchInsert
     public function model(array $row)
     {
 
-        $bhavcopy_date = \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row['timestamp']);
-
-
-        if ($bhavcopy_date == '1970-01-01') $expiry_date = null;
+        $bhavcopy_date = Carbon::parse($row['timestamp']);
 
         $model = new ModelBhavCopyCM([
             'symbol'                 => $row['symbol'],

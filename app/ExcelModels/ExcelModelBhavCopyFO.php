@@ -8,7 +8,8 @@
 namespace App\ExcelModels;
 
 
-use App\ModelBhavCopyCombined;
+use App\ModelBhavCopyFO;
+use Carbon\Carbon;
 use Maatwebsite\Excel\Concerns\Importable;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithBatchInserts;
@@ -22,13 +23,16 @@ class ExcelModelBhavCopyFO implements ToModel, WithChunkReading, WithBatchInsert
     public function model(array $row)
     {
 
-        $expiry_date = \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row['expiry_dt']);
-        $bhavcopy_date = \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row['timestamp']);
+        $expiry_date = Carbon::parse($row['expiry_dt']);
+        $bhavcopy_date = Carbon::parse($row['timestamp']);
 
-        if ($expiry_date == '1970-01-01') $expiry_date = null;
-        if ($bhavcopy_date == '1970-01-01') $bhavcopy_date = null;
+//         $expiry_date = null;
+//        $bhavcopy_date = null;
 
-        $model = new ModelBhavCopyCombined([
+//        if ($expiry_date == '1970-01-01') $expiry_date = null;
+//        if ($bhavcopy_date == '1970-01-01') $bhavcopy_date = null;
+
+        $model = new ModelBhavCopyFO([
             'instrument'               => $row['instrument'],
             'symbol'                   => $row['symbol'],
             'expiry'                   => $expiry_date,
@@ -50,13 +54,13 @@ class ExcelModelBhavCopyFO implements ToModel, WithChunkReading, WithBatchInsert
 
     public function chunkSize(): int
     {
-        return 3000;
+        return 1500;
     }
 
 
     public function batchSize(): int
     {
-        return 3000;
+        return 1500;
     }
 
 
