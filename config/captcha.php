@@ -5,5 +5,6 @@ return [
     'sitekey' => env('NOCAPTCHA_SITEKEY'),
     'options' => [
         'timeout' => 30,
+        'verify' => false,
     ],
 ];
