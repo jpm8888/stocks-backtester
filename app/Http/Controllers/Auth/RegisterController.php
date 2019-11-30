@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\User;
 use App\Http\Controllers\Controller;
+use App\User;
+use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Foundation\Auth\RegistersUsers;
 
 class RegisterController extends Controller
 {
@@ -52,6 +52,7 @@ class RegisterController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
+            'g-recaptcha-response' => 'required|captcha',
         ]);
     }
 

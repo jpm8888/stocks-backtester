@@ -15,12 +15,14 @@
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css?family=Inconsolata&display=swap" rel="stylesheet">
+{{--    <link href="https://fonts.googleapis.com/css?family=Inconsolata&display=swap" rel="stylesheet">--}}
+
+    <link href="https://fonts.googleapis.com/css?family=Exo+2&display=swap" rel="stylesheet">
 
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
 </head>
-<body style="font-family: 'Inconsolata', monospace;">
+<body style="font-family: 'Exo 2', sans-serif;">
     <div id="app">
         <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
             <div class="container">
