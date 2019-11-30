@@ -14,6 +14,9 @@ Route::get('/home', 'HomeController@index')->name('home');
 Route::get('/login_with_kite', 'HomeController@login_with_kite')->name('login_with_kite');
 Route::get('/logout_kite', 'HomeController@logout_kite')->name('logout_kite');
 
+
+//Route::get('/send_email', 'MailController@send_basic_email')->name('send_email');
+
 Route::get('/refresh_instruments', 'HomeController@refresh_instruments')->name('refresh_instruments');
 
 
@@ -43,6 +46,7 @@ Route::group(['middleware' => ['auth'], 'prefix' => 'releases', 'as' => 'release
     Route::get('index', 'ControllerReleases@index')->name('index');
     Route::post('create', 'ControllerReleases@create')->name('create');
 });
+
 
 
 Route::get('/hire_me', function () {

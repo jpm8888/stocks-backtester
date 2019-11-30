@@ -20,8 +20,8 @@ class Kernel extends ConsoleKernel
     {
 //        $schedule->command('daily:update')->dailyAt('08:30');
 //        $schedule->command('download:bhavcopy_combined')->dailyAt('03:00');
-        $schedule->command('download:bhavcopy_cm')->dailyAt('18:30');
-        $schedule->command('download:bhavcopy_fo')->dailyAt('19:00');
+        $schedule->command('download:bhavcopy_cm')->weekdays()->at('18:30');
+        $schedule->command('download:bhavcopy_fo')->weekdays()->at('19:00');
         $schedule->command('delete:temp')->dailyAt('00:00');
     }
 

@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\ExcelModels\ExcelModelBhavCopyFO;
+use App\Http\Controllers\MailController;
 use App\ModelBhavCopyFO;
 use Chumper\Zipper\Zipper;
 use Exception;
@@ -49,6 +50,10 @@ class DownloadBhavCopyFO extends Command
 
         $filepath = $this->extract_zip($filepath);
         $this->import_to_database($filepath, $filename);
+
+        $mail = new MailController();
+        $msg = "Successfully imported fno market data for date : " .  $date->format('d-m-Y');
+        $mail->send_basic_email(['msg' => $msg], 'FNO copy added');
     }
 
 

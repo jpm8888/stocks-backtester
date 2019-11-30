@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\ExcelModels\ExcelModelBhavCopyCM;
+use App\Http\Controllers\MailController;
 use App\ModelBhavCopyCM;
 use Chumper\Zipper\Zipper;
 use Exception;
@@ -48,6 +49,10 @@ class DownloadBhavCopyCM extends Command
 
         $filepath = $this->extract_zip($filepath);
         $this->import_to_database($filepath, $filename);
+
+        $mail = new MailController();
+        $msg = "Successfully imported cash market data for date : " .  $date->format('d-m-Y');
+        $mail->send_basic_email(['msg' => $msg], 'Cash market copy added');
     }
 
 
