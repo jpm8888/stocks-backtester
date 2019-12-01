@@ -48,6 +48,10 @@ Route::group(['middleware' => ['auth'], 'prefix' => 'releases', 'as' => 'release
 });
 
 
+Route::group(['middleware' => ['auth'], 'prefix' => 'bhavcopy_analyse', 'as' => 'bhavcopy_analyse.'], function () {
+    Route::get('index', 'ControllerBhavcopyAnalyse@index')->name('index');
+    Route::post('create', 'ControllerBhavcopyAnalyse@create')->name('create');
+});
 
 Route::get('/hire_me', function () {
     return view('hire_me');

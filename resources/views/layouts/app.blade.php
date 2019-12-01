@@ -41,9 +41,6 @@
                         <li class="nav-item">
                             <a class="nav-link" href="/home"><b>Home</b></a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{route('watchlist.index')}}"><b>Create Watchlist</b></a>
-                        </li>
 
                         <li class="nav-item dropdown">
                             <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button"
@@ -52,7 +49,7 @@
                             </a>
                             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
                                 <a class="dropdown-item" href="{{route('nifty_live_oi.index')}}">Nifty Live Open Interest</a>
-                                <a class="dropdown-item" href="{{route('hire_me')}}"> Bank Nifty Live Open Interest</a>
+                                <a class="dropdown-item" href="{{route('bhavcopy_analyse.index')}}"> Bhavcopy Analyse</a>
                             </div>
                         </li>
 

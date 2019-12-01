@@ -27,13 +27,23 @@ class DownloadBhavCopyCM extends Command
 
 
     public function handle(){
+        for($i = 0; $i < 15; $i++){
+            $date = Carbon::now()->subDays($i);
+            $this->start_download($date);
+        }
 
-        $date = Carbon::now();
+        $mail = new MailController();
+        $msg = "Successfully imported cash market data for date : " .  $date->format('d-m-Y');
+        $mail->send_basic_email(['msg' => $msg], 'Cash market copy added');
+    }
+
+    public function start_download(Carbon $date){
+//        $date = Carbon::now();
         $this->info('Trying to download for date : ' . $date->format('d-m-Y'));
 
         $year = $date->year;
         $month = strtoupper($date->formatLocalized('%b'));
-        $day = $date->day;
+        $day = ($date->day < 10) ? ("0" . $date->day) : $date->day;
 
         $filename = "cm". $day . $month . $year . "bhav.csv";
 
@@ -49,10 +59,6 @@ class DownloadBhavCopyCM extends Command
 
         $filepath = $this->extract_zip($filepath);
         $this->import_to_database($filepath, $filename);
-
-        $mail = new MailController();
-        $msg = "Successfully imported cash market data for date : " .  $date->format('d-m-Y');
-        $mail->send_basic_email(['msg' => $msg], 'Cash market copy added');
     }
 
 
