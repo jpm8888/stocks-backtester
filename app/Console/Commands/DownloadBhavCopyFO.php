@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\ExcelModels\ExcelModelBhavCopyFO;
+use App\Http\Controllers\MailController;
 use App\ModelBhavCopyFO;
 use Chumper\Zipper\Zipper;
 use Exception;
@@ -32,13 +33,12 @@ class DownloadBhavCopyFO extends Command
             $this->start_download($date);
         }
 
-//        $mail = new MailController();
-//        $msg = "Successfully imported fno market data for date : " .  $date->format('d-m-Y');
-//        $mail->send_basic_email(['msg' => $msg], 'FNO copy added');
+        $mail = new MailController();
+        $msg = "Successfully imported fno market data for date : " .  $date->format('d-m-Y');
+        $mail->send_basic_email(['msg' => $msg], 'FNO copy added');
     }
 
     private function start_download(Carbon $date){
-//        $date = Carbon::now();
         $this->info('Trying to download for date : ' . $date->format('d-m-Y'));
 
         $year = $date->year;

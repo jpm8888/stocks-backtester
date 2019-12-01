@@ -38,7 +38,6 @@ class DownloadBhavCopyCM extends Command
     }
 
     public function start_download(Carbon $date){
-//        $date = Carbon::now();
         $this->info('Trying to download for date : ' . $date->format('d-m-Y'));
 
         $year = $date->year;
