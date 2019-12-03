@@ -2,7 +2,7 @@
 git status
 git stash
 git pull
-composer install --no-dev
+composer install
 php artisan migrate
 php artisan cache:clear
 php artisan route:cache
