@@ -7,11 +7,11 @@ use App\Http\Controllers\MailController;
 use App\ModelBhavCopyCM;
 use Chumper\Zipper\Zipper;
 use Exception;
-use Faker\Provider\Uuid;
 use GuzzleHttp\Client;
 use Illuminate\Console\Command;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Storage;
+use Ramsey\Uuid\Uuid;
 
 
 class DownloadBhavCopyCM extends Command
@@ -80,7 +80,10 @@ class DownloadBhavCopyCM extends Command
         $this->info('Extracting bhavcopy...');
         $zipper = new Zipper();
 
-        $temp_filepath = 'temp/' . Uuid::uuid();
+        try {
+            $temp_filepath = 'temp/' . Uuid::uuid1()->toString();
+        } catch (Exception $e) {
+        }
 
         $zipper->make(storage_path('app/'. $filepath))->extractTo(storage_path('app/' . $temp_filepath));
         $this->info('Extracted bhavcopy...');
@@ -94,8 +97,8 @@ class DownloadBhavCopyCM extends Command
         try{
             $response = $client->request('GET', $url, ['verify' => false]);
             $data = $response->getBody()->getContents();
-            $temp_foldername = 'temp/' . Uuid::uuid();
-            $filename = Uuid::uuid() . '.zip';
+            $temp_foldername = 'temp/' . Uuid::uuid1()->toString();
+            $filename = Uuid::uuid1()->toString() . '.zip';
             $path = $temp_foldername . '/' . $filename;
             Storage::put($path, $data);
             $this->info('Downloaded bhavcopy...');
