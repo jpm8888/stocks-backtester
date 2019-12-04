@@ -33,7 +33,7 @@ class DownloadBhavCopyCM extends Command
         }
 
         $mail = new MailController();
-        $msg = "Successfully imported cash market data for date : " .  $date->format('d-m-Y');
+        $msg = "Successfully imported cash market data for date : " .  Carbon::now()->format('d-m-Y');
         $mail->send_basic_email(['msg' => $msg], 'Cash market copy added');
     }
 

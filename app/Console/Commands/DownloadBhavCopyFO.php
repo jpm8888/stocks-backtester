@@ -34,7 +34,7 @@ class DownloadBhavCopyFO extends Command
         }
 
         $mail = new MailController();
-        $msg = "Successfully imported fno market data for date : " .  $date->format('d-m-Y');
+        $msg = "Successfully imported fno market data for date : " .  Carbon::now()->format('d-m-Y');
         $mail->send_basic_email(['msg' => $msg], 'FNO copy added');
     }
 
