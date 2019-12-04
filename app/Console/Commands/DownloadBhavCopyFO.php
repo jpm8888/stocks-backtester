@@ -39,20 +39,16 @@ class DownloadBhavCopyFO extends Command
     }
 
     private function start_download(Carbon $date){
-        $this->info('Trying to download for date : ' . $date->format('d-m-Y'));
+        $flag = $this->check_already_imported($date);
+        if (!$flag) return false;
 
+        $this->info('Trying to download for date : ' . $date->format('d-m-Y'));
         $year = $date->year;
         $month = strtoupper($date->formatLocalized('%b'));
         $day = ($date->day < 10) ? ("0" . $date->day) : $date->day;
-
         $filename = "fo". $day . $month . $year . "bhav.csv";
-
-
         $url = "https://www.nseindia.com/content/historical/DERIVATIVES/$year/$month/" . $filename . '.zip';
         $this->info("url : " . $url);
-
-        $flag = $this->check_already_imported($date);
-        if (!$flag) return false;
 
         $filepath = $this->download_bhav_copy($url);
         if (!$filepath) return false;
