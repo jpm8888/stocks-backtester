@@ -1,7 +1,8 @@
 import {FETCH_PARAMS} from "../actions/types";
 
 const initialState = {
-    expiry_dates : [],
+    is_loading : false,
+    banknifty : []
 };
 
 
@@ -10,7 +11,7 @@ export default function (state = initialState, action) {
         case FETCH_PARAMS:
             return{
                 ...state,
-                expiry_dates: action.payload.expiry_dates
+                banknifty: action.payload.banknifty
             };
         default : return state;
     }

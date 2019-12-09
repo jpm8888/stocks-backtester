@@ -1,8 +1,9 @@
 import {combineReducers} from 'redux';
 import indexReducer from "./indexReducer";
-import optionsReducer from "./optionsReducer";
+import filterReducer from "./filterReducer";
+
 
 export default combineReducers({
     index_view : indexReducer,
-    options_view : optionsReducer,
+    filterReducer : filterReducer,
 })

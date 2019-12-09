@@ -3,20 +3,13 @@ import ReactDOM from 'react-dom';
 import {Provider} from 'react-redux';
 import store from "./store";
 import ComponentContainer from "../common/ComponentContainer";
-import ComponentCard from "../common/ComponentCard";
-import ComponentInput from "../common/ComponentInput";
-import ComponentRow from "../common/ComponentRow";
+import Filter from "./views/Filter";
 
 class ComponentIndex extends Component {
     render() {
         return (
             <ComponentContainer>
-                <ComponentCard>
-                    <ComponentRow>
-                        <ComponentInput label={"Test"} hint={"Test"}/>
-                        <ComponentInput label={"Test"} hint={"Test"}/>
-                    </ComponentRow>
-                </ComponentCard>
+                <Filter/>
             </ComponentContainer>
         );
     }
