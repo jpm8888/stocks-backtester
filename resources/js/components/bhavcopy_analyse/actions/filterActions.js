@@ -16,9 +16,15 @@ export const fetch_params = () => (dispatch) =>{
 
 export const on_change_bnf_select = (selected) => (dispatch) =>{
     dispatch({type : SET_LOADING, payload : true});
-    dispatch({
-        type : ON_CHANGE_BNF_SELECT,
-        payload : selected,
-    });
+    const symbol = selected.label;
+    fetch('/bhavcopy_analyse/analyse/' + symbol)
+        .then((res) => res.json()
+            .then((res)=>{
+                console.log(res);
+                dispatch({
+                    type : ON_CHANGE_BNF_SELECT,
+                    payload : selected,
+                });
+            }));
     dispatch({type : SET_LOADING, payload : false});
 };

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\ModelBhavCopyCM;
 use App\ModelMasterBankNifty;
 
 class ControllerBhavcopyAnalyse extends Controller
@@ -15,6 +16,16 @@ class ControllerBhavcopyAnalyse extends Controller
         return response()->json([
             'banknifty' => ModelMasterBankNifty::select('id', 'symbol as name')->get(),
         ]);
+    }
+
+
+    public function analyse($symbol){
+        $raw = ModelBhavCopyCM::where('symbol', $symbol)->orderBy('date')->get();
+
+
+
+
+        return response()->json($raw);
     }
 
 
