@@ -1,16 +1,24 @@
-import {FETCH_PARAMS} from "./types";
+import {FETCH_PARAMS, ON_CHANGE_BNF_SELECT, SET_LOADING} from "./types";
 
 
 export const fetch_params = () => (dispatch) =>{
-    // dispatch({type : FETCH, payload : {},});
     fetch('/bhavcopy_analyse/fetch_params')
         .then((res) => res.json()
             .then((res)=>{
-                console.log(res);
                 dispatch({
                     type : FETCH_PARAMS,
                     payload : res,
                 });
                 dispatch({type : FETCH_PARAMS, payload : res});
             }));
+};
+
+
+export const on_change_bnf_select = (selected) => (dispatch) =>{
+    dispatch({type : SET_LOADING, payload : true});
+    dispatch({
+        type : ON_CHANGE_BNF_SELECT,
+        payload : selected,
+    });
+    dispatch({type : SET_LOADING, payload : false});
 };

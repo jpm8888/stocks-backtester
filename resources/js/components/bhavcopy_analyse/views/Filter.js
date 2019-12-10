@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {bindActionCreators} from "redux";
 import connect from "react-redux/es/connect/connect";
-import {fetch_params} from "../actions/filterActions";
+import {fetch_params, on_change_bnf_select} from "../actions/filterActions";
 import ComponentContainer from "../../common/ComponentContainer";
 import ComponentRow from "../../common/ComponentRow";
 import ComponentMultiSelect from "../../common/ComponentMultiSelect";
@@ -22,8 +22,7 @@ class Filter extends Component {
             <ComponentContainer>
                 <ComponentCard>
                     <ComponentRow>
-                        <ComponentMultiSelect label={"BANKS"} options={this.props.banknifty}/>
-                        <ComponentMultiSelect label={"BNF"} options={this.props.banknifty}/>
+                        <ComponentMultiSelect value={this.props.s_stock} label={"BANKS"} options={banknifty} onChange={(s)=> this.props.on_change_bnf_select(s)}/>
                     </ComponentRow>
                 </ComponentCard>
             </ComponentContainer>
@@ -37,12 +36,15 @@ const mapStateToProps = (state) => {
     return {
         is_loading : s.is_loading,
         banknifty : s.banknifty,
+        s_stock : s.s_stock,
+        s_symbol : s.s_symbol,
     };
 };
 
 const mapDispatchToProps = (dispatch) => {
     return bindActionCreators({
         fetch_params : () => fetch_params(),
+        on_change_bnf_select  : (selected) => on_change_bnf_select(selected)
     },dispatch);
 };
 
