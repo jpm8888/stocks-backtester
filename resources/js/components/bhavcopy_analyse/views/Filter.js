@@ -6,6 +6,10 @@ import ComponentContainer from "../../common/ComponentContainer";
 import ComponentRow from "../../common/ComponentRow";
 import ComponentMultiSelect from "../../common/ComponentMultiSelect";
 import ComponentCard from "../../common/ComponentCard";
+import ComponentTable from "../../common/Table/ComponentTable";
+import Tr from "../../common/Table/Tr";
+import Th from "../../common/Table/Th";
+import Td from "../../common/Table/Td";
 
 class Filter extends Component {
 
@@ -17,19 +21,59 @@ class Filter extends Component {
 
     render() {
         const banknifty = this.props.banknifty;
+        const data = this.props.data;
 
         return (
             <ComponentContainer>
-                <ComponentCard>
+                <ComponentCard label={'Filter'} loading={this.props.is_loading}>
                     <ComponentRow>
                         <ComponentMultiSelect value={this.props.s_stock} label={"BANKS"} options={banknifty} onChange={(s)=> this.props.on_change_bnf_select(s)}/>
+                    </ComponentRow>
+                </ComponentCard>
+                <ComponentCard label={'Data'}>
+                    <ComponentRow>
+                        <ComponentTable>
+                            <Tr>
+                                <Th>Date</Th>
+                                <Th>Symbol</Th>
+                                <Th>o</Th>
+                                <Th>h</Th>
+                                <Th>l</Th>
+                                <Th>c</Th>
+                                <Th>Trade Val (in Cr.)</Th>
+                                <Th>Total Trades</Th>
+                                <Th>Volume</Th>
+                                <Th>Dlv Qty</Th>
+                                <Th>%Dlv Qty</Th>
+                                <Th>Dlv Qty (in Cr.)</Th>
+                            </Tr>
+                            {
+                                data.map((item, index)=>{
+                                   return (
+                                     <Tr key={'item_' + index}>
+                                         <Td>{item.f_date}</Td>
+                                         <Td>{item.symbol}</Td>
+                                         <Td>{item.open}</Td>
+                                         <Td>{item.high}</Td>
+                                         <Td>{item.low}</Td>
+                                         <Td>{item.close}</Td>
+                                         <Td>{item.f_traded_value}</Td>
+                                         <Td>{item.total_trades}</Td>
+                                         <Td>{item.volume}</Td>
+                                         <Td>{item.dlv_qty}</Td>
+                                         <Td>{item.pct_dlv_traded}</Td>
+                                         <Td>{item.f_dlv_in_crores}</Td>
+                                     </Tr>
+                                   );
+                                })
+                            }
+                        </ComponentTable>
                     </ComponentRow>
                 </ComponentCard>
             </ComponentContainer>
         );
     }
 }
-
 
 const mapStateToProps = (state) => {
     const s = state.filterReducer;
@@ -38,13 +82,15 @@ const mapStateToProps = (state) => {
         banknifty : s.banknifty,
         s_stock : s.s_stock,
         s_symbol : s.s_symbol,
+
+        data : s.data,
     };
 };
 
 const mapDispatchToProps = (dispatch) => {
     return bindActionCreators({
         fetch_params : () => fetch_params(),
-        on_change_bnf_select  : (selected) => on_change_bnf_select(selected)
+        on_change_bnf_select  : (selected) => on_change_bnf_select(selected),
     },dispatch);
 };
 

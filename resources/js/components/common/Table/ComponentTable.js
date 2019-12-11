@@ -4,10 +4,10 @@ class ComponentTable extends Component {
 
     render() {
         return (
-            <div>
+            <div className="col-md-12" style={{overflowX : 'auto', overflowY : 'scroll', fontSize : 11}}>
                 <table className="table table-bordered table-sm">
                     <tbody>
-                        {this.props.children}
+                    {this.props.children}
                     </tbody>
                 </table>
             </div>

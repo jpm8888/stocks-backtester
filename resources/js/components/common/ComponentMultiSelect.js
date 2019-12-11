@@ -6,11 +6,9 @@ export default class ComponentMultiSelect extends Component {
     * id, name pair should be passed as props.
     * */
 
-    constructor(props){
+    constructor(props) {
         super(props);
-        this.state = {
-
-        }
+        this.state = {}
     }
 
 
@@ -19,8 +17,8 @@ export default class ComponentMultiSelect extends Component {
         const disabled = (this.props.disabled);
         const options = this.props.options.map((item) => {
             return ({
-                value : item.id,
-                label : item.name,
+                value: item.id,
+                label: item.name,
             })
         });
 
@@ -28,7 +26,7 @@ export default class ComponentMultiSelect extends Component {
         const RequiredView = (required) ? (<span className="red">*</span>) : (<div></div>);
         const isMulti = (this.props.isMulti);
         return (
-            <div className="col">
+            <div className="col-md-4">
                 <div className="form-group">
                     <label>{label}{RequiredView}</label>
                     <Select name={this.props.name}

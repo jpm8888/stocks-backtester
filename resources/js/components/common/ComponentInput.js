@@ -2,11 +2,9 @@ import React, {Component} from 'react';
 
 class ComponentInput extends Component {
 
-    constructor(props){
+    constructor(props) {
         super(props);
-        this.state = {
-
-        }
+        this.state = {}
     }
 
     render() {
@@ -17,10 +15,10 @@ class ComponentInput extends Component {
         const hint = (this.props.hint) ? this.props.hint : "";
 
         return (
-            <div className="col">
+            <div className="col-md-4">
                 <div className="form-group">
                     <label>{label}{RequiredView}</label>
-                    <input {...this.props} autoComplete="off" type="text" className="form-control" />
+                    <input {...this.props} autoComplete="off" type="text" className="form-control"/>
                     <small className="form-text text-muted">{hint}</small>
                 </div>
             </div>

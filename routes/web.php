@@ -1,6 +1,7 @@
 <?php
 
 
+use App\ModelBhavCopyCM;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -57,3 +58,18 @@ Route::group(['middleware' => ['auth'], 'prefix' => 'bhavcopy_analyse', 'as' => 
 Route::get('/hire_me', function () {
     return view('hire_me');
 })->name('hire_me');
+
+
+Route::get('/test', function () {
+
+    $raw = ModelBhavCopyCM::select('bhavcopy_cm.*', 'bhavcopy_delv_position.dlv_qty as dlv_qty', 'bhavcopy_delv_position.pct_dlv_traded as pct_dlv_traded')
+        ->ofSymbol('AXISBANK')
+        ->withDelivery()
+        ->orderBy('date')->limit(30)->get();
+
+    return response()->json([
+        'status' => 1,
+        'msg' => 'success',
+        'data' => $raw
+    ]);
+});

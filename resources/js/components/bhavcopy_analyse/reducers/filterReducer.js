@@ -5,7 +5,8 @@ const initialState = {
     banknifty : [],
 
     s_symbol : '',
-    s_stock : {}
+    s_stock : {},
+    data : [],
 };
 
 
@@ -24,8 +25,9 @@ export default function (state = initialState, action) {
         case ON_CHANGE_BNF_SELECT:
             return{
                 ...state,
-                s_stock : action.payload,
-                s_symbol : (action.payload.label) ? action.payload.label : '',
+                s_stock : action.payload.selected,
+                s_symbol : (action.payload.selected.label) ? action.payload.selected.label : '',
+                data : action.payload.res,
             };
         default : return state;
     }

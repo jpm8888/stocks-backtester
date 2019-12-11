@@ -20,10 +20,12 @@ export const on_change_bnf_select = (selected) => (dispatch) =>{
     fetch('/bhavcopy_analyse/analyse/' + symbol)
         .then((res) => res.json()
             .then((res)=>{
-                console.log(res);
                 dispatch({
                     type : ON_CHANGE_BNF_SELECT,
-                    payload : selected,
+                    payload : {
+                        res,
+                        selected
+                    },
                 });
             }));
     dispatch({type : SET_LOADING, payload : false});

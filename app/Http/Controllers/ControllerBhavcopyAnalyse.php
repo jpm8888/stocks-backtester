@@ -20,10 +20,10 @@ class ControllerBhavcopyAnalyse extends Controller
 
 
     public function analyse($symbol){
-        $raw = ModelBhavCopyCM::where('symbol', $symbol)->orderBy('date')->get();
-
-
-
+        $raw = ModelBhavCopyCM::select('bhavcopy_cm.*', 'bhavcopy_delv_position.dlv_qty as dlv_qty', 'bhavcopy_delv_position.pct_dlv_traded as pct_dlv_traded')
+            ->ofSymbol($symbol)
+            ->withDelivery()
+            ->orderBy('date')->limit(30)->get();
 
         return response()->json($raw);
     }
