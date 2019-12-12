@@ -48,7 +48,7 @@ class ModelBhavCopyCM extends Model
 
     public function getFVolumeAttribute(){
         try{
-            return number_format($this->volume / 100000, 2);
+            return round($this->volume / 100000);
         }catch (Exception $e){
             return "-";
         }
