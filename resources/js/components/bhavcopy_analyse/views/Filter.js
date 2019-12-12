@@ -74,8 +74,8 @@ class Filter extends Component {
                                          <Td>{item.f_traded_value}</Td>
                                          <Td>{item.total_trades}</Td>
                                          <Td>{item.f_volume}</Td>
-                                         <Td>{item.dlv_qty}</Td>
-                                         <Td>{item.pct_dlv_traded}</Td>
+                                         <Td>{Math.round(item.dlv_qty / 100000)}</Td>
+                                         <Td>{item.pct_dlv_traded + ' %'}</Td>
                                          <Td>{item.f_dlv_in_crores}</Td>
                                          <Td>{item.f_avg_dlv_in_crores}</Td>
                                          <Td backgroundColor={fpc_bg_color} color={fpc_color}>{item.f_price_change + ' %'}</Td>
