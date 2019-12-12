@@ -22,6 +22,7 @@ class ControllerBhavcopyAnalyse extends Controller
     public function analyse($symbol){
         $raw = ModelBhavCopyCM::select('bhavcopy_cm.*', 'bhavcopy_delv_position.dlv_qty as dlv_qty', 'bhavcopy_delv_position.pct_dlv_traded as pct_dlv_traded')
             ->ofSymbol($symbol)
+            ->ofSeriesEq()
             ->withDelivery()
             ->orderBy('date')->limit(30)->get();
 

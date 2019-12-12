@@ -42,10 +42,10 @@ class Filter extends Component {
                                 <Th>c</Th>
                                 <Th>Trade Val (in Cr.)</Th>
                                 <Th>Total Trades</Th>
-                                <Th>Volume</Th>
-                                <Th>Dlv Qty</Th>
+                                <Th>Volume (in Lacs)</Th>
+                                <Th>Dlv Qty (in Lacs)</Th>
                                 <Th>%Dlv Qty</Th>
-                                <Th>Dlv Qty (in Cr.)</Th>
+                                <Th>Dlv Value (in Cr.)</Th>
                             </Tr>
                             {
                                 data.map((item, index)=>{
@@ -59,7 +59,7 @@ class Filter extends Component {
                                          <Td>{item.close}</Td>
                                          <Td>{item.f_traded_value}</Td>
                                          <Td>{item.total_trades}</Td>
-                                         <Td>{item.volume}</Td>
+                                         <Td>{item.f_volume}</Td>
                                          <Td>{item.dlv_qty}</Td>
                                          <Td>{item.pct_dlv_traded}</Td>
                                          <Td>{item.f_dlv_in_crores}</Td>

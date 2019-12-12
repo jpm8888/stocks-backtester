@@ -17,7 +17,7 @@ class DownloadSecurityWiseDelvPos extends Command
 
     //TODO -> url : https://www.nseindia.com/archives/equities/mto/MTO_04122019.DAT
 
-
+    private $MAX_DAYS = 32;
     protected $signature = 'download:delv_wise_positions';
     protected $description = 'Download security wise delivery position in cash market';
     public function __construct(){
@@ -26,7 +26,7 @@ class DownloadSecurityWiseDelvPos extends Command
 
 
     public function handle(){
-        for($i = 0; $i < 15; $i++){
+        for($i = 0; $i < $this->MAX_DAYS; $i++){
             $date = Carbon::now()->subDay($i);
             $this->start_download($date);
         }
@@ -72,6 +72,7 @@ class DownloadSecurityWiseDelvPos extends Command
             if (count($str) === 7){
                 $model = new ModelBhavCopyDelvPosition();
                 $model->symbol = $str[2];
+                $model->series = $str[3];
                 $model->traded_qty = $str[4];
                 $model->dlv_qty = $str[5];
                 $model->pct_dlv_traded = $str[6];

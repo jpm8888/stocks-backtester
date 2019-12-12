@@ -18,7 +18,7 @@ class DownloadBhavCopyCM extends Command
 {
     //TODO -> url : https://www.nseindia.com/content/historical/EQUITIES/2019/NOV/cm27NOV2019bhav.csv.zip
 
-
+    private $MAX_DAYS = 32;
     protected $signature = 'download:bhavcopy_cm';
     protected $description = 'Download bhavcopy cash market from NSE website.';
     public function __construct(){
@@ -27,7 +27,7 @@ class DownloadBhavCopyCM extends Command
 
 
     public function handle(){
-        for($i = 0; $i < 15; $i++){
+        for($i = 0; $i < $this->MAX_DAYS; $i++){
             $date = Carbon::now()->subDays($i);
             $this->start_download($date);
         }
