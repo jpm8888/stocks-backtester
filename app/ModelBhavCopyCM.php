@@ -13,7 +13,11 @@ class ModelBhavCopyCM extends Model
     public $timestamps = false;
     protected $table = 'bhavcopy_cm';
     protected $guarded = [];
-    protected $appends = ['f_date', 'f_dlv_in_crores', 'f_traded_value', 'f_volume', 'f_avg_dlv_in_crores'];
+    protected $appends = [
+        'f_date', 'f_dlv_in_crores',
+        'f_traded_value', 'f_volume',
+        'f_avg_dlv_in_crores', 'f_price_change'
+    ];
 
     public function scopeOfSymbol($query, $symbol){
         return $query->where('bhavcopy_cm.symbol', $symbol);
@@ -94,9 +98,28 @@ class ModelBhavCopyCM extends Model
             return round($total_value/5);
 
         }catch (Exception $e){
-            return "-" . $e->getMessage();
+            return "-";
         }
     }
 
+    public function getFPriceChangeAttribute(){
+
+        try{
+            $prev = DB::table('bhavcopy_cm')
+                ->select('close', 'date')
+                ->where('symbol', $this->symbol)
+                ->where('series', $this->series)
+                ->where('date','<', $this->date)
+                ->orderBy('date', 'desc')
+                ->first();
+            if ($prev) {
+                $pct_change = (($this->close - $prev->close) * 100) / $prev->close;
+                return round($pct_change, 2);
+            }
+        }catch (Exception $e){
+            return "" . $e->getMessage();
+        }
+
+    }
 
 }

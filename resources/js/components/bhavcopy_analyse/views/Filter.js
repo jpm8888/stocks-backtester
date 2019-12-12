@@ -47,6 +47,7 @@ class Filter extends Component {
                                 <Th>%Dlv Qty</Th>
                                 <Th>Dlv Value (in Cr.)</Th>
                                 <Th>5-D Avg Dlv Value (in Cr.)</Th>
+                                <Th>Chng. Price</Th>
                             </Tr>
                             {
                                 data.map((item, index)=>{
@@ -65,6 +66,7 @@ class Filter extends Component {
                                          <Td>{item.pct_dlv_traded}</Td>
                                          <Td>{item.f_dlv_in_crores}</Td>
                                          <Td>{item.f_avg_dlv_in_crores}</Td>
+                                         <Td>{item.f_price_change + ' %'}</Td>
                                      </Tr>
                                    );
                                 })
