@@ -48,21 +48,10 @@ class Filter extends Component {
                                 <Th>Dlv Value (in Cr.)</Th>
                                 <Th>5-D Avg Dlv Value (in Cr.)</Th>
                                 <Th>Chng. Price</Th>
+                                <Th>%5-D Avg. Dlv</Th>
                             </Tr>
                             {
                                 data.map((item, index)=>{
-                                    let fpc_bg_color = 'white';
-                                    let fpc_color = 'black';
-                                    if (item.f_price_change > 1.5){
-                                        fpc_bg_color = '#c6efce';
-                                        fpc_color = '#096709';
-                                    }
-
-                                    if (item.f_price_change < -1.5){
-                                        fpc_bg_color = '#ffc7ce';
-                                        fpc_color = '#a0090e';
-                                    }
-
                                    return (
                                      <Tr key={'item_' + index}>
                                          <Td>{item.f_date}</Td>
@@ -78,7 +67,8 @@ class Filter extends Component {
                                          <Td>{item.pct_dlv_traded + ' %'}</Td>
                                          <Td>{item.f_dlv_in_crores}</Td>
                                          <Td>{item.f_avg_dlv_in_crores}</Td>
-                                         <Td backgroundColor={fpc_bg_color} color={fpc_color}>{item.f_price_change + ' %'}</Td>
+                                         <PriceChange value={item.f_price_change}/>
+                                         <FiveDayAvgPercentChange value={item.del_pct_five_day}/>
                                      </Tr>
                                    );
                                 })
@@ -89,6 +79,39 @@ class Filter extends Component {
             </ComponentContainer>
         );
     }
+}
+
+const PriceChange = (props) =>{
+    const value = props.value;
+    let fpc_bg_color = 'white';
+    let fpc_color = 'black';
+    if (value > 1.5){
+        fpc_bg_color = '#c6efce';
+        fpc_color = '#096709';
+    }
+
+    if (value < -1.5){
+        fpc_bg_color = '#ffc7ce';
+        fpc_color = '#a0090e';
+    }
+
+    return (
+        <Td backgroundColor={fpc_bg_color} color={fpc_color}>{value + ' %'}</Td>
+    );
+}
+
+const FiveDayAvgPercentChange = (props) =>{
+    const value = props.value;
+    let fpc_bg_color = 'white';
+    let fpc_color = 'black';
+    if (value > 100){
+        fpc_bg_color = '#ffeb9c';
+        fpc_color = '#9c6527';
+    }
+
+    return (
+        <Td backgroundColor={fpc_bg_color} color={fpc_color}>{value + ' %'}</Td>
+    );
 }
 
 const mapStateToProps = (state) => {

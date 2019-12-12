@@ -26,6 +26,14 @@ class ControllerBhavcopyAnalyse extends Controller
             ->withDelivery()
             ->orderBy('date')->limit(30)->get();
 
+
+        foreach ($raw as $r){
+            $five_day_avg = ($r->f_avg_dlv_in_crores > 0) ? $r->f_avg_dlv_in_crores : 0;
+            if ($five_day_avg == 0) $r->del_pct_five_day = 0;
+            else $r->del_pct_five_day = round(($r->f_dlv_in_crores * 100 / $r->f_avg_dlv_in_crores));
+        }
+
+
         return response()->json($raw);
     }
 
