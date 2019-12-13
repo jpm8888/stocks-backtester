@@ -14,14 +14,15 @@ class Logger{
     const LOG_TYPE_FNO_COPY_ADDED = "FNO_COPY_ADDED";
     const LOG_TYPE_CM_COPY_ADDED = "CM_COPY_ADDED";
     const LOG_TYPE_DLV_COPY_ADDED = "DLV_COPY_ADDED";
+    const LOG_LOGIN_SUCCESS = "LOGIN_SUCCESS";
 
-    //TODO write migration for added_by in logger.
+
     //TODO disable registration page.
-    //TODO login logs
-    //TODO save log on downloading bhavcopy imported.
-    public function insertLog($log_type, $msg){
+
+    public function insertLog($log_type, $msg, $added_by = 1){
         $model = new ModelLog();
         $model->log_type = $log_type;
+        $model->added_by = $added_by;
         $model->msg = $msg;
         $model->save();
     }

@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\ExcelModels\ExcelModelBhavCopyFO;
 use App\Http\Controllers\MailController;
+use App\Http\Controllers\Utils\Logger;
 use App\ModelBhavCopyFO;
 use Chumper\Zipper\Zipper;
 use Exception;
@@ -70,7 +71,11 @@ class DownloadBhavCopyFO extends Command
         $this->info('Importing records...');
         $this->output->title('Starting import');
         (new ExcelModelBhavCopyFO())->withOutput($this->output)->import("$filepath/$filename");
-        $this->output->success('Import successful');
+
+        $logger = new Logger();
+        $msg = "Successfully imported FNO records...";
+        $logger->insertLog(Logger::LOG_TYPE_FNO_COPY_ADDED, $msg);
+        $this->output->success($msg);
     }
 
     private function extract_zip($filepath){

@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\ExcelModels\ExcelModelBhavCopyCM;
 use App\Http\Controllers\MailController;
+use App\Http\Controllers\Utils\Logger;
 use App\ModelBhavCopyCM;
 use Chumper\Zipper\Zipper;
 use Exception;
@@ -68,7 +69,12 @@ class DownloadBhavCopyCM extends Command
         $this->info('Importing records...');
         $this->output->title('Starting import');
         (new ExcelModelBhavCopyCM())->withOutput($this->output)->import("$filepath/$filename");
-        $this->output->success('Import successful');
+
+
+        $logger = new Logger();
+        $msg = "Successfully imported CM records...";
+        $logger->insertLog(Logger::LOG_TYPE_CM_COPY_ADDED, $msg);
+        $this->output->success($msg);
     }
 
     private function extract_zip($filepath){

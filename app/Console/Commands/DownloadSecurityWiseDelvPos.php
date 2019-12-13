@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Http\Controllers\MailController;
+use App\Http\Controllers\Utils\Logger;
 use App\ModelBhavCopyDelvPosition;
 use Exception;
 use GuzzleHttp\Client;
@@ -81,7 +82,11 @@ class DownloadSecurityWiseDelvPos extends Command
                 $count++;
             }
         }
-        $this->info("Successfully imported $count records..." );
+
+        $logger = new Logger();
+        $msg = "Successfully imported $count records...";
+        $logger->insertLog(Logger::LOG_TYPE_DLV_COPY_ADDED, $msg);
+        $this->info($msg);
     }
 
 
