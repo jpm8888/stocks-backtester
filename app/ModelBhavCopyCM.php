@@ -17,7 +17,7 @@ class ModelBhavCopyCM extends Model
         'f_date', 'f_dlv_in_crores',
         'f_traded_value', 'f_volume',
         'f_avg_dlv_in_crores', 'f_price_change',
-        'f_cum_fut_oi'
+        'f_cum_fut_oi', 'f_change_cum_fut_oi'
     ];
 
     public function scopeOfSymbol($query, $symbol){
@@ -129,6 +129,8 @@ class ModelBhavCopyCM extends Model
     }
 
 
+    //cumulative open interest in futures :
+    // coi = expiry_current_month + expiry_next_month;
     public function getFCumFutOiAttribute(){
         $fo = ModelBhavCopyFO::where('instrument', 'FUTSTK')
             ->where('symbol', $this->symbol)
@@ -143,5 +145,33 @@ class ModelBhavCopyCM extends Model
         return $cumulative_oi;
     }
 
+    //change in cumulative open interest from past day.
+    public function getFChangeCumFutOiAttribute(){
+        $fo_current_day = ModelBhavCopyFO::where('instrument', 'FUTSTK')
+            ->where('symbol', $this->symbol)
+            ->where('date', $this->date)
+            ->orderBy('expiry', 'asc')
+            ->limit(2)
+            ->get();
+        $coi_current_day = 0;
+        foreach ($fo_current_day as $f){
+            $coi_current_day += $f->oi;
+        }
+
+        $fo_previous_day = ModelBhavCopyFO::where('instrument', 'FUTSTK')
+            ->where('symbol', $this->symbol)
+            ->where('date', '<' ,$this->date)
+            ->orderBy('date', 'desc')
+            ->orderBy('expiry', 'asc')
+            ->limit(2)
+            ->get();
+
+        $coi_previous_day = 0;
+        foreach ($fo_previous_day as $f){
+            $coi_previous_day += $f->oi;
+        }
+
+        return $coi_current_day - $coi_previous_day;
+    }
 
 }
