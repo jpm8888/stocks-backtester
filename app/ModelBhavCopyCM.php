@@ -171,7 +171,13 @@ class ModelBhavCopyCM extends Model
             $coi_previous_day += $f->oi;
         }
 
-        return $coi_current_day - $coi_previous_day;
+        $coi_change = $coi_current_day - $coi_previous_day;
+        $coi_pct = ($coi_previous_day == 0) ? 0 : (($coi_change * 100) / $coi_previous_day);
+
+        return [
+          'coi' => $coi_change,
+          'coi_pct' => round($coi_pct, 2),
+        ];
     }
 
 }
