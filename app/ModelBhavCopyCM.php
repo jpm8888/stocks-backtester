@@ -16,7 +16,8 @@ class ModelBhavCopyCM extends Model
     protected $appends = [
         'f_date', 'f_dlv_in_crores',
         'f_traded_value', 'f_volume',
-        'f_avg_dlv_in_crores', 'f_price_change'
+        'f_avg_dlv_in_crores', 'f_price_change',
+        'f_cum_fut_oi'
     ];
 
     public function scopeOfSymbol($query, $symbol){
@@ -35,6 +36,8 @@ class ModelBhavCopyCM extends Model
         return $query->where('bhavcopy_cm.series', 'EQ');
     }
 
+
+    //format date in dd-mm-yyyy
     public function getFDateAttribute(){
         try{
             return Carbon::parse($this->date)->format('d-m-Y');
@@ -43,6 +46,7 @@ class ModelBhavCopyCM extends Model
         }
     }
 
+    //daily total trade value in lacs.
     public function getFTradedValueAttribute(){
         try{
             return round($this->total_trade_val/10000000);
@@ -51,6 +55,7 @@ class ModelBhavCopyCM extends Model
         }
     }
 
+    //daily volume in lacs.
     public function getFVolumeAttribute(){
         try{
             return round($this->volume / 100000);
@@ -60,6 +65,7 @@ class ModelBhavCopyCM extends Model
     }
 
 
+    //delivery in crores
     public function getFDlvInCroresAttribute(){
         try{
             $dlv = ModelBhavCopyDelvPosition::ofSymbol($this->symbol)
@@ -102,6 +108,7 @@ class ModelBhavCopyCM extends Model
         }
     }
 
+    //price change in percent from previous day close.
     public function getFPriceChangeAttribute(){
 
         try{
@@ -119,7 +126,22 @@ class ModelBhavCopyCM extends Model
         }catch (Exception $e){
             return "" . $e->getMessage();
         }
-
     }
+
+
+    public function getFCumFutOiAttribute(){
+        $fo = ModelBhavCopyFO::where('instrument', 'FUTSTK')
+            ->where('symbol', $this->symbol)
+            ->where('date', $this->date)
+            ->orderBy('expiry', 'asc')
+            ->limit(2)
+            ->get();
+        $cumulative_oi = 0;
+        foreach ($fo as $f){
+            $cumulative_oi += $f->oi;
+        }
+        return $cumulative_oi;
+    }
+
 
 }
