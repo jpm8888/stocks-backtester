@@ -27,6 +27,6 @@ export const on_change_bnf_select = (selected) => (dispatch) =>{
                         selected
                     },
                 });
+                dispatch({type : SET_LOADING, payload : false});
             }));
-    dispatch({type : SET_LOADING, payload : false});
 };

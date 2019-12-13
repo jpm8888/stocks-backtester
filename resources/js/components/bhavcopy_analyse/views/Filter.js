@@ -85,12 +85,12 @@ const PriceChange = (props) =>{
     const value = props.value;
     let fpc_bg_color = 'white';
     let fpc_color = 'black';
-    if (value > 1.5){
+    if (value >= 1.5){
         fpc_bg_color = '#c6efce';
         fpc_color = '#096709';
     }
 
-    if (value < -1.5){
+    if (value <= -1.5){
         fpc_bg_color = '#ffc7ce';
         fpc_color = '#a0090e';
     }
@@ -104,7 +104,7 @@ const FiveDayAvgPercentChange = (props) =>{
     const value = props.value;
     let fpc_bg_color = 'white';
     let fpc_color = 'black';
-    if (value > 100){
+    if (value >= 100){
         fpc_bg_color = '#ffeb9c';
         fpc_color = '#9c6527';
     }
