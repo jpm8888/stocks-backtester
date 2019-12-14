@@ -17,7 +17,8 @@ class ModelBhavCopyCM extends Model
         'f_date', 'f_dlv_in_crores',
         'f_traded_value', 'f_volume',
         'f_avg_dlv_in_crores', 'f_price_change',
-        'f_cum_fut_oi', 'f_change_cum_fut_oi'
+        'f_cum_fut_oi', 'f_change_cum_fut_oi',
+        'f_option_data',
     ];
 
     public function scopeOfSymbol($query, $symbol){
@@ -70,7 +71,8 @@ class ModelBhavCopyCM extends Model
         try{
             $dlv = ModelBhavCopyDelvPosition::ofSymbol($this->symbol)
                 ->where('series', $this->series)
-                ->ofDate($this->date)->first();
+                ->ofDate($this->date)
+                ->first();
             $value = ($this->total_trade_val * $dlv->pct_dlv_traded) / 1000000000;
             return round($value);
         }catch (Exception $e){
@@ -89,9 +91,9 @@ class ModelBhavCopyCM extends Model
                     $join->on('bcm.series', '=', 'bdp.series');
                 })
                 ->select('bcm.total_trade_val', 'bdp.pct_dlv_traded', 'bcm.date')
+                ->where('bcm.date','<', $this->date)
                 ->where('bcm.symbol', $this->symbol)
                 ->where('bcm.series', $this->series)
-                ->where('bcm.date','<', $this->date)
                 ->orderBy('bcm.date', 'desc')
                 ->limit(5)->get();
 
@@ -114,9 +116,9 @@ class ModelBhavCopyCM extends Model
         try{
             $prev = DB::table('bhavcopy_cm')
                 ->select('close', 'date')
+                ->where('date','<', $this->date)
                 ->where('symbol', $this->symbol)
                 ->where('series', $this->series)
-                ->where('date','<', $this->date)
                 ->orderBy('date', 'desc')
                 ->first();
             if ($prev) {
@@ -133,8 +135,8 @@ class ModelBhavCopyCM extends Model
     // coi = expiry_current_month + expiry_next_month;
     public function getFCumFutOiAttribute(){
         $fo = ModelBhavCopyFO::where('instrument', 'FUTSTK')
-            ->where('symbol', $this->symbol)
             ->where('date', $this->date)
+            ->where('symbol', $this->symbol)
             ->orderBy('expiry', 'asc')
             ->limit(2)
             ->get();
@@ -148,8 +150,8 @@ class ModelBhavCopyCM extends Model
     //change in cumulative open interest from past day.
     public function getFChangeCumFutOiAttribute(){
         $fo_current_day = ModelBhavCopyFO::where('instrument', 'FUTSTK')
-            ->where('symbol', $this->symbol)
             ->where('date', $this->date)
+            ->where('symbol', $this->symbol)
             ->orderBy('expiry', 'asc')
             ->limit(2)
             ->get();
@@ -159,8 +161,8 @@ class ModelBhavCopyCM extends Model
         }
 
         $fo_previous_day = ModelBhavCopyFO::where('instrument', 'FUTSTK')
-            ->where('symbol', $this->symbol)
             ->where('date', '<' ,$this->date)
+            ->where('symbol', $this->symbol)
             ->orderBy('date', 'desc')
             ->orderBy('expiry', 'asc')
             ->limit(2)
@@ -177,6 +179,78 @@ class ModelBhavCopyCM extends Model
         return [
           'coi' => $coi_change,
           'coi_pct' => round($coi_pct, 2),
+        ];
+    }
+
+
+    public function getFOptionDataAttribute(){
+        $current_day =  DB::table('bhavcopy_fo')
+            ->select(DB::raw('SUM(oi) as total'), 'option_type')
+            ->where('date', $this->date)
+            ->where('symbol', $this->symbol)
+            ->where('instrument', 'OPTSTK')
+            ->groupBy('option_type')
+            ->get();
+
+        $ce_total_current_day = 0;
+        $pe_total_current_day = 0;
+        foreach ($current_day as $c){
+            if ($c->option_type == 'CE'){
+                $ce_total_current_day = $c->total;
+            }else if ($c->option_type == 'PE'){
+                $pe_total_current_day = $c->total;
+            }
+        }
+
+        
+
+        $prev_date = ModelBhavCopyFO::select('date')
+            ->where('date', '<', $this->date)
+            ->distinct()
+            ->orderBy('date', 'desc')
+            ->first();
+
+
+
+        $ce_total_prev_day = 0;
+        $pe_total_prev_day = 0;
+        if ($prev_date){
+            $prev_day =  DB::table('bhavcopy_fo')
+                ->select(DB::raw('SUM(oi) as total'), 'option_type')
+                ->where('date', $prev_date->date)
+                ->where('symbol', $this->symbol)
+                ->where('instrument', 'OPTSTK')
+                ->groupBy('option_type')
+                ->get();
+
+            foreach ($prev_day as $c){
+                if ($c->option_type == 'CE'){
+                    $ce_total_prev_day = $c->total;
+                }else if ($c->option_type == 'PE'){
+                    $pe_total_prev_day = $c->total;
+                }
+            }
+        }
+
+
+
+        $coi_change_ce = $ce_total_current_day - $ce_total_prev_day;
+        $coi_pct_ce = ($ce_total_prev_day == 0) ? 0 : (($coi_change_ce * 100) / $ce_total_prev_day);
+
+
+        $coi_change_pe = $pe_total_current_day - $pe_total_prev_day;
+        $coi_pct_pe = ($pe_total_prev_day == 0) ? 0 : (($coi_change_pe * 100) / $pe_total_prev_day);
+
+
+        return [
+            'today_cum_ce_oi' => $ce_total_current_day,
+            'today_cum_pe_oi' => $pe_total_current_day,
+            
+            'yestd_cum_ce_oi' => $ce_total_prev_day,
+            'yestd_cum_pe_oi' => $pe_total_prev_day,
+
+            'coi_pct_ce' => round($coi_pct_ce, 2),
+            'coi_pct_pe' => round($coi_pct_pe, 2),
         ];
     }
 
