@@ -9,6 +9,7 @@ use Exception;
 use GuzzleHttp\Client;
 use Illuminate\Console\Command;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Ramsey\Uuid\Uuid;
 
@@ -54,7 +55,8 @@ class DownloadSecurityWiseDelvPos extends Command
 
 
     private function check_already_imported(Carbon $date){
-        $count = ModelBhavCopyDelvPosition::where('date', $date->format('Y-m-d'))->count();
+        $count = DB::table('bhavcopy_delv_position')->where('date', $date->format('Y-m-d'))->count();
+//        $count = ModelBhavCopyDelvPosition::where('date', $date->format('Y-m-d'))->count();
         if ($count == 0) return true;
         $this->info('Already imported data for this date : ' . $date->format('d-m-Y'));
         return false;

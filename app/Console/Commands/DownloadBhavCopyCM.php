@@ -5,12 +5,12 @@ namespace App\Console\Commands;
 use App\ExcelModels\ExcelModelBhavCopyCM;
 use App\Http\Controllers\MailController;
 use App\Http\Controllers\Utils\Logger;
-use App\ModelBhavCopyCM;
 use Chumper\Zipper\Zipper;
 use Exception;
 use GuzzleHttp\Client;
 use Illuminate\Console\Command;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Ramsey\Uuid\Uuid;
 
@@ -58,7 +58,8 @@ class DownloadBhavCopyCM extends Command
 
 
     private function check_already_imported(Carbon $date){
-        $count = ModelBhavCopyCM::where('date', $date->format('Y-m-d'))->count();
+        $count = DB::table('bhavcopy_cm')->where('date', $date->format('Y-m-d'))->count();
+//        $count = ModelBhavCopyCM::where('date', $date->format('Y-m-d'))->count();
         if ($count == 0) return true;
         $this->info('Already imported data for this date : ' . $date->format('d-m-Y'));
         return false;
