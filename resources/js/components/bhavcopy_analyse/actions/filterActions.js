@@ -1,4 +1,4 @@
-import {FETCH_PARAMS, ON_CHANGE_BNF_SELECT, SET_LOADING} from "./types";
+import {FETCH_PARAMS, ON_CHANGE_INDEX, ON_CHANGE_SYMBOL_SELECT, SET_LOADING} from "./types";
 
 
 export const fetch_params = () => (dispatch) =>{
@@ -14,14 +14,21 @@ export const fetch_params = () => (dispatch) =>{
 };
 
 
-export const on_change_bnf_select = (selected) => (dispatch) =>{
+export const on_change_index = (selected) => (dispatch) =>{
+    dispatch({
+        type : ON_CHANGE_INDEX,
+        payload : selected
+    });
+}
+
+export const on_change_symbol_select = (selected) => (dispatch) =>{
     dispatch({type : SET_LOADING, payload : true});
     const symbol = selected.label;
     fetch('/bhavcopy_analyse/analyse/' + symbol)
         .then((res) => res.json()
             .then((res)=>{
                 dispatch({
-                    type : ON_CHANGE_BNF_SELECT,
+                    type : ON_CHANGE_SYMBOL_SELECT,
                     payload : {
                         res,
                         selected

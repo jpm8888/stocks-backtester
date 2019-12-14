@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\ModelBhavCopyCM;
 use App\ModelMasterBankNifty;
+use App\ModelMasterNifty;
 
 class ControllerBhavcopyAnalyse extends Controller
 {
@@ -15,6 +16,7 @@ class ControllerBhavcopyAnalyse extends Controller
     public function fetch_params(){
         return response()->json([
             'banknifty' => ModelMasterBankNifty::select('id', 'symbol as name')->get(),
+            'nifty' => ModelMasterNifty::select('id', 'symbol as name')->get(),
         ]);
     }
 

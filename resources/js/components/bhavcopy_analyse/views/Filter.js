@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {bindActionCreators} from "redux";
 import connect from "react-redux/es/connect/connect";
-import {fetch_params, on_change_bnf_select} from "../actions/filterActions";
+import {fetch_params, on_change_index, on_change_symbol_select} from "../actions/filterActions";
 import ComponentContainer from "../../common/ComponentContainer";
 import ComponentRow from "../../common/ComponentRow";
 import ComponentMultiSelect from "../../common/ComponentMultiSelect";
@@ -20,14 +20,15 @@ class Filter extends Component {
 
 
     render() {
-        const banknifty = this.props.banknifty;
+        const symbols = this.props.symbols;
         const data = this.props.data;
 
         return (
             <ComponentContainer>
                 <ComponentCard label={'Filter'} loading={this.props.is_loading}>
                     <ComponentRow>
-                        <ComponentMultiSelect value={this.props.s_stock} label={"BANKS"} options={banknifty} onChange={(s)=> this.props.on_change_bnf_select(s)}/>
+                        <ComponentMultiSelect value={this.props.index} label={"Index"} options={this.props.indices} onChange={(s)=> this.props.on_change_index(s)}/>
+                        <ComponentMultiSelect value={this.props.s_stock} label={"Symbols"} options={symbols} onChange={(s)=> this.props.on_change_symbol_select(s)}/>
                     </ComponentRow>
                 </ComponentCard>
                 <ComponentCard label={'Data'}>
@@ -123,8 +124,11 @@ const FiveDayAvgPercentChange = (props) =>{
 const mapStateToProps = (state) => {
     const s = state.filterReducer;
     return {
+        indices : s.indices,
         is_loading : s.is_loading,
-        banknifty : s.banknifty,
+
+        symbols : s.symbols,
+
         s_stock : s.s_stock,
         s_symbol : s.s_symbol,
 
@@ -135,7 +139,8 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
     return bindActionCreators({
         fetch_params : () => fetch_params(),
-        on_change_bnf_select  : (selected) => on_change_bnf_select(selected),
+        on_change_index  : (selected) => on_change_index(selected),
+        on_change_symbol_select  : (selected) => on_change_symbol_select(selected),
     },dispatch);
 };
 

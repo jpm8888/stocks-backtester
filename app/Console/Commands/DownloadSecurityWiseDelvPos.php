@@ -18,7 +18,7 @@ class DownloadSecurityWiseDelvPos extends Command
 
     //TODO -> url : https://www.nseindia.com/archives/equities/mto/MTO_04122019.DAT
 
-    private $MAX_DAYS = 32;
+    private $MAX_DAYS = 62;
     protected $signature = 'download:delv_wise_positions';
     protected $description = 'Download security wise delivery position in cash market';
     public function __construct(){

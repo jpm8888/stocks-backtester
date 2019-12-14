@@ -20,7 +20,7 @@ class DownloadBhavCopyFO extends Command
 
     //TODO -> url : https://www.nseindia.com/content/historical/DERIVATIVES/2019/NOV/fo27NOV2019bhav.csv.zip
 
-    private $MAX_DAYS = 32;
+    private $MAX_DAYS = 62;
     protected $signature = 'download:bhavcopy_fo';
     protected $description = 'Download bhavcopy future market from NSE website.';
     public function __construct(){
