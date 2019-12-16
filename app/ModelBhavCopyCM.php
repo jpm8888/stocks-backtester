@@ -18,7 +18,7 @@ class ModelBhavCopyCM extends Model
         'f_traded_value', 'f_volume',
         'f_avg_dlv_in_crores', 'f_price_change',
         'f_cum_fut_oi', 'f_change_cum_fut_oi',
-        'f_option_data',
+        'f_option_data', 'f_five_day_volume_avg'
     ];
 
     public function scopeOfSymbol($query, $symbol){
@@ -184,6 +184,18 @@ class ModelBhavCopyCM extends Model
 
 
     public function getFOptionDataAttribute(){
+        return [
+            'today_cum_ce_oi' => '0',
+            'today_cum_pe_oi' => '0',
+
+            'yestd_cum_ce_oi' => '0',
+            'yestd_cum_pe_oi' => '0',
+
+            'coi_pct_ce' => '0',
+            'coi_pct_pe' => '0',
+        ];
+
+
         $current_day =  DB::table('bhavcopy_fo')
             ->select(DB::raw('SUM(oi) as total'), 'option_type')
             ->where('date', $this->date)
@@ -252,6 +264,41 @@ class ModelBhavCopyCM extends Model
             'coi_pct_ce' => round($coi_pct_ce, 2),
             'coi_pct_pe' => round($coi_pct_pe, 2),
         ];
+    }
+
+
+    public function getFFiveDayVolumeAvgAttribute(){
+        try{
+            $volume = DB::table('bhavcopy_cm')
+                ->select('volume')
+                ->where('date','<', $this->date)
+                ->where('symbol', $this->symbol)
+                ->where('series', $this->series)
+                ->orderBy('date', 'desc')
+                ->limit(5)->get();
+
+            $total_volume = 0;
+            foreach ($volume as $v){
+                $total_volume += $v->volume;
+            }
+
+            $today = DB::table('bhavcopy_cm')
+                ->select('volume')->where('date', $this->date)
+                ->where('symbol', $this->symbol)
+                ->where('series', $this->series)->first();
+
+
+            $avg_volume = round($total_volume / 5, 2);
+            $change = (($today->volume - $avg_volume) * 100) / $avg_volume;
+
+            return [
+              'avg_volume' => round($avg_volume),
+              'change' => round($change, 2),
+            ];
+
+        }catch (Exception $e){
+            return "-";
+        }
     }
 
 }

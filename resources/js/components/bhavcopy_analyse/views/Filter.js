@@ -43,7 +43,9 @@ class Filter extends Component {
                                 <Th>c</Th>
                                 <Th>Trade Val (in Cr.)</Th>
                                 <Th>Total Trades</Th>
-                                <Th>Volume (in Lacs)</Th>
+                                <Th>Volume</Th>
+                                <Th>5-D Avg Vol</Th>
+                                <Th>%5-D Avg Vol</Th>
                                 <Th>Dlv Qty (in Lacs)</Th>
                                 <Th>%Dlv Qty</Th>
                                 <Th>Dlv Value (in Cr.)</Th>
@@ -70,7 +72,9 @@ class Filter extends Component {
                                          <Td>{item.close}</Td>
                                          <Td>{item.f_traded_value}</Td>
                                          <Td>{item.total_trades}</Td>
-                                         <Td>{item.f_volume}</Td>
+                                         <Td>{item.volume}</Td>
+                                         <Td>{item.f_five_day_volume_avg.avg_volume}</Td>
+                                         <FiveDayAvgPercentChange value={item.f_five_day_volume_avg.change}/>
                                          <Td>{Math.round(item.dlv_qty / 100000)}</Td>
                                          <Td>{item.pct_dlv_traded + ' %'}</Td>
                                          <Td>{item.f_dlv_in_crores}</Td>
@@ -119,7 +123,7 @@ const FiveDayAvgPercentChange = (props) =>{
     const value = props.value;
     let fpc_bg_color = 'white';
     let fpc_color = 'black';
-    if (value >= 100){
+    if (value >= 100 || value <= -100){
         fpc_bg_color = '#ffeb9c';
         fpc_color = '#9c6527';
     }
