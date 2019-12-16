@@ -10,6 +10,7 @@ class DatabaseSeeder extends Seeder
         $this->call([
             BankNiftyStocksSeeder::class,
             NiftyStocksSeeder::class,
+            SectorSeeder::class,
         ]);
 
     }

@@ -4,9 +4,9 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class ModelMasterNifty extends Model
+class ModelMasterSector extends Model
 {
+    protected $table = "master_sector";
     public $timestamps = false;
-    protected $table = 'master_nifty';
     protected $guarded = [];
 }

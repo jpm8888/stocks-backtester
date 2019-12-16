@@ -3,9 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\ModelBhavCopyCM;
-use App\ModelMasterBankNifty;
-use App\ModelMasterNifty;
-use Illuminate\Support\Facades\DB;
+use App\ModelMasterStocksFO;
 
 class ControllerBhavcopyAnalyse extends Controller
 {
@@ -16,13 +14,9 @@ class ControllerBhavcopyAnalyse extends Controller
 
     public function fetch_params(){
         return response()->json([
-            'banknifty' => ModelMasterBankNifty::select('id', 'symbol as name')->get(),
-            'nifty' => ModelMasterNifty::select('id', 'symbol as name')->get(),
-            'other' => DB::table('bhavcopy_cm')
-                ->select('id', 'symbol as name')
-                ->orderBy('symbol')
-                ->groupBy('symbol')
-                ->get(),
+            'banknifty' => ModelMasterStocksFO::select('id', 'symbol as name')->ordered()->bankNifty()->get(),
+            'nifty' => ModelMasterStocksFO::select('id', 'symbol as name')->ordered()->nifty()->get(),
+            'other' => ModelMasterStocksFO::select('id', 'symbol as name')->ordered()->get(),
         ]);
     }
 
