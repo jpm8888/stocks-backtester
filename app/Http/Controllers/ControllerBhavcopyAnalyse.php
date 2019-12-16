@@ -26,7 +26,9 @@ class ControllerBhavcopyAnalyse extends Controller
             ->ofSymbol($symbol)
             ->ofSeriesEq()
             ->withDelivery()
-            ->orderBy('date')->limit(30)->get();
+            ->orderBy('date', 'desc')->take(45)->get();
+
+        $raw = $raw->reverse()->values();
 
 
         //calculating 5 day avg. delivery value to current day in percent.
