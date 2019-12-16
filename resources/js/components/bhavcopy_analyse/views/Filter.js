@@ -55,10 +55,10 @@ class Filter extends Component {
                                 <Th>FUT COI</Th>
                                 <Th>FUT Chng. COI</Th>
                                 <Th>FUT %Chng. COI</Th>
-                                <Th>CE COI</Th>
-                                <Th>%Chng. CE COI</Th>
-                                <Th>PE COI</Th>
-                                <Th>%Chng. PE COI</Th>
+                                {/*<Th>CE COI</Th>*/}
+                                {/*<Th>%Chng. CE COI</Th>*/}
+                                {/*<Th>PE COI</Th>*/}
+                                {/*<Th>%Chng. PE COI</Th>*/}
                             </Tr>
                             {
                                 data.map((item, index)=>{
@@ -84,10 +84,10 @@ class Filter extends Component {
                                          <Td>{item.f_cum_fut_oi}</Td>
                                          <Td>{item.f_change_cum_fut_oi.coi}</Td>
                                          <PriceChange value={item.f_change_cum_fut_oi.coi_pct}/>
-                                         <Td>{item.f_option_data.today_cum_ce_oi}</Td>
-                                         <PriceChange value={item.f_option_data.coi_pct_ce}/>
-                                         <Td>{item.f_option_data.today_cum_pe_oi}</Td>
-                                         <PriceChange value={item.f_option_data.coi_pct_pe}/>
+                                         {/*<Td>{item.f_option_data.today_cum_ce_oi}</Td>*/}
+                                         {/*<PriceChange value={item.f_option_data.coi_pct_ce}/>*/}
+                                         {/*<Td>{item.f_option_data.today_cum_pe_oi}</Td>*/}
+                                         {/*<PriceChange value={item.f_option_data.coi_pct_pe}/>*/}
                                      </Tr>
                                    );
                                 })
