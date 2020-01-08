@@ -8,7 +8,7 @@ class DeleteIds extends Migration{
     public function up()
     {
         $this->delete_primary_key('bhavcopy_cm');
-        $this->delete_primary_key('bhavcopy_cm');
+        $this->delete_primary_key('bhavcopy_fo');
         $this->delete_primary_key('bhavcopy_delv_position');
     }
 
