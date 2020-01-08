@@ -48,7 +48,7 @@ class DownloadBhavCopyFO extends Command
         $month = strtoupper($date->formatLocalized('%b'));
         $day = ($date->day < 10) ? ("0" . $date->day) : $date->day;
         $filename = "fo". $day . $month . $year . "bhav.csv";
-        $url = "https://www.nseindia.com/content/historical/DERIVATIVES/$year/$month/" . $filename . '.zip';
+        $url = "https://www1.nseindia.com/content/historical/DERIVATIVES/$year/$month/" . $filename . '.zip';
         $this->info("url : " . $url);
 
         $filepath = $this->download_bhav_copy($url);

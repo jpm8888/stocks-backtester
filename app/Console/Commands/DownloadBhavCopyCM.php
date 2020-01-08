@@ -17,7 +17,7 @@ use Ramsey\Uuid\Uuid;
 
 class DownloadBhavCopyCM extends Command
 {
-    //TODO -> url : https://www.nseindia.com/content/historical/EQUITIES/2019/NOV/cm27NOV2019bhav.csv.zip
+    //TODO -> url : https://www1.nseindia.com/content/historical/EQUITIES/2019/NOV/cm27NOV2019bhav.csv.zip
 
     private $MAX_DAYS = 62;
     protected $signature = 'download:bhavcopy_cm';
@@ -39,21 +39,25 @@ class DownloadBhavCopyCM extends Command
     }
 
     public function start_download(Carbon $date){
-        $flag = $this->check_already_imported($date);
-        if (!$flag) return false;
+        try{
+            $flag = $this->check_already_imported($date);
+            if (!$flag) return false;
 
-        $this->info('Trying to download for date : ' . $date->format('d-m-Y'));
-        $year = $date->year;
-        $month = strtoupper($date->formatLocalized('%b'));
-        $day = ($date->day < 10) ? ("0" . $date->day) : $date->day;
-        $filename = "cm". $day . $month . $year . "bhav.csv";
-        $url = "https://www.nseindia.com/content/historical/EQUITIES/$year/$month/" . $filename . '.zip';
-        $this->info("url : " . $url);
-        $filepath = $this->download_bhav_copy($url);
-        if (!$filepath) return false;
+            $this->info('Trying to download for date : ' . $date->format('d-m-Y'));
+            $year = $date->year;
+            $month = strtoupper($date->formatLocalized('%b'));
+            $day = ($date->day < 10) ? ("0" . $date->day) : $date->day;
+            $filename = "cm". $day . $month . $year . "bhav.csv";
+            $url = "https://www1.nseindia.com/content/historical/EQUITIES/$year/$month/" . $filename . '.zip';
+            $this->info("url : " . $url);
+            $filepath = $this->download_bhav_copy($url);
+            if (!$filepath) return false;
 
-        $filepath = $this->extract_zip($filepath);
-        $this->import_to_database($filepath, $filename);
+            $filepath = $this->extract_zip($filepath);
+            $this->import_to_database($filepath, $filename);
+        }catch(Exception $e){
+            $this->error('Error : ' . $e->getMessage());
+        }
     }
 
 

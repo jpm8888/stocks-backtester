@@ -45,7 +45,7 @@ class DownloadSecurityWiseDelvPos extends Command
         if (!$flag) return false;
 
         $filename = "MTO_" . $date->format('dmY') . ".DAT";
-        $url = "https://www.nseindia.com/archives/equities/mto/". $filename;
+        $url = "https://www1.nseindia.com/archives/equities/mto/". $filename;
         $this->info("url : " . $url);
         $filepath = $this->download_file($url);
         if (!$filepath) return false;

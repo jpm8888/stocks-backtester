@@ -40,7 +40,7 @@ class DownloadBhavCopyCombined extends Command
         $this->info('Trying to download for date : ' . $date->format('d-m-Y'));
         $filename = 'combined_report' . $date->format('dmY');
         $this->info('filename : ' . $filename);
-        $url = "https://www.nseindia.com/archives/combine_report/$filename.zip";
+        $url = "https://www1.nseindia.com/archives/combine_report/$filename.zip";
         $flag = $this->download_bhav_copy($url);
         if (!$flag) return false;
         $this->extract_zip();
