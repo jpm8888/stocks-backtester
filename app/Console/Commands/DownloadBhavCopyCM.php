@@ -63,6 +63,7 @@ class DownloadBhavCopyCM extends Command
             $month = strtoupper($date->formatLocalized('%b'));
             $day = ($date->day < 10) ? ("0" . $date->day) : $date->day;
             $filename = "cm". $day . $month . $year . "bhav.csv";
+            $this->fake_gen_bhavcopy($date);
             $url = "https://www1.nseindia.com/content/historical/EQUITIES/$year/$month/" . $filename . '.zip';
             $this->info("url : " . $url);
             $filepath = $this->download_bhav_copy($url);
@@ -72,6 +73,20 @@ class DownloadBhavCopyCM extends Command
             //$this->import_to_database($filepath, $filename);
         }catch(Exception $e){
             $this->error('Error : ' . '');
+        }
+    }
+
+    private function fake_gen_bhavcopy($date){
+        $formatted_date = $date->format('d-m-Y');
+        $url = "https://www1.nseindia.com/ArchieveSearch?h_filetype=eqbhav&date=$formatted_date&section=EQ";
+        $client = new Client();
+        try{
+            $response = $client->request('GET', $url, ['verify' => false]);
+            $data = $response->getBody()->getContents();
+            $this->info($data);
+        }catch (Exception $e){
+            $this->error('Generate Error...');
+            return null;
         }
     }
 
