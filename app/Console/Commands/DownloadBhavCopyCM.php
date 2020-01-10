@@ -19,7 +19,7 @@ class DownloadBhavCopyCM extends Command
 {
     //TODO -> url : https://www1.nseindia.com/content/historical/EQUITIES/2019/NOV/cm27NOV2019bhav.csv.zip
 
-    private $MAX_DAYS = 62;
+    private $MAX_DAYS = 5;
     protected $signature = 'download:bhavcopy_cm';
     protected $description = 'Download bhavcopy cash market from NSE website.';
     public function __construct(){
@@ -56,7 +56,7 @@ class DownloadBhavCopyCM extends Command
             $filepath = $this->extract_zip($filepath);
             $this->import_to_database($filepath, $filename);
         }catch(Exception $e){
-            $this->error('Error : ' . $e->getMessage());
+            $this->error('Error : ' . '');
         }
     }
 
@@ -74,7 +74,6 @@ class DownloadBhavCopyCM extends Command
         $this->info('Importing records...');
         $this->output->title('Starting import');
         (new ExcelModelBhavCopyCM())->withOutput($this->output)->import("$filepath/$filename");
-
 
         $logger = new Logger();
         $msg = "Successfully imported CM records...";
@@ -110,8 +109,7 @@ class DownloadBhavCopyCM extends Command
             $this->info('Downloaded bhavcopy...');
             return $path;
         }catch (Exception $e){
-            $this->error('Download error...' . $e->getMessage());
-            $this->info('Aborting...');
+            $this->error('Download error...');
             return null;
         }
     }
