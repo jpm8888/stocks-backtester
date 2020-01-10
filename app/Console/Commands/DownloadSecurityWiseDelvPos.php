@@ -20,7 +20,7 @@ class DownloadSecurityWiseDelvPos extends Command
     //TODO -> url : https://www.nseindia.com/archives/equities/mto/MTO_04122019.DAT
 
     private $MAX_DAYS = 5;
-    protected $signature = 'download:delv_wise_positions';
+    protected $signature = 'download:delv_wise_positions {from_date?} {max_days?}';
     protected $description = 'Download security wise delivery position in cash market';
     public function __construct(){
         parent::__construct();
@@ -28,14 +28,25 @@ class DownloadSecurityWiseDelvPos extends Command
 
 
     public function handle(){
-        for($i = 0; $i < $this->MAX_DAYS; $i++){
-            $date = Carbon::now()->subDay($i);
+        $from_date = $this->argument('from_date');
+        $max_days = $this->argument('max_days');
+
+        if (trim($max_days) == '') $max_days = $this->MAX_DAYS;
+
+        if (trim($from_date) == '') {
+            $from_date = Carbon::now()->subDays($max_days);
+        }else {
+            $from_date = Carbon::createFromFormat('d-m-Y', $from_date);
+        }
+
+        for($i = 0; $i < $max_days; $i++){
+            $date = $from_date->addDay();
             $this->start_download($date);
         }
 
-        $mail = new MailController();
-        $msg = "Successfully imported security wise delivery positions for date : " .  Carbon::now()->format('d-m-Y');
-        $mail->send_basic_email(['msg' => $msg], 'Security Wise Delivery Positions copy added');
+        // $mail = new MailController();
+        // $msg = "Successfully imported security wise delivery positions for date : " .  Carbon::now()->format('d-m-Y');
+        // $mail->send_basic_email(['msg' => $msg], 'Security Wise Delivery Positions copy added');
     }
 
     private function start_download(Carbon $date){

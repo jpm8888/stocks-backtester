@@ -19,8 +19,11 @@ class DownloadBhavCopyCM extends Command
 {
     //TODO -> url : https://www1.nseindia.com/content/historical/EQUITIES/2019/NOV/cm27NOV2019bhav.csv.zip
 
+    // from_date -> dd-mm-yyyy;
+    // max_days -> max_days from from_date;
+
     private $MAX_DAYS = 5;
-    protected $signature = 'download:bhavcopy_cm';
+    protected $signature = 'download:bhavcopy_cm {from_date?} {max_days?}';
     protected $description = 'Download bhavcopy cash market from NSE website.';
     public function __construct(){
         parent::__construct();
@@ -28,14 +31,26 @@ class DownloadBhavCopyCM extends Command
 
 
     public function handle(){
-        for($i = 0; $i < $this->MAX_DAYS; $i++){
-            $date = Carbon::now()->subDays($i);
+        $from_date = $this->argument('from_date');
+        $max_days = $this->argument('max_days');
+
+        if (trim($max_days) == '') $max_days = $this->MAX_DAYS;
+
+        if (trim($from_date) == '') {
+            $from_date = Carbon::now()->subDays($max_days);
+        }else {
+            $from_date = Carbon::createFromFormat('d-m-Y', $from_date);
+        }
+
+        for($i = 0; $i < $max_days; $i++){
+            $date = $from_date->addDay();
+            $this->info($date);
             $this->start_download($date);
         }
 
-        $mail = new MailController();
-        $msg = "Successfully imported cash market data for date : " .  Carbon::now()->format('d-m-Y');
-        $mail->send_basic_email(['msg' => $msg], 'Cash market copy added');
+        // $mail = new MailController();
+        // $msg = "Successfully imported cash market data for date : " .  Carbon::now()->format('d-m-Y');
+        // $mail->send_basic_email(['msg' => $msg], 'Cash market copy added');
     }
 
     public function start_download(Carbon $date){
@@ -54,7 +69,7 @@ class DownloadBhavCopyCM extends Command
             if (!$filepath) return false;
 
             $filepath = $this->extract_zip($filepath);
-            $this->import_to_database($filepath, $filename);
+            //$this->import_to_database($filepath, $filename);
         }catch(Exception $e){
             $this->error('Error : ' . '');
         }
