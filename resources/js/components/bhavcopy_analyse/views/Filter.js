@@ -42,7 +42,6 @@ class Filter extends Component {
                                 <Th>l</Th>
                                 <Th>c</Th>
                                 <Th>Trade Val (in Cr.)</Th>
-                                <Th>Total Trades</Th>
                                 <Th>Volume</Th>
                                 <Th>5-D Avg Vol</Th>
                                 <Th>Dlv Qty (in Lacs)</Th>
@@ -71,7 +70,6 @@ class Filter extends Component {
                                          <Td>{item.low}</Td>
                                          <Td>{item.close}</Td>
                                          <Td>{item.f_traded_value}</Td>
-                                         <Td>{item.total_trades}</Td>
                                          <Td>{item.volume}</Td>
                                          <Td>{item.f_five_day_volume_avg.avg_volume}</Td>
                                          <Td>{Math.round(item.dlv_qty / 100000)}</Td>

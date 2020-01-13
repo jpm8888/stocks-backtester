@@ -19,7 +19,7 @@ class DownloadSecurityWiseDelvPos extends Command
 
     //TODO -> url : https://www.nseindia.com/archives/equities/mto/MTO_04122019.DAT
 
-    private $MAX_DAYS = 5;
+    private $MAX_DAYS = 20;
     protected $signature = 'download:delv_wise_positions {from_date?} {max_days?}';
     protected $description = 'Download security wise delivery position in cash market';
     public function __construct(){
@@ -44,9 +44,9 @@ class DownloadSecurityWiseDelvPos extends Command
             $this->start_download($date);
         }
 
-        // $mail = new MailController();
-        // $msg = "Successfully imported security wise delivery positions for date : " .  Carbon::now()->format('d-m-Y');
-        // $mail->send_basic_email(['msg' => $msg], 'Security Wise Delivery Positions copy added');
+         $mail = new MailController();
+         $msg = "Successfully imported security wise delivery positions for date : " .  Carbon::now()->format('d-m-Y');
+         $mail->send_basic_email(['msg' => $msg], 'Security Wise Delivery Positions copy added');
     }
 
     private function start_download(Carbon $date){
@@ -67,7 +67,6 @@ class DownloadSecurityWiseDelvPos extends Command
 
     private function check_already_imported(Carbon $date){
         $count = DB::table('bhavcopy_delv_position')->where('date', $date->format('Y-m-d'))->count();
-//        $count = ModelBhavCopyDelvPosition::where('date', $date->format('Y-m-d'))->count();
         if ($count == 0) return true;
         $this->info('Already imported data for this date : ' . $date->format('d-m-Y'));
         return false;

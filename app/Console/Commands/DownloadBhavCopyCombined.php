@@ -9,48 +9,71 @@ use Exception;
 use GuzzleHttp\Client;
 use Illuminate\Console\Command;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
 
 class DownloadBhavCopyCombined extends Command
 {
-    protected $signature = 'download:bhavcopy_combined';
+    private $MAX_DAYS = 1;
+    protected $signature = 'download:bhavcopy_combined {from_date?} {max_days?}';
     protected $description = 'Download bhavcopy combined from NSE website.';
+
+    protected $client;
+
     public function __construct(){
         parent::__construct();
-    }
-
-    private function get_date($yesterday){
-        if (!$yesterday) $yesterday = Carbon::now()->subDay();
-
-        if($yesterday->dayOfWeek == Carbon::SATURDAY || $yesterday->dayOfWeek == Carbon::SUNDAY)
-            return $this->get_date($yesterday->subDay());
-        else
-            return $yesterday;
-    }
-
-    private function set_null_date(){
-        DB::update('update bhavcopy_combined set expiry_date = ? where expiry_date = ?',[null,'1970-01-01']);
+        $this->client = new Client();
     }
 
     public function handle(){
+        $from_date = $this->argument('from_date');
+        $max_days = $this->argument('max_days');
 
-        $date = $this->get_date(null);
-        $this->info('Trying to download for date : ' . $date->format('d-m-Y'));
+        if (trim($max_days) == '') $max_days = $this->MAX_DAYS;
+
+        if (trim($from_date) == '') {
+            $from_date = Carbon::now()->subDays($max_days);
+        }else {
+            $from_date = Carbon::createFromFormat('d-m-Y', $from_date);
+        }
+
+        for($i = 0; $i < $max_days; $i++){
+            $date = $from_date;
+            //$this->info($date);
+            $this->start_download($date);
+            $date = $from_date->addDay();
+        }
+    }
+
+    private function start_download($date){
         $filename = 'combined_report' . $date->format('dmY');
-        $this->info('filename : ' . $filename);
         $url = "https://www1.nseindia.com/archives/combine_report/$filename.zip";
-        $flag = $this->download_bhav_copy($url);
-        if (!$flag) return false;
-        $this->extract_zip();
-        $this->import_to_database($filename . '.xlsx');
-        $this->delete_temp();
-        $this->set_null_date();
+        $client = $this->client;
+
+        try{
+            $response = $client->get($url, []);
+            $data = $response->getBody()->getContents();
+            Storage::put('temp/bhavcopy.zip', $data);
+            $this->extract_zip();
+            $filename = $this->get_file_name($filename);
+            $this->import_to_database($filename);
+            $this->delete_temp();
+        }catch (Exception $e){
+            $this->error('Error : ' . $e->getMessage());
+            return false;
+        }
+    }
+
+    private function get_file_name($filename){
+        $filepath = "temp/bhavcopy_extracted/$filename";
+        if (Storage::exists($filepath . '.xlsx')){
+            return $filename . '.xlsx';
+        }elseif (Storage::exists($filepath . '.xls')){
+            return $filename . '.xls';
+        }
     }
 
     private function import_to_database($filename){
-        $this->info('Importing records...');
         ModelBhavCopyCombined::truncate();
         $this->output->title('Starting import');
         (new ExcelModelBhavCopyCombined)->withOutput($this->output)->import("temp/bhavcopy_extracted/$filename");
@@ -58,31 +81,12 @@ class DownloadBhavCopyCombined extends Command
     }
 
     private function extract_zip(){
-        $this->info('Extracting bhavcopy...');
         $zipper = new Zipper();
         $zipper->make(storage_path('app/temp/bhavcopy.zip'))->extractTo(storage_path('app/temp/bhavcopy_extracted'));
-        $this->info('Extracted bhavcopy...');
     }
 
     private function delete_temp(){
-        $this->info('Cleaning temp files');
         Storage::deleteDirectory('temp');
-        $this->info('All done for now');
-    }
-
-    private function download_bhav_copy($url){
-        $this->info('Downloading bhavcopy...');
-        $client = new Client();
-        try{
-            $response = $client->get($url, []);
-            $data = $response->getBody()->getContents();
-            Storage::put('temp/bhavcopy.zip', $data);
-            $this->info('Downloaded bhavcopy...');
-            return true;
-        }catch (Exception $e){
-            $this->error('Download error...');
-            $this->info('Aborting...');
-            return false;
-        }
+        $this->info('Cleaned temp files...');
     }
 }

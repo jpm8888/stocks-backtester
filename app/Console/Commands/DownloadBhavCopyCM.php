@@ -22,7 +22,7 @@ class DownloadBhavCopyCM extends Command
     // from_date -> dd-mm-yyyy;
     // max_days -> max_days from from_date;
 
-    private $MAX_DAYS = 5;
+    private $MAX_DAYS = 20;
     protected $signature = 'download:bhavcopy_cm {from_date?} {max_days?}';
     protected $description = 'Download bhavcopy cash market from NSE website.';
     public function __construct(){
@@ -48,9 +48,9 @@ class DownloadBhavCopyCM extends Command
             $this->start_download($date);
         }
 
-        // $mail = new MailController();
-        // $msg = "Successfully imported cash market data for date : " .  Carbon::now()->format('d-m-Y');
-        // $mail->send_basic_email(['msg' => $msg], 'Cash market copy added');
+         $mail = new MailController();
+         $msg = "Successfully imported cash market data for date : " .  Carbon::now()->format('d-m-Y');
+         $mail->send_basic_email(['msg' => $msg], 'Cash market copy added');
     }
 
     public function start_download(Carbon $date){
@@ -63,37 +63,21 @@ class DownloadBhavCopyCM extends Command
             $month = strtoupper($date->formatLocalized('%b'));
             $day = ($date->day < 10) ? ("0" . $date->day) : $date->day;
             $filename = "cm". $day . $month . $year . "bhav.csv";
-            $this->fake_gen_bhavcopy($date);
+
             $url = "https://www1.nseindia.com/content/historical/EQUITIES/$year/$month/" . $filename . '.zip';
             $this->info("url : " . $url);
             $filepath = $this->download_bhav_copy($url);
             if (!$filepath) return false;
 
             $filepath = $this->extract_zip($filepath);
-            //$this->import_to_database($filepath, $filename);
+            $this->import_to_database($filepath, $filename);
         }catch(Exception $e){
-            $this->error('Error : ' . '');
+            $this->error('Error : ' . $e->getMessage());
         }
     }
-
-    private function fake_gen_bhavcopy($date){
-        $formatted_date = $date->format('d-m-Y');
-        $url = "https://www1.nseindia.com/ArchieveSearch?h_filetype=eqbhav&date=$formatted_date&section=EQ";
-        $client = new Client();
-        try{
-            $response = $client->request('GET', $url, ['verify' => false]);
-            $data = $response->getBody()->getContents();
-            $this->info($data);
-        }catch (Exception $e){
-            $this->error('Generate Error...');
-            return null;
-        }
-    }
-
 
     private function check_already_imported(Carbon $date){
         $count = DB::table('bhavcopy_cm')->where('date', $date->format('Y-m-d'))->count();
-//        $count = ModelBhavCopyCM::where('date', $date->format('Y-m-d'))->count();
         if ($count == 0) return true;
         $this->info('Already imported data for this date : ' . $date->format('d-m-Y'));
         return false;
@@ -128,9 +112,18 @@ class DownloadBhavCopyCM extends Command
 
     private function download_bhav_copy($url){
         $this->info('Downloading bhavcopy...');
-        $client = new Client();
+        $client = new Client([
+            'headers' => [
+                'referer' => $url,
+                'User-Agent' => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:72.0) Gecko/20100101 Firefox/72.0',
+                'Accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
+                'Accept-Encoding' => 'gzip, deflate, br',
+            ],
+        ]);
         try{
-            $response = $client->request('GET', $url, ['verify' => false]);
+            $response = $client->request('GET', $url, [
+                'verify' => false,
+            ]);
             $data = $response->getBody()->getContents();
             $temp_foldername = 'temp/' . Uuid::uuid1()->toString();
             $filename = Uuid::uuid1()->toString() . '.zip';

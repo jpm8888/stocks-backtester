@@ -35,8 +35,6 @@ class ExcelModelBhavCopyCM implements ToModel, WithChunkReading, WithBatchInsert
             'prevclose'              => $row['prevclose'],
             'volume'                 => $row['tottrdqty'],
             'total_trade_val'        => $row['tottrdval'],
-            'total_trades'           => $row['totaltrades'],
-            'isin'                   => $row['isin'],
             'date'                   => $bhavcopy_date
         ]);
         return $model;
