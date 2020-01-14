@@ -46,9 +46,9 @@ class DownloadBhavCopyFO extends Command
             $this->start_download($date);
         }
 
-//        $mail = new MailController();
-//        $msg = "Successfully imported fno market data for date : " .  Carbon::now()->format('d-m-Y');
-//        $mail->send_basic_email(['msg' => $msg], 'FNO copy added');
+        $mail = new MailController();
+        $msg = "Successfully imported fno market data for date : " .  Carbon::now()->format('d-m-Y');
+        $mail->send_basic_email(['msg' => $msg], 'FNO copy added');
     }
 
     private function start_download(Carbon $date){
