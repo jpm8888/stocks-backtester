@@ -43,13 +43,13 @@ class ExcelModelBhavCopyCM implements ToModel, WithChunkReading, WithBatchInsert
 
     public function chunkSize(): int
     {
-        return 3000;
+        return 3500;
     }
 
 
     public function batchSize(): int
     {
-        return 3000;
+        return 3500;
     }
 
 

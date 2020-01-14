@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use App\ExcelModels\ExcelModelBhavCopyCM;
 use App\Http\Controllers\MailController;
 use App\Http\Controllers\Utils\Logger;
+use App\ModelLog;
 use Chumper\Zipper\Zipper;
 use Exception;
 use GuzzleHttp\Client;
@@ -55,8 +56,12 @@ class DownloadBhavCopyCM extends Command
 
     public function start_download(Carbon $date){
         try{
+            $flag = $date->isWeekday();
+            if (!$flag) return false;
+
             $flag = $this->check_already_imported($date);
             if (!$flag) return false;
+
 
             $this->info('Trying to download for date : ' . $date->format('d-m-Y'));
             $year = $date->year;
@@ -66,7 +71,7 @@ class DownloadBhavCopyCM extends Command
 
             $url = "https://www1.nseindia.com/content/historical/EQUITIES/$year/$month/" . $filename . '.zip';
             $this->info("url : " . $url);
-            $filepath = $this->download_bhav_copy($url);
+            $filepath = $this->download_bhav_copy($url, $date);
             if (!$filepath) return false;
 
             $filepath = $this->extract_zip($filepath);
@@ -110,11 +115,14 @@ class DownloadBhavCopyCM extends Command
     }
 
 
-    private function download_bhav_copy($url){
-        $this->info('Downloading bhavcopy...');
+    private function download_bhav_copy($url, Carbon $date){
+        $formatted_date = $date->format('d-m-Y');
+        $referer_url = "https://www1.nseindia.com/ArchieveSearch?h_filetype=eqbhav&date=$formatted_date&section=EQ";
+
+        $this->info('Referer URL : ' . $referer_url);
         $client = new Client([
             'headers' => [
-                'referer' => $url,
+                'referer' => $referer_url,
                 'User-Agent' => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:72.0) Gecko/20100101 Firefox/72.0',
                 'Accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
                 'Accept-Encoding' => 'gzip, deflate, br',
@@ -132,8 +140,17 @@ class DownloadBhavCopyCM extends Command
             $this->info('Downloaded bhavcopy...');
             return $path;
         }catch (Exception $e){
+            $this->write_download_error_log($date);
             $this->error('Download error...');
             return null;
         }
+    }
+
+    private function write_download_error_log(Carbon $date){
+        $log = new ModelLog();
+        $log->log_type = 'CM_MARKET_DATE_DOWNLOAD_ERROR';
+        $log->added_by = 1;
+        $log->msg = $date->format('d-m-Y');
+        $log->save();
     }
 }

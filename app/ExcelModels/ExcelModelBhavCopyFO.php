@@ -26,12 +26,6 @@ class ExcelModelBhavCopyFO implements ToModel, WithChunkReading, WithBatchInsert
         $expiry_date = Carbon::parse($row['expiry_dt']);
         $bhavcopy_date = Carbon::parse($row['timestamp']);
 
-//         $expiry_date = null;
-//        $bhavcopy_date = null;
-
-//        if ($expiry_date == '1970-01-01') $expiry_date = null;
-//        if ($bhavcopy_date == '1970-01-01') $bhavcopy_date = null;
-
         $model = new ModelBhavCopyFO([
             'instrument'               => $row['instrument'],
             'symbol'                   => $row['symbol'],
@@ -54,13 +48,13 @@ class ExcelModelBhavCopyFO implements ToModel, WithChunkReading, WithBatchInsert
 
     public function chunkSize(): int
     {
-        return 1500;
+        return 4000;
     }
 
 
     public function batchSize(): int
     {
-        return 1500;
+        return 4000;
     }
 
 
