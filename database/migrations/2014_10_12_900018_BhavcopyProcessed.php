@@ -23,9 +23,19 @@ class BhavcopyProcessed extends Migration{
             $table->decimal('pct_dlv_traded', 10, 2)->nullable()->comment('Pct Quantity Delivered');
 
             $table->bigInteger('cum_fut_oi')->default(0)->comment('coi = expiry of three_months oi');
-
             $table->decimal('change_cum_fut_oi', 10, 2)->default(0)->comment('change fut oi');
+            $table->decimal('cum_pe_oi', 10, 2)->default(0)->comment('coi in pe');
+            $table->decimal('cum_ce_oi', 10, 2)->default(0)->comment('coi in pe');
 
+            $table->decimal('change_cum_pe_oi', 10, 2)->default(0)->comment('change pe oi');
+            $table->decimal('change_cum_ce_oi', 10, 2)->default(0)->comment('change ce oi');
+
+            $table->decimal('pcr', 10, 2)->default(0)->comment('put call ratio');
+
+            $table->decimal('max_ce_oi_strike', 10, 2)->default(0)->comment('max coi in strike');
+            $table->decimal('max_pe_oi_strike', 10, 2)->default(0)->comment('max coi in strike');
+
+            $table->bigInteger('avg_volume')->default(0)->comment('All time avg volume');
             $table->bigInteger('avg_volume_five')->default(0)->comment('Five day avg volume');
             $table->bigInteger('avg_volume_ten')->default(0)->comment('Ten day avg volume');
             $table->bigInteger('avg_volume_fifteen')->default(0)->comment('Fifteen day avg volume');
@@ -34,7 +44,7 @@ class BhavcopyProcessed extends Migration{
             $table->decimal('high_ten', 10, 2)->default(0);
             $table->decimal('high_fifteen', 10, 2)->default(0);
             $table->decimal('high_fiftytwo', 10, 2)->default(0);
-
+            $table->decimal('ath', 10, 2)->default(0)->comment('all time high');
 
             $table->date('date')->nullable()->comment('bhavcopy date')->index();
         });
