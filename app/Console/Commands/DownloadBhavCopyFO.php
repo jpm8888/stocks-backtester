@@ -19,7 +19,7 @@ use Ramsey\Uuid\Uuid;
 class DownloadBhavCopyFO extends Command
 {
 
-    //TODO -> url : https://www.nseindia.com/content/historical/DERIVATIVES/2019/NOV/fo27NOV2019bhav.csv.zip
+    //url : https://www.nseindia.com/content/historical/DERIVATIVES/2019/NOV/fo27NOV2019bhav.csv.zip
 
     private $MAX_DAYS = 20;
     protected $signature = 'download:bhavcopy_fo {from_date?} {max_days?}';

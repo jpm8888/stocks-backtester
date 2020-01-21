@@ -2,6 +2,7 @@
 
 namespace App;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
 
@@ -10,13 +11,31 @@ class ModelBhavCopyCM extends Model
     public $timestamps = false;
     protected $table = 'bhavcopy_cm';
     protected $guarded = [];
-//    protected $appends = [
-//        'f_date', 'f_dlv_in_crores',
-//        'f_traded_value', 'f_volume',
-//        'f_avg_dlv_in_crores', 'f_price_change',
-//        'f_cum_fut_oi', 'f_change_cum_fut_oi',
-//        'f_option_data', 'f_five_day_volume_avg'
-//    ];
+
+    public function scopeSymbolAndDate($query, string $symbol, Carbon $date, string $series = "EQ"){
+        $this->scopeOfDate($query, $date);
+        $this->scopeOfSymbol($query, $symbol);
+        $this->scopeOfSeries($query, $series);
+        return $query;
+    }
+
+    public function scopeOfSymbol($query, string $symbol){
+        return $query->where('symbol', $symbol);
+    }
+
+    public function scopeOfDate($query, Carbon $date){
+        return $query->whereDate('date', $date);
+    }
+
+    public function scopeOfSeries($query, string $series = "EQ"){
+        return $query->where('series', 'EQ');
+    }
+
+    public function scopeIsVersion1Processed($query){
+        return $query->where('v1_processed', 0);
+    }
+
+
 
 //    public function scopeOfSymbol($query, $symbol){
 //        return $query->where('bhavcopy_cm.symbol', $symbol);

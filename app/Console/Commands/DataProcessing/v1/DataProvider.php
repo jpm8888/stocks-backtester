@@ -9,6 +9,8 @@ namespace App\Console\Commands\DataProcessing\v1;
 
 
 use App\ModelBhavCopyCM;
+use App\ModelBhavCopyDelvPosition;
+use App\ModelBhavCopyFO;
 use App\ModelMasterStocksFO;
 use Carbon\Carbon;
 
@@ -20,13 +22,26 @@ class DataProvider
     }
 
     public function get_cm_for_date(string $symbol, Carbon $date){
-        return ModelBhavCopyCM::whereDate('date', $date)
-            ->where('symbol', $symbol)
-            ->where('series', 'EQ')
-            ->where('v1_processed', 0)
+        return ModelBhavCopyCM::symbolAndDate($symbol, $date, 'EQ')
+            ->isVersion1Processed()
             ->first();
     }
 
+    public function get_fo_for_date(string $symbol, Carbon $date, $is_index = false){
+        return ModelBhavCopyFO::symbolAndDate($symbol, $date, ($is_index) ? 'FUTIDX' : 'FUTSTK')->get();
+    }
+
+    public function get_op_ce_for_date(){
+
+    }
+
+    public function get_op_pe_for_date(){
+
+    }
+
+    public function get_delv_for_date(string $symbol, Carbon $date){
+        return ModelBhavCopyDelvPosition::symbolAndDate($symbol, $date, 'EQ')->first();
+    }
 
 
 }

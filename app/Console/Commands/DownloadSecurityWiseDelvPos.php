@@ -17,7 +17,7 @@ use Ramsey\Uuid\Uuid;
 class DownloadSecurityWiseDelvPos extends Command
 {
 
-    //TODO -> url : https://www.nseindia.com/archives/equities/mto/MTO_04122019.DAT
+    //url : https://www.nseindia.com/archives/equities/mto/MTO_04122019.DAT
 
     private $MAX_DAYS = 20;
     protected $signature = 'download:delv_wise_positions {from_date?} {max_days?}';

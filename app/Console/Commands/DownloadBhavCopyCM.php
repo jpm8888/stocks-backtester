@@ -18,7 +18,7 @@ use Ramsey\Uuid\Uuid;
 
 class DownloadBhavCopyCM extends Command
 {
-    //TODO -> url : https://www1.nseindia.com/content/historical/EQUITIES/2019/NOV/cm27NOV2019bhav.csv.zip
+    //url : https://www1.nseindia.com/content/historical/EQUITIES/2019/NOV/cm27NOV2019bhav.csv.zip
 
     // from_date -> dd-mm-yyyy;
     // max_days -> max_days from from_date;
