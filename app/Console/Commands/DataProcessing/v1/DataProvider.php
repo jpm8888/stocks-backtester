@@ -13,6 +13,7 @@ use App\ModelBhavCopyDelvPosition;
 use App\ModelBhavCopyFO;
 use App\ModelMasterStocksFO;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class DataProvider
 {
@@ -25,6 +26,16 @@ class DataProvider
         return ModelBhavCopyCM::symbolAndDate($symbol, $date, 'EQ')
             ->isVersion1Processed()
             ->first();
+    }
+
+    public function get_previous_trading_day(Carbon $date){
+        $data = DB::table('bhavcopy_delv_position')
+            ->whereDate('date', '<', $date)
+            ->orderBy('date', 'desc')
+            ->limit(1)
+            ->first();
+        if ($data) return Carbon::createFromFormat('Y-m-d', $data->date);
+        return null;
     }
 
     public function get_fo_for_date(string $symbol, Carbon $date, $is_index = false){
@@ -58,4 +69,25 @@ class DataProvider
         return $cumulative_oi;
     }
 
+    public function change_cum_fut_oi($currentDayFutures){
+        $current_oi = $this->get_cum_fut_oi($currentDayFutures);
+
+        $future = $currentDayFutures[0];
+        $currentDay = Carbon::createFromFormat('Y-m-d', $future->date);
+        $symbol = $future->symbol;
+        $is_index = ($future->instrument == 'FUTIDX');
+
+
+        $previous_trading_day = $this->get_previous_trading_day($currentDay);
+        if ($previous_trading_day){
+            $yesterday_futures = $this->get_fo_for_date($symbol, $previous_trading_day, $is_index);
+        }else return 0;
+
+
+        $yesterday_oi = $this->get_cum_fut_oi($yesterday_futures);
+
+        $coi_change = $current_oi - $yesterday_oi;
+        $coi_pct = ($yesterday_oi == 0) ? 0 : (($coi_change * 100) / $yesterday_oi);
+        return round($coi_pct, 2);
+    }
 }

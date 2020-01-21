@@ -151,4 +151,16 @@ class V1ProcessingTest extends TestCase
         $this->assertEquals($total_oi, $cum_oi);
     }
 
+    public function testDataProviderPreviousTradingDay(){
+        $provider = new DataProvider();
+        $formatted_date = Carbon::createFromFormat('Y-m-d', '2020-01-20');
+
+        $previous_day = $provider->get_previous_trading_day($formatted_date);
+
+        $this->assertEquals('2020-01-17', $previous_day->format('Y-m-d'));
+
+        $previous_day = $provider->get_previous_trading_day(Carbon::createFromFormat('Y-m-d', '2007-01-20'));
+        $this->assertNull($previous_day);
+    }
+
 }
