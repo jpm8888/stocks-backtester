@@ -163,4 +163,31 @@ class V1ProcessingTest extends TestCase
         $this->assertNull($previous_day);
     }
 
+    public function testDataProviderChangeInCOI(){
+        $provider = new DataProvider();
+        $formatted_date = Carbon::createFromFormat('Y-m-d', '2020-01-20');
+
+        $futures = $provider->get_fo_for_date($this->symbol, $formatted_date, false);
+        $pct_coi_change = $provider->change_cum_fut_oi($futures);
+
+        $current_day_coi_change = 0;
+        foreach ($futures as $f){
+            $current_day_coi_change += $f->change_in_oi;
+        }
+
+        $formatted_date = Carbon::createFromFormat('Y-m-d', '2020-01-17');
+        $previous_day_futures = $provider->get_fo_for_date($this->symbol, $formatted_date, false);
+
+        $previous_day_oi = 0;
+        foreach ($previous_day_futures as $f){
+            $previous_day_oi += $f->oi;
+        }
+
+        $coi_change = $current_day_coi_change;
+        $coi_pct = (($coi_change * 100) / $previous_day_oi);
+        $coi_pct = round($coi_pct, 2);
+
+        $this->assertEquals($pct_coi_change, $coi_pct);
+    }
+
 }

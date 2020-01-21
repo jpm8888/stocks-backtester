@@ -22,6 +22,17 @@ class DataProvider
         return ModelMasterStocksFO::where('symbol', 'AXISBANK')->get();
     }
 
+    public function verify_all_data_sources(string $symbol, Carbon $date, $is_index){
+        $data = $this->get_cm_for_date($symbol, $date);
+        if (!$data) return false;
+
+        $data = $this->get_fo_for_date($symbol, $date, $is_index);
+        if (!$data || count($data) > 3 || count($data) < 3) return false;
+
+        $data = $this->get_delv_for_date($symbol, $date);
+        if (!$data) return false;
+    }
+
     public function get_cm_for_date(string $symbol, Carbon $date){
         return ModelBhavCopyCM::symbolAndDate($symbol, $date, 'EQ')
             ->isVersion1Processed()
@@ -39,7 +50,7 @@ class DataProvider
     }
 
     public function get_fo_for_date(string $symbol, Carbon $date, $is_index = false){
-        return ModelBhavCopyFO::symbolAndDate($symbol, $date, ($is_index) ? 'FUTIDX' : 'FUTSTK')->limit(3)->get();
+        return ModelBhavCopyFO::symbolAndDate($symbol, $date, ($is_index) ? 'FUTIDX' : 'FUTSTK')->get();
     }
 
     public function get_op_ce_for_date(string $symbol, Carbon $date, $is_index = false){
@@ -82,7 +93,6 @@ class DataProvider
         if ($previous_trading_day){
             $yesterday_futures = $this->get_fo_for_date($symbol, $previous_trading_day, $is_index);
         }else return 0;
-
 
         $yesterday_oi = $this->get_cum_fut_oi($yesterday_futures);
 
