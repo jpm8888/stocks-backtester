@@ -126,25 +126,7 @@ class ModelBhavCopyCM extends Model
 //        }
 //    }
 //
-//    //price change in percent from previous day close.
-//    public function getFPriceChangeAttribute(){
-//
-//        try{
-//            $prev = DB::table('bhavcopy_cm')
-//                ->select('close', 'date')
-//                ->where('date','<', $this->date)
-//                ->where('symbol', $this->symbol)
-//                ->where('series', $this->series)
-//                ->orderBy('date', 'desc')
-//                ->first();
-//            if ($prev) {
-//                $pct_change = (($this->close - $prev->close) * 100) / $prev->close;
-//                return round($pct_change, 2);
-//            }
-//        }catch (Exception $e){
-//            return "" . $e->getMessage();
-//        }
-//    }
+
 //
 //
 //    //cumulative open interest in futures :

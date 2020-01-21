@@ -67,7 +67,6 @@ class V1ProcessingTest extends TestCase
         }
     }
 
-
     public function testDataProviderFOIndex(){
         $symbol = "BANKNIFTY";
         $date = $this->date;
@@ -86,43 +85,70 @@ class V1ProcessingTest extends TestCase
         }
     }
 
+//    public function testDataProviderCEIndex(){
+//        $symbol = "BANKNIFTY";
+//        $date = $this->date;
+//
+//        $provider = new DataProvider();
+//        $formatted_date = Carbon::createFromFormat('Y-m-d', $date);
+//        $stocks = $provider->get_op_ce_for_date($symbol, $formatted_date, true);
+//
+//        $this->assertNotNull($stocks);
+//
+//        foreach ($stocks as $stock){
+//            $this->assertEquals($symbol, $stock->symbol);
+//            $this->assertEquals('CE', $stock->option_type);
+//            $this->assertEquals('OPTIDX', $stock->instrument);
+//            $this->assertEquals($date, $stock->date);
+//        }
+//    }
 
-    public function testDataProviderCEIndex(){
-        $symbol = "BANKNIFTY";
-        $date = $this->date;
+//    public function testDataProviderCEStock(){
+//        $symbol = $this->symbol;
+//        $date = $this->date;
+//
+//        $provider = new DataProvider();
+//        $formatted_date = Carbon::createFromFormat('Y-m-d', $date);
+//        $stocks = $provider->get_op_ce_for_date($symbol, $formatted_date, false);
+//
+//        $this->assertNotNull($stocks);
+//
+//        foreach ($stocks as $stock){
+//            $this->assertEquals($symbol, $stock->symbol);
+//            $this->assertEquals('CE', $stock->option_type);
+//            $this->assertEquals('OPTSTK', $stock->instrument);
+//            $this->assertEquals($date, $stock->date);
+//        }
+//    }
 
-        $provider = new DataProvider();
-        $formatted_date = Carbon::createFromFormat('Y-m-d', $date);
-        $stocks = $provider->get_op_ce_for_date($symbol, $formatted_date, true);
-
-        $this->assertNotNull($stocks);
-
-        foreach ($stocks as $stock){
-            $this->assertEquals($symbol, $stock->symbol);
-            $this->assertEquals('CE', $stock->option_type);
-            $this->assertEquals('OPTIDX', $stock->instrument);
-            $this->assertEquals($date, $stock->date);
-        }
-    }
-
-    public function testDataProviderCEStock(){
+    public function testDataProviderPriceChange(){
         $symbol = $this->symbol;
         $date = $this->date;
 
         $provider = new DataProvider();
         $formatted_date = Carbon::createFromFormat('Y-m-d', $date);
-        $stocks = $provider->get_op_ce_for_date($symbol, $formatted_date, false);
+        $stock = $provider->get_cm_for_date($symbol, $formatted_date);
+        $price_change = $provider->get_price_change($stock);
 
-        $this->assertNotNull($stocks);
-
-        foreach ($stocks as $stock){
-            $this->assertEquals($symbol, $stock->symbol);
-            $this->assertEquals('CE', $stock->option_type);
-            $this->assertEquals('OPTSTK', $stock->instrument);
-            $this->assertEquals($date, $stock->date);
-        }
+        $pct_change = (($stock->close - $stock->prevclose) * 100) / $stock->prevclose;
+        $pct_change = round($pct_change, 2);
+        $this->assertEquals($pct_change, $price_change);
     }
 
+    public function testDataProviderCumFutureOpenInterest(){
+        $symbol = $this->symbol;
+        $date = $this->date;
 
+        $provider = new DataProvider();
+        $formatted_date = Carbon::createFromFormat('Y-m-d', $date);
+        $futures = $provider->get_fo_for_date($symbol, $formatted_date, false);
+
+        $cum_oi = $provider->get_cum_fut_oi($futures);
+
+        $total_oi = 0;
+        foreach ($futures as $f) $total_oi = $total_oi + $f->oi;
+
+        $this->assertEquals($total_oi, $cum_oi);
+    }
 
 }

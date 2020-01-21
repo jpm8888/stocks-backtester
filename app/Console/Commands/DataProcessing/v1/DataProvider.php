@@ -47,5 +47,15 @@ class DataProvider
         return ModelBhavCopyDelvPosition::symbolAndDate($symbol, $date, 'EQ')->first();
     }
 
+    public function get_price_change(ModelBhavCopyCM $model){
+        $pct_change = (($model->close - $model->prevclose) * 100) / $model->prevclose;
+        return round($pct_change, 2);
+    }
+
+    public function get_cum_fut_oi($futures){
+        $cumulative_oi = 0;
+        foreach ($futures as $f) $cumulative_oi += $f->oi;
+        return $cumulative_oi;
+    }
 
 }
