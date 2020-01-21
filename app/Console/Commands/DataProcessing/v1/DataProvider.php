@@ -28,15 +28,19 @@ class DataProvider
     }
 
     public function get_fo_for_date(string $symbol, Carbon $date, $is_index = false){
-        return ModelBhavCopyFO::symbolAndDate($symbol, $date, ($is_index) ? 'FUTIDX' : 'FUTSTK')->get();
+        return ModelBhavCopyFO::symbolAndDate($symbol, $date, ($is_index) ? 'FUTIDX' : 'FUTSTK')->limit(3)->get();
     }
 
-    public function get_op_ce_for_date(){
-
+    public function get_op_ce_for_date(string $symbol, Carbon $date, $is_index = false){
+        return ModelBhavCopyFO::symbolAndDate($symbol, $date, ($is_index) ? 'OPTIDX' : 'OPTSTK')
+            ->ofOptionType('CE')
+            ->get();
     }
 
-    public function get_op_pe_for_date(){
-
+    public function get_op_pe_for_date(string $symbol, Carbon $date, $is_index = false){
+        return ModelBhavCopyFO::symbolAndDate($symbol, $date, ($is_index) ? 'OPTIDX' : 'OPTSTK')
+            ->ofOptionType('PE')
+            ->get();
     }
 
     public function get_delv_for_date(string $symbol, Carbon $date){
