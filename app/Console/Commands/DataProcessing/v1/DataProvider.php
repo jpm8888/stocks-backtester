@@ -49,37 +49,44 @@ class DataProvider
         return null;
     }
 
+    //get future data for date
     public function get_futures_for_date(string $symbol, Carbon $date, $is_index = false){
         return ModelBhavCopyFO::symbolAndDate($symbol, $date, ($is_index) ? 'FUTIDX' : 'FUTSTK')->get();
     }
 
+    //get call option data for date
     public function get_op_ce_for_date(string $symbol, Carbon $date, $is_index = false){
         return ModelBhavCopyFO::symbolAndDate($symbol, $date, ($is_index) ? 'OPTIDX' : 'OPTSTK')
             ->ofOptionType('CE')
             ->get();
     }
 
+    //get put option data for date
     public function get_op_pe_for_date(string $symbol, Carbon $date, $is_index = false){
         return ModelBhavCopyFO::symbolAndDate($symbol, $date, ($is_index) ? 'OPTIDX' : 'OPTSTK')
             ->ofOptionType('PE')
             ->get();
     }
 
+    //get  delivery for date.
     public function get_delv_for_date(string $symbol, Carbon $date){
         return ModelBhavCopyDelvPosition::symbolAndDate($symbol, $date, 'EQ')->first();
     }
 
+    //get price change in percentage
     public function get_price_change(ModelBhavCopyCM $model){
         $pct_change = (($model->close - $model->prevclose) * 100) / $model->prevclose;
         return round($pct_change, 2);
     }
 
+    //get cumulative open interest of three expiry
     public function get_cum_fut_oi($futures){
         $cumulative_oi = 0;
         foreach ($futures as $f) $cumulative_oi += $f->oi;
         return $cumulative_oi;
     }
 
+    //change in percentage future oi
     public function change_cum_fut_oi($currentDayFutures){
         $current_oi = $this->get_cum_fut_oi($currentDayFutures);
 
