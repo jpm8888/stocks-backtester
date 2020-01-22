@@ -177,28 +177,46 @@ class DataProvider
         return intval($out[0]->avg_vol);
     }
 
-    public function all_time_high($symbol, Carbon $date){
-
+    public function high_day_cm_5($symbol, Carbon $date){
+        return $this->high_cm($symbol, $date, 5);
     }
 
-    public function all_time_low($symbol, Carbon $date){
-
+    public function high_day_cm_10($symbol, Carbon $date){
+        return $this->high_cm($symbol, $date, 10);
     }
 
-    public function high_day_5($symbol, Carbon $date){
-
+    public function high_day_cm_15($symbol, Carbon $date){
+        return $this->high_cm($symbol, $date, 15);
     }
 
-    public function high_day_10($symbol, Carbon $date){
-
+    public function high_day_cm_52($symbol, Carbon $date){
+        return $this->high_cm($symbol, $date, 52);
     }
 
-    public function high_day_15($symbol, Carbon $date){
-
+    private function high_cm($symbol, Carbon $date, $days){
+        $d = $date->format('Y-m-d');
+        $out = DB::select(DB::raw("select max(high) as max_high from (select high from bhavcopy_cm where symbol= '$symbol' and date < '$d' order by date desc limit $days) as highs"));
+        return $out[0]->max_high;
     }
 
-    public function high_day_52($symbol, Carbon $date){
+    public function low_day_cm_5($symbol, Carbon $date){
+        return $this->low_cm($symbol, $date, 5);
+    }
 
+    public function low_day_cm_10($symbol, Carbon $date){
+        return $this->low_cm($symbol, $date, 10);
+    }
+
+    public function low_day_cm_15($symbol, Carbon $date){
+        return $this->low_cm($symbol, $date, 15);
+    }
+
+    public function low_day_cm_52($symbol, Carbon $date){
+        return $this->low_cm($symbol, $date, 52);
+    }
+
+    public function low_cm($symbol, Carbon $date, $days){
+        return 0;
     }
 
 }
