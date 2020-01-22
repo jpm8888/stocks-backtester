@@ -18,7 +18,7 @@ use Illuminate\Support\Facades\DB;
 class DataProvider
 {
     //return fno stocks from predefined table.
-    public function get_fo_stocks(){
+    public function get_future_traded_stocks(){
         return ModelMasterStocksFO::where('symbol', 'AXISBANK')->get();
     }
 
@@ -26,7 +26,7 @@ class DataProvider
         $data = $this->get_cm_for_date($symbol, $date);
         if (!$data) return false;
 
-        $data = $this->get_fo_for_date($symbol, $date, $is_index);
+        $data = $this->get_futures_for_date($symbol, $date, $is_index);
         if (!$data || count($data) > 3 || count($data) < 3) return false;
 
         $data = $this->get_delv_for_date($symbol, $date);
@@ -49,7 +49,7 @@ class DataProvider
         return null;
     }
 
-    public function get_fo_for_date(string $symbol, Carbon $date, $is_index = false){
+    public function get_futures_for_date(string $symbol, Carbon $date, $is_index = false){
         return ModelBhavCopyFO::symbolAndDate($symbol, $date, ($is_index) ? 'FUTIDX' : 'FUTSTK')->get();
     }
 
@@ -91,7 +91,7 @@ class DataProvider
 
         $previous_trading_day = $this->get_previous_trading_day($currentDay);
         if ($previous_trading_day){
-            $yesterday_futures = $this->get_fo_for_date($symbol, $previous_trading_day, $is_index);
+            $yesterday_futures = $this->get_futures_for_date($symbol, $previous_trading_day, $is_index);
         }else return 0;
 
         $yesterday_oi = $this->get_cum_fut_oi($yesterday_futures);

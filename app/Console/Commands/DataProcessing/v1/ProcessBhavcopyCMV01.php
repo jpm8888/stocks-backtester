@@ -25,7 +25,7 @@ class ProcessBhavcopyCMV01 extends Command
     }
 
     public function handle(){
-        $fo_stocks = $this->provider->get_fo_stocks();
+        $fo_stocks = $this->provider->get_future_traded_stocks();
         $this->info($fo_stocks);
 
     }

@@ -18,7 +18,7 @@ class V1ProcessingOptionsTest extends TestCase
     private $symbol = "AXISBANK";
     private $date = "2020-01-20";
 
-    public function testDataProviderCEIndex(){
+    public function testDataProviderForCallOptionsForIndex(){
         $symbol = "BANKNIFTY";
         $date = $this->date;
 
@@ -36,7 +36,7 @@ class V1ProcessingOptionsTest extends TestCase
         }
     }
 
-    public function testDataProviderCEStock(){
+    public function testDataProviderForCallOptionStock(){
         $symbol = $this->symbol;
         $date = $this->date;
 

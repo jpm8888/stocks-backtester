@@ -12,15 +12,15 @@ class V1ProcessingTest extends TestCase
     private $symbol = "AXISBANK";
     private $date = "2020-01-20";
 
-    public function testDataProviderFOStocks()
+    public function testDataProviderForFutureTradedStocks()
     {
         $provider = new DataProvider();
-        $stocks = $provider->get_fo_stocks();
+        $stocks = $provider->get_future_traded_stocks();
         $count = count($stocks);
         $this->assertTrue(($count > 0));
     }
 
-    public function testDataProviderCM()
+    public function testDataProviderForCashMarketCopy()
     {
         $symbol = $this->symbol;
         $date = $this->date;
@@ -35,7 +35,7 @@ class V1ProcessingTest extends TestCase
         $this->assertEquals(0, $stock->v1_processed);
     }
 
-    public function testDataProviderDelv(){
+    public function testDataProviderForCashMarketDelivery(){
         $symbol = $this->symbol;
         $date = $this->date;
 
@@ -49,13 +49,13 @@ class V1ProcessingTest extends TestCase
         $this->assertEquals($date, $stock->date);
     }
 
-    public function testDataProviderFO(){
+    public function testDataProviderForStockFutures(){
         $symbol = $this->symbol;
         $date = $this->date;
 
         $provider = new DataProvider();
         $formatted_date = Carbon::createFromFormat('Y-m-d', $date);
-        $stocks = $provider->get_fo_for_date($symbol, $formatted_date, false);
+        $stocks = $provider->get_futures_for_date($symbol, $formatted_date, false);
 
         $this->assertNotNull($stocks);
         $this->assertEquals(3, count($stocks));
@@ -67,13 +67,13 @@ class V1ProcessingTest extends TestCase
         }
     }
 
-    public function testDataProviderFOIndex(){
+    public function testDataProviderForIndexFutures(){
         $symbol = "BANKNIFTY";
         $date = $this->date;
 
         $provider = new DataProvider();
         $formatted_date = Carbon::createFromFormat('Y-m-d', $date);
-        $stocks = $provider->get_fo_for_date($symbol, $formatted_date, true);
+        $stocks = $provider->get_futures_for_date($symbol, $formatted_date, true);
 
         $this->assertNotNull($stocks);
         $this->assertEquals(3, count($stocks));
@@ -85,7 +85,7 @@ class V1ProcessingTest extends TestCase
         }
     }
 
-    public function testDataProviderPriceChange(){
+    public function testDataProviderForPriceChange(){
         $symbol = $this->symbol;
         $date = $this->date;
 
@@ -99,13 +99,13 @@ class V1ProcessingTest extends TestCase
         $this->assertEquals($pct_change, $price_change);
     }
 
-    public function testDataProviderCumFutureOpenInterest(){
+    public function testDataProviderForCumulativeFutureOpenInterest(){
         $symbol = $this->symbol;
         $date = $this->date;
 
         $provider = new DataProvider();
         $formatted_date = Carbon::createFromFormat('Y-m-d', $date);
-        $futures = $provider->get_fo_for_date($symbol, $formatted_date, false);
+        $futures = $provider->get_futures_for_date($symbol, $formatted_date, false);
 
         $cum_oi = $provider->get_cum_fut_oi($futures);
 
@@ -115,7 +115,7 @@ class V1ProcessingTest extends TestCase
         $this->assertEquals($total_oi, $cum_oi);
     }
 
-    public function testDataProviderPreviousTradingDay(){
+    public function testDataProviderForPreviousTradingDay(){
         $provider = new DataProvider();
         $formatted_date = Carbon::createFromFormat('Y-m-d', '2020-01-20');
 
@@ -127,11 +127,11 @@ class V1ProcessingTest extends TestCase
         $this->assertNull($previous_day);
     }
 
-    public function testDataProviderChangeInCOI(){
+    public function testDataProviderForChangeInCumulativeOpenInterest(){
         $provider = new DataProvider();
         $formatted_date = Carbon::createFromFormat('Y-m-d', '2020-01-20');
 
-        $futures = $provider->get_fo_for_date($this->symbol, $formatted_date, false);
+        $futures = $provider->get_futures_for_date($this->symbol, $formatted_date, false);
         $pct_coi_change = $provider->change_cum_fut_oi($futures);
 
         $current_day_coi_change = 0;
@@ -140,7 +140,7 @@ class V1ProcessingTest extends TestCase
         }
 
         $formatted_date = Carbon::createFromFormat('Y-m-d', '2020-01-17');
-        $previous_day_futures = $provider->get_fo_for_date($this->symbol, $formatted_date, false);
+        $previous_day_futures = $provider->get_futures_for_date($this->symbol, $formatted_date, false);
 
         $previous_day_oi = 0;
         foreach ($previous_day_futures as $f){
