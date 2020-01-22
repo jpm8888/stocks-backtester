@@ -107,4 +107,50 @@ class DataProvider
         $coi_pct = ($yesterday_oi == 0) ? 0 : (($coi_change * 100) / $yesterday_oi);
         return round($coi_pct, 2);
     }
+
+
+    public function get_calculated_option_data(string $symbol, Carbon $date, $is_index){
+        $call_options = $this->get_op_ce_for_date($symbol, $date, $is_index);
+        $put_options = $this->get_op_pe_for_date($symbol, $date, $is_index);
+
+        $calculated_calls = $this->calculate_option_data($call_options);
+        $calculated_puts = $this->calculate_option_data($put_options);
+
+        $pcr = $calculated_puts['cum_oi'] / $calculated_calls['cum_oi'];
+        $pcr = round($pcr, 2);
+
+        return [
+            'cum_ce_oi' => $calculated_calls['cum_oi'],
+            'cum_pe_oi' => $calculated_puts['cum_oi'],
+
+            'change_cum_ce_oi' => 0,
+            'change_cum_pe_oi' => 0,
+
+            'pcr' => $pcr,
+
+            'max_ce_oi_strike' => $calculated_calls['max_oi_strike'],
+            'max_pe_oi_strike' => $calculated_puts['max_oi_strike'],
+        ];
+    }
+
+    private function calculate_option_data($options){
+        $max_oi_strike = 0;
+        $cum_oi = 0;
+        //        $change_cum_oi = 0;
+
+        $max_oi = 0;
+        foreach ($options as $option){
+            $cum_oi += $option->oi;
+
+            $new_max = max($max_oi, $option->oi);
+            $max_oi_strike = ($new_max > $max_oi) ? $option->strike_price : $max_oi_strike;
+            $max_oi = ($new_max > $max_oi) ? $new_max : $max_oi;
+        }
+
+        return [
+          'max_oi_strike' => $max_oi_strike,
+          'cum_oi' => $cum_oi,
+        ];
+    }
+
 }
