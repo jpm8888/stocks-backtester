@@ -216,7 +216,9 @@ class DataProvider
     }
 
     public function low_cm($symbol, Carbon $date, $days){
-        return 0;
+        $d = $date->format('Y-m-d');
+        $out = DB::select(DB::raw("select min(low) as min_low from (select low from bhavcopy_cm where symbol= '$symbol' and date < '$d' order by date desc limit $days) as lows"));
+        return $out[0]->min_low;
     }
 
 }
