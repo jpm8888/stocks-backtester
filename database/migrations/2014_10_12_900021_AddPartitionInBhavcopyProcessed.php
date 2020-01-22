@@ -3,16 +3,10 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Support\Facades\DB;
 
-class AlterBhavcopyCMAddPartition extends Migration{
+class AddPartitionInBhavcopyProcessed extends Migration{
 
-    //To View Partitions;
-    //SELECT * FROM information_schema.partitions WHERE TABLE_SCHEMA='godlevels' AND TABLE_NAME = 'bhavcopy_cm'
-
-    public function up()
-    {
-        $this->create_partition('bhavcopy_cm', 'date');
-        $this->create_partition('bhavcopy_fo', 'date');
-        $this->create_partition('bhavcopy_delv_position', 'date');
+    public function up(){
+        $this->create_partition('bhavcopy_processed', 'date');
     }
 
     private function create_partition($table_name, $column_name){
