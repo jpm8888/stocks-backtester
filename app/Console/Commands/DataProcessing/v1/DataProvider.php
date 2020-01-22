@@ -55,9 +55,9 @@ class DataProvider
     }
 
     //get call option data for date
-    public function get_op_ce_for_date(string $symbol, Carbon $date, $is_index = false){
+    public function get_option_chain_for_date(string $symbol, $option_type, Carbon $date, $is_index = false){
         return ModelBhavCopyFO::symbolAndDate($symbol, $date, ($is_index) ? 'OPTIDX' : 'OPTSTK')
-            ->ofOptionType('CE')
+            ->ofOptionType($option_type)
             ->get();
     }
 
@@ -110,11 +110,8 @@ class DataProvider
 
 
     public function get_calculated_option_data(string $symbol, Carbon $date, $is_index){
-        $call_options = $this->get_op_ce_for_date($symbol, $date, $is_index);
-        $put_options = $this->get_op_pe_for_date($symbol, $date, $is_index);
-
-        $calculated_calls = $this->calculate_option_data($call_options);
-        $calculated_puts = $this->calculate_option_data($put_options);
+        $calculated_calls = $this->calculate_option_data($symbol, 'CE', $date, $is_index);
+        $calculated_puts = $this->calculate_option_data($symbol, 'PE', $date, $is_index);
 
         $pcr = $calculated_puts['cum_oi'] / $calculated_calls['cum_oi'];
         $pcr = round($pcr, 2);
@@ -123,8 +120,8 @@ class DataProvider
             'cum_ce_oi' => $calculated_calls['cum_oi'],
             'cum_pe_oi' => $calculated_puts['cum_oi'],
 
-            'change_cum_ce_oi' => 0,
-            'change_cum_pe_oi' => 0,
+            'change_cum_ce_oi' => $calculated_calls['change_cum_coi'],
+            'change_cum_pe_oi' => $calculated_puts['change_cum_coi'],
 
             'pcr' => $pcr,
 
@@ -133,12 +130,15 @@ class DataProvider
         ];
     }
 
-    private function calculate_option_data($options){
+    private function calculate_option_data($symbol, $option_type, $date, $is_index){
+        $options = $this->get_option_chain_for_date($symbol, $option_type, $date, $is_index);
+
         $max_oi_strike = 0;
         $cum_oi = 0;
         //        $change_cum_oi = 0;
 
         $max_oi = 0;
+
         foreach ($options as $option){
             $cum_oi += $option->oi;
 
@@ -147,10 +147,26 @@ class DataProvider
             $max_oi = ($new_max > $max_oi) ? $new_max : $max_oi;
         }
 
+        $past_day = $this->get_previous_trading_day($date);
+        $coi_past_day = $this->coi_options($symbol, $option_type, $past_day, $is_index);
+
+        $coi_change = $cum_oi - $coi_past_day;
+        $coi_pct = ($coi_past_day == 0) ? 0 : (($coi_change * 100) / $coi_past_day);
+        $coi_pct = round($coi_pct, 2);
+
         return [
-          'max_oi_strike' => $max_oi_strike,
-          'cum_oi' => $cum_oi,
+            'max_oi_strike' => $max_oi_strike,
+            'cum_oi' => $cum_oi,
+            'change_cum_coi' => $coi_pct,
         ];
+    }
+
+    private function coi_options($symbol, $option_type, Carbon $date, $is_index){
+        $data = ModelBhavCopyFO::symbolAndDate($symbol, $date, ($is_index) ? 'OPTIDX' : 'OPTSTK')
+            ->select(DB::raw('sum(oi) as coi'))
+            ->ofOptionType($option_type)
+            ->first();
+        return $data->coi;
     }
 
 }

@@ -26,7 +26,7 @@ class V1ProcessingOptionsTest extends TestCase
 
         $provider = new DataProvider();
         $formatted_date = Carbon::createFromFormat('Y-m-d', $date);
-        $stocks = $provider->get_op_ce_for_date($symbol, $formatted_date, true);
+        $stocks = $provider->get_option_chain_for_date($symbol, 'CE', $formatted_date, true);
 
         $this->assertNotNull($stocks);
 
@@ -44,7 +44,7 @@ class V1ProcessingOptionsTest extends TestCase
 
         $provider = new DataProvider();
         $formatted_date = Carbon::createFromFormat('Y-m-d', $date);
-        $stocks = $provider->get_op_ce_for_date($symbol, $formatted_date, false);
+        $stocks = $provider->get_option_chain_for_date($symbol,'CE',  $formatted_date, false);
 
         $this->assertNotNull($stocks);
 
@@ -80,6 +80,22 @@ class V1ProcessingOptionsTest extends TestCase
 
         $pcr = round(($coi_pe / $coi_ce), 2);
         $this->assertEquals($pcr, $data['pcr'], 'Wrong PCR');
+
+        $past_day = $provider->get_previous_trading_day($formatted_date);
+
+        $yesterday_coi_ce = $this->coi_options($symbol, $past_day, 'CE', false);
+        $change_coi_ce = $this->change_coi_options($symbol, $formatted_date, 'CE',false);
+        $pct_ce = ($yesterday_coi_ce == 0) ? 0 : (($change_coi_ce * 100) / $yesterday_coi_ce);
+        $pct_ce = round($pct_ce, 2);
+
+        $this->assertEquals($pct_ce, $data['change_cum_ce_oi'], 'Call options change is wrong');
+
+
+        $yesterday_coi_pe = $this->coi_options($symbol, $past_day, 'PE', false);
+        $change_coi_pe = $this->change_coi_options($symbol, $formatted_date, 'PE',false);
+        $pct_pe = ($yesterday_coi_pe == 0) ? 0 : (($change_coi_pe * 100) / $yesterday_coi_pe);
+        $pct_pe = round($pct_pe, 2);
+        $this->assertEquals($pct_pe, $data['change_cum_pe_oi'], 'Put options change is wrong');
     }
 
     private function coi_options($symbol, Carbon $date, $option_type, $is_index){
@@ -88,6 +104,14 @@ class V1ProcessingOptionsTest extends TestCase
             ->ofOptionType($option_type)
             ->first();
         return $data->coi;
+    }
+
+    private function change_coi_options($symbol, Carbon $date, $option_type, $is_index){
+        $data = ModelBhavCopyFO::symbolAndDate($symbol, $date, ($is_index) ? 'OPTIDX' : 'OPTSTK')
+            ->select(DB::raw('sum(change_in_oi) as change_in_oi'))
+            ->ofOptionType($option_type)
+            ->first();
+        return $data->change_in_oi;
     }
 
     private function max_strike_price($symbol, Carbon $date, $option_type, $is_index){
