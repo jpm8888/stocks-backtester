@@ -1,4 +1,5 @@
-###Details:
+Details:
+
 `php artisan download:bhavcopy_cm` - to download cash market copy
 
 `php artisan download:bhavcopy_fo` - to download future market copy
