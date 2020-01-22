@@ -54,17 +54,10 @@ class DataProvider
         return ModelBhavCopyFO::symbolAndDate($symbol, $date, ($is_index) ? 'FUTIDX' : 'FUTSTK')->get();
     }
 
-    //get call option data for date
+    //get option data for date
     public function get_option_chain_for_date(string $symbol, $option_type, Carbon $date, $is_index = false){
         return ModelBhavCopyFO::symbolAndDate($symbol, $date, ($is_index) ? 'OPTIDX' : 'OPTSTK')
             ->ofOptionType($option_type)
-            ->get();
-    }
-
-    //get put option data for date
-    public function get_op_pe_for_date(string $symbol, Carbon $date, $is_index = false){
-        return ModelBhavCopyFO::symbolAndDate($symbol, $date, ($is_index) ? 'OPTIDX' : 'OPTSTK')
-            ->ofOptionType('PE')
             ->get();
     }
 
@@ -80,32 +73,25 @@ class DataProvider
     }
 
     //get cumulative open interest of three expiry
-    public function get_cum_fut_oi($futures){
-        $cumulative_oi = 0;
-        foreach ($futures as $f) $cumulative_oi += $f->oi;
-        return $cumulative_oi;
+    public function get_cum_fut_oi($symbol, $date, $is_index){
+        $data = ModelBhavCopyFO::symbolAndDate($symbol, $date, ($is_index) ? 'FUTIDX' : 'FUTSTK')
+            ->select(DB::raw('sum(oi) as coi'))
+            ->first();
+        return $data->coi;
     }
 
     //change in percentage future oi
-    public function change_cum_fut_oi($currentDayFutures){
-        $current_oi = $this->get_cum_fut_oi($currentDayFutures);
+    public function change_cum_fut_oi($symbol, Carbon $date, $is_index){
+        $current_oi = $this->get_cum_fut_oi($symbol, $date, $is_index);
+        $previous_trading_day = $this->get_previous_trading_day($date);
 
-        $future = $currentDayFutures[0];
-        $currentDay = Carbon::createFromFormat('Y-m-d', $future->date);
-        $symbol = $future->symbol;
-        $is_index = ($future->instrument == 'FUTIDX');
-
-
-        $previous_trading_day = $this->get_previous_trading_day($currentDay);
         if ($previous_trading_day){
-            $yesterday_futures = $this->get_futures_for_date($symbol, $previous_trading_day, $is_index);
-        }else return 0;
-
-        $yesterday_oi = $this->get_cum_fut_oi($yesterday_futures);
-
-        $coi_change = $current_oi - $yesterday_oi;
-        $coi_pct = ($yesterday_oi == 0) ? 0 : (($coi_change * 100) / $yesterday_oi);
-        return round($coi_pct, 2);
+            $yesterday_oi = $this->get_cum_fut_oi($symbol, $previous_trading_day, $is_index);
+            $coi_change = $current_oi - $yesterday_oi;
+            $coi_pct = ($yesterday_oi == 0) ? 0 : (($coi_change * 100) / $yesterday_oi);
+            return round($coi_pct, 2);
+        }
+        return 0;
     }
 
 
@@ -131,32 +117,22 @@ class DataProvider
     }
 
     private function calculate_option_data($symbol, $option_type, $date, $is_index){
-        $options = $this->get_option_chain_for_date($symbol, $option_type, $date, $is_index);
+        $coi_pct = 0;
+        $max_oi_strike = $this->max_strike_price($symbol, $option_type, $date, $is_index);
 
-        $max_oi_strike = 0;
-        $cum_oi = 0;
-        //        $change_cum_oi = 0;
+        $today_coi = $this->coi_options($symbol, $option_type, $date, $is_index);
 
-        $max_oi = 0;
-
-        foreach ($options as $option){
-            $cum_oi += $option->oi;
-
-            $new_max = max($max_oi, $option->oi);
-            $max_oi_strike = ($new_max > $max_oi) ? $option->strike_price : $max_oi_strike;
-            $max_oi = ($new_max > $max_oi) ? $new_max : $max_oi;
+        $yesterday = $this->get_previous_trading_day($date);
+        if ($yesterday){
+            $yesterday_coi = $this->coi_options($symbol, $option_type, $yesterday, $is_index);
+            $coi_change = $today_coi - $yesterday_coi;
+            $coi_pct = ($yesterday_coi == 0) ? 0 : (($coi_change * 100) / $yesterday_coi);
+            $coi_pct = round($coi_pct, 2);
         }
-
-        $past_day = $this->get_previous_trading_day($date);
-        $coi_past_day = $this->coi_options($symbol, $option_type, $past_day, $is_index);
-
-        $coi_change = $cum_oi - $coi_past_day;
-        $coi_pct = ($coi_past_day == 0) ? 0 : (($coi_change * 100) / $coi_past_day);
-        $coi_pct = round($coi_pct, 2);
 
         return [
             'max_oi_strike' => $max_oi_strike,
-            'cum_oi' => $cum_oi,
+            'cum_oi' => $today_coi,
             'change_cum_coi' => $coi_pct,
         ];
     }
@@ -167,6 +143,62 @@ class DataProvider
             ->ofOptionType($option_type)
             ->first();
         return $data->coi;
+    }
+
+    private function max_strike_price($symbol, $option_type, Carbon $date, $is_index){
+        $data = ModelBhavCopyFO::symbolAndDate($symbol, $date, ($is_index) ? 'OPTIDX' : 'OPTSTK')
+            ->select('strike_price')
+            ->ofOptionType($option_type)
+            ->orderBy('oi', 'desc')
+            ->first();
+        return $data->strike_price;
+    }
+
+
+    public function avg_volume_cm_5($symbol, Carbon $date){
+        return $this->avg_volume_cm($symbol, $date, 5);
+    }
+
+    public function avg_volume_cm_10($symbol, Carbon $date){
+        return $this->avg_volume_cm($symbol, $date, 10);
+    }
+
+    public function avg_volume_cm_15($symbol, Carbon $date){
+        return $this->avg_volume_cm($symbol, $date, 15);
+    }
+
+    public function avg_volume_cm_52($symbol, Carbon $date){
+        return $this->avg_volume_cm($symbol, $date, 52);
+    }
+
+    private function avg_volume_cm($symbol, Carbon $date, $days){
+        $d = $date->format('Y-m-d');
+        $out = DB::select(DB::raw("select avg(volume) as avg_vol from (select volume from bhavcopy_cm where symbol= '$symbol' and date < '$d' order by date desc limit $days) as vols"));
+        return intval($out[0]->avg_vol);
+    }
+
+    public function all_time_high($symbol, Carbon $date){
+
+    }
+
+    public function all_time_low($symbol, Carbon $date){
+
+    }
+
+    public function high_day_5($symbol, Carbon $date){
+
+    }
+
+    public function high_day_10($symbol, Carbon $date){
+
+    }
+
+    public function high_day_15($symbol, Carbon $date){
+
+    }
+
+    public function high_day_52($symbol, Carbon $date){
+
     }
 
 }

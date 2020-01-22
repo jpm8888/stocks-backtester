@@ -107,7 +107,7 @@ class V1ProcessingTest extends TestCase
         $formatted_date = Carbon::createFromFormat('Y-m-d', $date);
         $futures = $provider->get_futures_for_date($symbol, $formatted_date, false);
 
-        $cum_oi = $provider->get_cum_fut_oi($futures);
+        $cum_oi = $provider->get_cum_fut_oi($symbol, $formatted_date, false);
 
         $total_oi = 0;
         foreach ($futures as $f) $total_oi = $total_oi + $f->oi;
@@ -132,7 +132,7 @@ class V1ProcessingTest extends TestCase
         $formatted_date = Carbon::createFromFormat('Y-m-d', '2020-01-20');
 
         $futures = $provider->get_futures_for_date($this->symbol, $formatted_date, false);
-        $pct_coi_change = $provider->change_cum_fut_oi($futures);
+        $pct_coi_change = $provider->change_cum_fut_oi($this->symbol, $formatted_date, false);
 
         $current_day_coi_change = 0;
         foreach ($futures as $f){
