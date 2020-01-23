@@ -8,6 +8,7 @@
 namespace App\Console\Commands\DataProcessing\v1;
 
 
+use App\ModelBhavCopyCM;
 use App\ModelBhavcopyProcessed;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
@@ -40,20 +41,23 @@ class ProcessBhavcopyCMV01 extends Command
         while(Carbon::now()->gte($from_date)){
             if ($from_date->isWeekend()) $from_date->addDay();
             if ($from_date->isWeekend()) $from_date->addDay();
-            $this->info($from_date);
-            $fd = $from_date->format('d-m-Y');
-            foreach ($fo_stocks as $f){
-                $is_index = false;
-                $symbol = $f->symbol;
-                $verified = $provider->verify_all_data_sources($symbol, $from_date, $is_index);
-                if ($verified){
-                    $this->save_data($provider, $symbol, $from_date);
-                    $this->info("successfully processed $symbol for $fd");
-                }else{
-                    $this->error("not verified $symbol for $fd");
-                }
-            }
+            $this->iterate_stocks($fo_stocks, $provider, $from_date);
             $from_date = $from_date->addDay();
+        }
+    }
+
+    private function iterate_stocks($fo_stocks, DataProvider $provider, Carbon $from_date){
+        $fd = $from_date->format('d-m-Y');
+        foreach ($fo_stocks as $f){
+            $is_index = false;
+            $symbol = $f->symbol;
+            $verified = $provider->verify_all_data_sources($symbol, $from_date, $is_index);
+            if ($verified){
+                $this->save_data($provider, $symbol, $from_date);
+                $this->info("successfully processed $symbol for $fd");
+            }else{
+                $this->error("verification failed for $symbol for $fd");
+            }
         }
     }
 
@@ -111,8 +115,13 @@ class ProcessBhavcopyCMV01 extends Command
             $m->date = $date;
             $m->save();
 
-            $cm->v1_processed = 1;
-            $cm->save();
+//            $cm->v1_processed = 1;
+//            $cm->save();
+
+            ModelBhavCopyCM::whereDate('date', $date)
+                ->where('series', 'EQ')
+                ->ofSymbol($symbol)
+                ->update(['v1_processed' => 1]);
 
             DB::commit();
         } catch (\Exception $e) {

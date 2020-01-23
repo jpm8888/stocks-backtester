@@ -27,10 +27,12 @@ class DataProvider
         if (!$data) return false;
 
         $data = $this->get_futures_for_date($symbol, $date, $is_index);
-        if (!$data || count($data) > 3 || count($data) < 3) return false;
+        if (!$data || count($data) !== 3) return false;
 
         $data = $this->get_delv_for_date($symbol, $date);
         if (!$data) return false;
+
+        return true;
     }
 
     public function get_cm_for_date(string $symbol, Carbon $date){
