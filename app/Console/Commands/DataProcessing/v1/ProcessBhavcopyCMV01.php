@@ -8,7 +8,6 @@
 namespace App\Console\Commands\DataProcessing\v1;
 
 
-use App\ModelBhavCopyCM;
 use App\ModelBhavcopyProcessed;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
@@ -115,13 +114,8 @@ class ProcessBhavcopyCMV01 extends Command
             $m->date = $date;
             $m->save();
 
-//            $cm->v1_processed = 1;
-//            $cm->save();
-
-            ModelBhavCopyCM::whereDate('date', $date)
-                ->where('series', 'EQ')
-                ->ofSymbol($symbol)
-                ->update(['v1_processed' => 1]);
+            $cm->v1_processed = 1;
+            $cm->save();
 
             DB::commit();
         } catch (\Exception $e) {
