@@ -12,6 +12,7 @@ use App\ModelBhavCopyCM;
 use App\ModelBhavCopyDelvPosition;
 use App\ModelBhavCopyFO;
 use App\ModelMasterStocksFO;
+use App\ModelVerificationLogs;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
@@ -29,26 +30,29 @@ class DataProvider
         $data = $this->get_future_traded_stocks($symbol);
         if (!$data) {
             $this->error = 'No future traded stock';
+            $this->write_verification_log($symbol, $date, $this->error);
             return false;
         }
 
         $data = $this->get_cm_for_date($symbol, $date);
         if (!$data && $is_index == false) {
             $this->error = 'No cash market data';
+            $this->write_verification_log($symbol, $date, $this->error);
             return false;
         }
 
         $data = $this->get_futures_for_date($symbol, $date, $is_index);
         if (!$data) {
             $this->error = 'No future market data';
+            $this->write_verification_log($symbol, $date, $this->error);
             return false;
         }
 
         if (count($data) != 3){
             $this->error = 'Future market data inconsistent. Count : ' . count($data);
+            $this->write_verification_log($symbol, $date, $this->error);
             return false;
         }
-
 
 
         $data = $this->get_delv_for_date($symbol, $date);
@@ -244,6 +248,14 @@ class DataProvider
         $d = $date->format('Y-m-d');
         $out = DB::select(DB::raw("select min(low) as min_low from (select low from bhavcopy_cm where symbol= '$symbol' and date < '$d' order by date desc limit $days) as lows"));
         return $out[0]->min_low;
+    }
+
+    public function write_verification_log($symbol, $date, $msg){
+        $model = new ModelVerificationLogs();
+        $model->symbol = $symbol;
+        $model->date = $date;
+        $model->msg = $msg;
+        $model->save();
     }
 
 }
