@@ -26,6 +26,12 @@ class V1ProcessingOptionsTest extends TestCase
 
         $provider = new DataProvider();
         $formatted_date = Carbon::createFromFormat('Y-m-d', $date);
+
+
+        $verification = $provider->verify_all_data_sources($symbol, $formatted_date, true);
+
+        $this->assertTrue($verification, 'Verification failed : ' . $provider->error);
+
         $stocks = $provider->get_option_chain_for_date($symbol, 'CE', $formatted_date, true);
 
         $this->assertNotNull($stocks);
@@ -44,6 +50,10 @@ class V1ProcessingOptionsTest extends TestCase
 
         $provider = new DataProvider();
         $formatted_date = Carbon::createFromFormat('Y-m-d', $date);
+
+        $verification = $provider->verify_all_data_sources($symbol, $formatted_date, false);
+        $this->assertTrue($verification, 'Verification failed : ' . $provider->error);
+
         $stocks = $provider->get_option_chain_for_date($symbol,'CE',  $formatted_date, false);
 
         $this->assertNotNull($stocks);
@@ -63,6 +73,9 @@ class V1ProcessingOptionsTest extends TestCase
 
         $provider = new DataProvider();
         $formatted_date = Carbon::createFromFormat('Y-m-d', $date);
+
+        $verification = $provider->verify_all_data_sources($symbol, $formatted_date, false);
+        $this->assertTrue($verification, 'Verification failed : ' . $provider->error);
 
         $data = $provider->get_calculated_option_data($symbol, $formatted_date, false);
 

@@ -20,10 +20,8 @@ class ProcessBhavcopyCMV01 extends Command
     protected $signature = 'process:bhavcopy_v1 {from_date?}';
     protected $description = 'Process version 1 of bhavcopy';
 
-    private $provider;
     public function __construct(){
         parent::__construct();
-        $this->provider = new DataProvider();
     }
 
     public function handle(){
@@ -35,8 +33,8 @@ class ProcessBhavcopyCMV01 extends Command
             $from_date = Carbon::createFromFormat('d-m-Y', $from_date);
         }
 
-        $fo_stocks = $this->provider->get_future_traded_stocks();
         $provider = new DataProvider();
+        $fo_stocks = $provider->get_future_traded_stocks();
         while(Carbon::now()->gte($from_date)){
             if ($from_date->isWeekend()) $from_date->addDay();
             if ($from_date->isWeekend()) $from_date->addDay();

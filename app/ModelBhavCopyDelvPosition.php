@@ -30,5 +30,12 @@ class ModelBhavCopyDelvPosition extends Model
         return $query->where('series', 'EQ');
     }
 
+    public function scopeIsVerified($query){
+        return $query->where('verified', 1);
+    }
+
+    public function scopeIsVersion1Processed($query){
+        return $query->where('v1_processed', 1);
+    }
 
 }

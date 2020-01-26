@@ -30,8 +30,4 @@ class ModelBhavCopyCM extends Model
     public function scopeOfSeries($query, string $series = "EQ"){
         return $query->where('series', 'EQ');
     }
-
-    public function scopeIsVersion1Processed($query){
-        return $query->where('v1_processed', 0);
-    }
 }

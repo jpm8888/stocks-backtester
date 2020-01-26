@@ -17,28 +17,51 @@ use Illuminate\Support\Facades\DB;
 
 class DataProvider
 {
+
+    public $error = '';
     //return fno stocks from predefined table.
-    public function get_future_traded_stocks(){
-        return ModelMasterStocksFO::where('symbol', 'AXISBANK')->get();
+    public function get_future_traded_stocks($symbol = null){
+        if ($symbol) ModelMasterStocksFO::where('symbol', $symbol)->first();
+        return ModelMasterStocksFO::get();
     }
 
     public function verify_all_data_sources(string $symbol, Carbon $date, $is_index){
+        $data = $this->get_future_traded_stocks($symbol);
+        if (!$data) {
+            $this->error = 'No future traded stock';
+            return false;
+        }
+
         $data = $this->get_cm_for_date($symbol, $date);
-        if (!$data) return false;
+        if (!$data && $is_index == false) {
+            $this->error = 'No cash market data';
+            return false;
+        }
 
         $data = $this->get_futures_for_date($symbol, $date, $is_index);
-        if (!$data || count($data) !== 3) return false;
+        if (!$data) {
+            $this->error = 'No future market data';
+            return false;
+        }
+
+        if (count($data) != 3){
+            $this->error = 'Future market data inconsistent. Count : ' . count($data);
+            return false;
+        }
+
+
 
         $data = $this->get_delv_for_date($symbol, $date);
-        if (!$data) return false;
-
+        if (!$data && $is_index == false) {
+            $this->error = 'No delv data for this date';
+            return false;
+        }
+        $this->error = '';
         return true;
     }
 
     public function get_cm_for_date(string $symbol, Carbon $date){
-        return ModelBhavCopyCM::symbolAndDate($symbol, $date, 'EQ')
-            ->isVersion1Processed()
-            ->first();
+        return ModelBhavCopyCM::symbolAndDate($symbol, $date, 'EQ')->first();
     }
 
     public function get_previous_trading_day(Carbon $date){
