@@ -30,7 +30,7 @@ class ProcessBhavcopyCMV01 extends Command
 
         ModelBhavCopyDelvPosition::where('verified', 0)
             ->where('v1_processed', 0)
-            ->chunkById(3, function ($chunks) use ($provider) {
+            ->chunkById(500, function ($chunks) use ($provider) {
             foreach ($chunks as $c) {
                 $f_date = Carbon::createFromFormat('Y-m-d', $c->date);
                 $this->info("processing $c->symbol for $c->date");
