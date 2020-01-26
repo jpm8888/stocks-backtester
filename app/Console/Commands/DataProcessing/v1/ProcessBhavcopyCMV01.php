@@ -26,14 +26,6 @@ class ProcessBhavcopyCMV01 extends Command
     }
 
     public function handle(){
-//        $from_date = $this->argument('from_date');
-
-//        if (trim($from_date) == '') {
-//            $from_date = Carbon::now()->subDays($this->MAX_DAYS);
-//        }else {
-//            $from_date = Carbon::createFromFormat('d-m-Y', $from_date);
-//        }
-
         $provider = new DataProvider();
 
         ModelBhavCopyDelvPosition::where('verified', 0)
@@ -44,11 +36,6 @@ class ProcessBhavcopyCMV01 extends Command
                 $this->info("processing $c->symbol for $c->date");
                 $verification_id = $this->save_data($provider, $c->symbol, $f_date);
                 $this->info($verification_id);
-//                $c->verified = $verification_id;
-//                $c->save();
-
-//                DB::table('bhavcopy_delv_position')->where('id', $c->id)->update(['verified' => $verification_id]);
-
                 $c->update(['verified' => $verification_id]);
             }
         });
