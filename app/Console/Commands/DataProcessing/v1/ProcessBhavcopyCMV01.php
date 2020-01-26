@@ -8,6 +8,7 @@
 namespace App\Console\Commands\DataProcessing\v1;
 
 
+use App\ModelBhavCopyDelvPosition;
 use App\ModelBhavcopyProcessed;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
@@ -17,7 +18,7 @@ class ProcessBhavcopyCMV01 extends Command
 {
 
     private $MAX_DAYS = 4;
-    protected $signature = 'process:bhavcopy_v1 {from_date?}';
+    protected $signature = 'process:bhavcopy_v1';
     protected $description = 'Process version 1 of bhavcopy';
 
     public function __construct(){
@@ -25,46 +26,48 @@ class ProcessBhavcopyCMV01 extends Command
     }
 
     public function handle(){
-        $from_date = $this->argument('from_date');
+//        $from_date = $this->argument('from_date');
 
-        if (trim($from_date) == '') {
-            $from_date = Carbon::now()->subDays($this->MAX_DAYS);
-        }else {
-            $from_date = Carbon::createFromFormat('d-m-Y', $from_date);
-        }
+//        if (trim($from_date) == '') {
+//            $from_date = Carbon::now()->subDays($this->MAX_DAYS);
+//        }else {
+//            $from_date = Carbon::createFromFormat('d-m-Y', $from_date);
+//        }
 
         $provider = new DataProvider();
-        $fo_stocks = $provider->get_future_traded_stocks();
-        while(Carbon::now()->gte($from_date)){
-            if ($from_date->isWeekend()) $from_date->addDay();
-            if ($from_date->isWeekend()) $from_date->addDay();
-            $this->iterate_stocks($fo_stocks, $provider, $from_date);
-            $from_date = $from_date->addDay();
-        }
+
+        ModelBhavCopyDelvPosition::where('verified', 0)
+            ->where('v1_processed', 0)
+            ->chunkById(3, function ($chunks) use ($provider) {
+            foreach ($chunks as $c) {
+                $f_date = Carbon::createFromFormat('Y-m-d', $c->date);
+                $this->info("processing $c->symbol for $c->date");
+                $verification_id = $this->save_data($provider, $c->symbol, $f_date);
+                $this->info($verification_id);
+//                $c->verified = $verification_id;
+//                $c->save();
+
+//                DB::table('bhavcopy_delv_position')->where('id', $c->id)->update(['verified' => $verification_id]);
+
+                $c->update(['verified' => $verification_id]);
+            }
+        });
     }
 
-    private function iterate_stocks($fo_stocks, DataProvider $provider, Carbon $from_date){
-        $fd = $from_date->format('d-m-Y');
-        foreach ($fo_stocks as $f){
-            $is_index = false;
-            $symbol = $f->symbol;
-            $verified = $provider->verify_all_data_sources($symbol, $from_date, $is_index);
-            if ($verified){
-                $this->save_data($provider, $symbol, $from_date);
-                $this->info("successfully processed $symbol for $fd");
-            }else{
-                $this->error("verification failed for $symbol for $fd");
-            }
-        }
-    }
 
     private function save_data(DataProvider $provider, $symbol, Carbon $date){
         DB::beginTransaction();
+        $is_index = false;
         try {
+            $verified = $provider->verify_all_data_sources($symbol, $date, $is_index);
+            if (!$verified) {
+                DB::rollback();
+                return 2;
+            }
+
+
             $m = new ModelBhavcopyProcessed();
             $cm = $provider->get_cm_for_date($symbol, $date);
-            $is_index = false;
-            if (!$cm) return;
 
             $delv = $provider->get_delv_for_date($symbol, $date);
             $options_data = $provider->get_calculated_option_data($symbol, $date, $is_index);
@@ -112,13 +115,15 @@ class ProcessBhavcopyCMV01 extends Command
             $m->date = $date;
             $m->save();
 
-            $cm->v1_processed = 1;
-            $cm->save();
+            $delv->v1_processed = 1;
+            $delv->save();
 
             DB::commit();
+            return 1;
         } catch (\Exception $e) {
             $this->error($e->getMessage());
             DB::rollback();
+            return 2;
         }
     }
 }

@@ -11,6 +11,7 @@ class CreateVerificationLogsTable extends Migration
     {
         Schema::create('verification_logs', function (Blueprint $table) {
             $table->bigIncrements('id');
+            $table->bigInteger('delv_id')->default(0);
             $table->string('symbol')->index();
             $table->date('date');
             $table->longText('msg');

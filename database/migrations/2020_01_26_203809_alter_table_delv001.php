@@ -26,7 +26,7 @@ class AlterTableDelv001 extends Migration
         $table_name = "bhavcopy_delv_position";
         if (!Schema::hasColumn($table_name, 'v1_processed')){
             Schema::table($table_name, function (Blueprint $table) {
-                $table->unsignedTinyInteger('verified')->default(0);
+                $table->unsignedTinyInteger('verified')->default(0)->comment('0 -> not checked, 1 -> verified, 2-> checked but not verified');
                 $table->unsignedTinyInteger('v1_processed')->default(0);
             });
         }

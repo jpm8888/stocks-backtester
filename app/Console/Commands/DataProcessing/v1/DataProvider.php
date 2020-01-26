@@ -30,36 +30,35 @@ class DataProvider
         $data = $this->get_future_traded_stocks($symbol);
         if (!$data) {
             $this->error = 'No future traded stock';
-            $this->write_verification_log($symbol, $date, $this->error);
+            return false;
+        }
+
+        $delv_data = $this->get_delv_for_date($symbol, $date);
+        if (!$delv_data && $is_index == false) {
+            $this->error = 'No delv data for this date';
             return false;
         }
 
         $data = $this->get_cm_for_date($symbol, $date);
         if (!$data && $is_index == false) {
             $this->error = 'No cash market data';
-            $this->write_verification_log($symbol, $date, $this->error);
+            $this->write_verification_log($symbol, $delv_data->id, $date, $this->error);
             return false;
         }
 
         $data = $this->get_futures_for_date($symbol, $date, $is_index);
         if (!$data) {
             $this->error = 'No future market data';
-            $this->write_verification_log($symbol, $date, $this->error);
+            $this->write_verification_log($symbol, $delv_data->id, $date, $this->error);
             return false;
         }
 
         if (count($data) != 3){
             $this->error = 'Future market data inconsistent. Count : ' . count($data);
-            $this->write_verification_log($symbol, $date, $this->error);
+            $this->write_verification_log($symbol, $delv_data->id, $date, $this->error);
             return false;
         }
 
-
-        $data = $this->get_delv_for_date($symbol, $date);
-        if (!$data && $is_index == false) {
-            $this->error = 'No delv data for this date';
-            return false;
-        }
         $this->error = '';
         return true;
     }
@@ -250,8 +249,9 @@ class DataProvider
         return $out[0]->min_low;
     }
 
-    public function write_verification_log($symbol, $date, $msg){
+    public function write_verification_log($symbol, $delv_id, $date, $msg){
         $model = new ModelVerificationLogs();
+        $model->delv_id = $delv_id;
         $model->symbol = $symbol;
         $model->date = $date;
         $model->msg = $msg;
