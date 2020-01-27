@@ -53,8 +53,8 @@ class DownloadBhavCopyFO extends Command
     }
 
     private function start_download(Carbon $date){
-        $flag = $date->isWeekday();
-        if (!$flag) return false;
+//        $flag = $date->isWeekday();
+//        if (!$flag) return false;
 
         $flag = $this->check_already_imported($date);
         if (!$flag) return false;
