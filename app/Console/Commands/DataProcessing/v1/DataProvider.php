@@ -14,23 +14,40 @@ use App\ModelBhavCopyFO;
 use App\ModelMasterStocksFO;
 use App\ModelVerificationLogs;
 use Carbon\Carbon;
+use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 
 class DataProvider
 {
-
     public $error = '';
+    private $cmd;
+
+    public function __construct(Command $cmd = null){
+        $this->cmd = $cmd;
+    }
+
+    public function info($msg){
+        if ($this->cmd) $this->cmd->info($msg);
+    }
+
+    public function error($msg){
+        if ($this->cmd) $this->cmd->error($msg);
+    }
+
     //return fno stocks from predefined table.
-    public function get_future_traded_stocks($symbol = null){
-        if ($symbol) ModelMasterStocksFO::where('symbol', $symbol)->first();
+    public function get_future_traded_stocks(string $symbol = null){
+        if ($symbol) return ModelMasterStocksFO::where('symbol', $symbol)->first();
         return ModelMasterStocksFO::get();
     }
 
     public function verify_all_data_sources(string $symbol, Carbon $date, $is_index){
+        $this->info('starting verifying : ' . $symbol);
         $data = $this->get_future_traded_stocks($symbol);
         if (!$data) {
             $this->error = 'No future traded stock';
             return false;
+        }else{
+            foreach ($data as $d) print_r($d->symbol);
         }
 
         $delv_data = $this->get_delv_for_date($symbol, $date);
@@ -47,7 +64,7 @@ class DataProvider
         }
 
         $data = $this->get_futures_for_date($symbol, $date, $is_index);
-        if (!$data) {
+        if (!$data || count($data) == 0) {
             $this->error = 'No future market data';
             $this->write_verification_log($symbol, $delv_data->id, $date, $this->error);
             return false;
@@ -60,6 +77,7 @@ class DataProvider
         }
 
         $this->error = '';
+        $this->info('verification success...');
         return true;
     }
 
