@@ -34,13 +34,13 @@ class DataProvider
         }
 
         $delv_data = $this->get_delv_for_date($symbol, $date);
-        if (!$delv_data && $is_index == false) {
+        if ($is_index == false && !$delv_data) {
             $this->error = 'No delv data for this date';
             return false;
         }
 
         $data = $this->get_cm_for_date($symbol, $date);
-        if (!$data && $is_index == false) {
+        if ($is_index == false && !$data) {
             $this->error = 'No cash market data';
             $this->write_verification_log($symbol, $delv_data->id, $date, $this->error);
             return false;
@@ -202,7 +202,11 @@ class DataProvider
     private function avg_volume_cm($symbol, Carbon $date, $days){
         $d = $date->format('Y-m-d');
         $out = DB::select(DB::raw("select avg(volume) as avg_vol from (select volume from bhavcopy_cm where symbol= '$symbol' and date < '$d' order by date desc limit $days) as vols"));
-        return intval($out[0]->avg_vol);
+
+        foreach ($out as $o) {
+            return ($o->avg_vol) ? intval($o->avg_vol) : 0;
+        }
+        return 0;
     }
 
     public function high_day_cm_5($symbol, Carbon $date){
@@ -224,7 +228,11 @@ class DataProvider
     private function high_cm($symbol, Carbon $date, $days){
         $d = $date->format('Y-m-d');
         $out = DB::select(DB::raw("select max(high) as max_high from (select high from bhavcopy_cm where symbol= '$symbol' and date < '$d' order by date desc limit $days) as highs"));
-        return $out[0]->max_high;
+//        return $out[0]->max_high;
+        foreach ($out as $o) {
+            return ($o->max_high) ? ($o->max_high) : 0;
+        }
+        return 0;
     }
 
     public function low_day_cm_5($symbol, Carbon $date){
@@ -246,7 +254,12 @@ class DataProvider
     private function low_cm($symbol, Carbon $date, $days){
         $d = $date->format('Y-m-d');
         $out = DB::select(DB::raw("select min(low) as min_low from (select low from bhavcopy_cm where symbol= '$symbol' and date < '$d' order by date desc limit $days) as lows"));
-        return $out[0]->min_low;
+
+        foreach ($out as $o) {
+            if ($o->min_low) return $o->min_low;
+            return 0;
+        }
+        return 0;
     }
 
     public function write_verification_log($symbol, $delv_id, $date, $msg){
