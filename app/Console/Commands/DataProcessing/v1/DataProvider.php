@@ -43,11 +43,9 @@ class DataProvider
     public function verify_all_data_sources(string $symbol, Carbon $date, $is_index){
         $this->info('starting verifying : ' . $symbol);
         $data = $this->get_future_traded_stocks($symbol);
-        if (!$data) {
+        if (!$data && $is_index == false) {
             $this->error = 'No future traded stock';
             return false;
-        }else{
-            foreach ($data as $d) print_r($d->symbol);
         }
 
         $delv_data = $this->get_delv_for_date($symbol, $date);
