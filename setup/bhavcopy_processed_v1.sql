@@ -2,7 +2,9 @@ insert into bhavcopy_processed (symbol, series, open, high, low, close, prevclos
 	select msf.symbol, bc.series, bc.open, bc.high, bc.low, bc.close, bc.prevclose, bc.volume, bc.date, bdp.dlv_qty, bdp.pct_dlv_traded from master_stocks_fo as msf
 	left join bhavcopy_cm as bc on msf.symbol = bc.symbol
 	left join bhavcopy_delv_position as bdp on bc.symbol = bdp.symbol and bc.date = bdp.date and bc.series = bdp.series
-	limit 10;
+	where v1_processed = 0;
+
+update bhavcopy_delv_position set v1_processed = 1;
 
 update bhavcopy_processed set price_change = ROUND(((close - prevclose) * 100) / prevclose, 2);
 
@@ -37,3 +39,13 @@ update bhavcopy_processed as bp set bp.low_fifteen = IFNULL((select min(low) as 
 update bhavcopy_processed as bp set bp.low_fiftytwo = IFNULL((select min(low) as min_low from (select low from bhavcopy_cm where symbol= bp.symbol and date < bp.date order by date desc limit 52) as lows), 0);
 
 update bhavcopy_processed set change_cum_fut_oi = ROUND((change_cum_fut_oi_val * 100) / (cum_fut_oi - (change_cum_fut_oi_val)), 2);
+
+update bhavcopy_processed as bp set bp.change_cum_pe_oi_val = (select sum(bf.change_in_oi) from bhavcopy_fo as bf where bf.symbol = bp.symbol and bf.date = bp.date and bf.instrument = 'OPTSTK' and bf.option_type = 'PE');
+
+update bhavcopy_processed as bp set bp.change_cum_ce_oi_val = (select sum(bf.change_in_oi) from bhavcopy_fo as bf where bf.symbol = bp.symbol and bf.date = bp.date and bf.instrument = 'OPTSTK' and bf.option_type = 'CE');
+
+update bhavcopy_processed set change_cum_pe_oi = ROUND((change_cum_pe_oi_val * 100) / (cum_pe_oi - (change_cum_pe_oi_val)), 2);
+
+update bhavcopy_processed set change_cum_ce_oi = ROUND((change_cum_ce_oi_val * 100) / (cum_ce_oi - (change_cum_ce_oi_val)), 2);
+
+update bhavcopy_processed set v1_processed = 1;
