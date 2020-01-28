@@ -6,7 +6,6 @@ insert into bhavcopy_processed (symbol, series, open, high, low, close, prevclos
 
 update bhavcopy_processed set price_change = ROUND(((close - prevclose) * 100) / prevclose, 2);
 
-
 update bhavcopy_processed as bp set bp.cum_fut_oi = (select sum(bf.oi) from bhavcopy_fo as bf where bf.symbol = bp.symbol and bf.date = bp.date and bf.instrument = 'FUTSTK');
 
 update bhavcopy_processed as bp set bp.cum_pe_oi = (select sum(bf.oi) from bhavcopy_fo as bf where bf.symbol = bp.symbol and bf.date = bp.date and bf.instrument = 'OPTSTK' and bf.option_type = 'PE');
@@ -18,4 +17,21 @@ update bhavcopy_processed set pcr = ROUND(cum_pe_oi / cum_ce_oi, 2);
 update bhavcopy_processed as bp set bp.max_ce_oi_strike = (select bf.strike_price from bhavcopy_fo as bf where bf.symbol = bp.symbol and bf.date = bp.date and bf.instrument = 'OPTSTK' and bf.option_type = 'CE' order by bf.oi desc limit 1);
 
 update bhavcopy_processed as bp set bp.max_pe_oi_strike = (select bf.strike_price from bhavcopy_fo as bf where bf.symbol = bp.symbol and bf.date = bp.date and bf.instrument = 'OPTSTK' and bf.option_type = 'PE' order by bf.oi desc limit 1);
+
+update bhavcopy_processed as bp set bp.avg_volume_five = IFNULL((select avg(volume) as avg_vol from (select volume from bhavcopy_cm where symbol= bp.symbol and date < bp.date order by date desc limit 5) as vols), 0);
+
+update bhavcopy_processed as bp set bp.avg_volume_ten = IFNULL((select avg(volume) as avg_vol from (select volume from bhavcopy_cm where symbol= bp.symbol and date < bp.date order by date desc limit 10) as vols), 0);
+
+update bhavcopy_processed as bp set bp.avg_volume_fifteen = IFNULL((select avg(volume) as avg_vol from (select volume from bhavcopy_cm where symbol= bp.symbol and date < bp.date order by date desc limit 15) as vols), 0);
+
+update bhavcopy_processed as bp set bp.avg_volume_fiftytwo = IFNULL((select avg(volume) as avg_vol from (select volume from bhavcopy_cm where symbol= bp.symbol and date < bp.date order by date desc limit 52) as vols), 0);
+
+update bhavcopy_processed as bp set bp.low_five = IFNULL((select min(low) as min_low from (select low from bhavcopy_cm where symbol= bp.symbol and date < bp.date order by date desc limit 5) as lows), 0);
+
+update bhavcopy_processed as bp set bp.low_ten = IFNULL((select min(low) as min_low from (select low from bhavcopy_cm where symbol= bp.symbol and date < bp.date order by date desc limit 10) as lows), 0);
+
+update bhavcopy_processed as bp set bp.low_fifteen = IFNULL((select min(low) as min_low from (select low from bhavcopy_cm where symbol= bp.symbol and date < bp.date order by date desc limit 15) as lows), 0);
+
+update bhavcopy_processed as bp set bp.low_fiftytwo = IFNULL((select min(low) as min_low from (select low from bhavcopy_cm where symbol= bp.symbol and date < bp.date order by date desc limit 52) as lows), 0);
+
 
