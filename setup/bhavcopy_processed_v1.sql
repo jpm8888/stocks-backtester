@@ -2,7 +2,7 @@ insert into bhavcopy_processed (symbol, series, open, high, low, close, prevclos
 	select msf.symbol, bc.series, bc.open, bc.high, bc.low, bc.close, bc.prevclose, bc.volume, bc.date, bdp.dlv_qty, bdp.pct_dlv_traded from master_stocks_fo as msf
 	left join bhavcopy_cm as bc on msf.symbol = bc.symbol
 	left join bhavcopy_delv_position as bdp on bc.symbol = bdp.symbol and bc.date = bdp.date and bc.series = bdp.series
-	where v1_processed = 0;
+	where bdp.v1_processed = 0;
 
 update bhavcopy_delv_position set v1_processed = 1;
 
