@@ -8,6 +8,8 @@ update bhavcopy_processed set price_change = ROUND(((close - prevclose) * 100) /
 
 update bhavcopy_processed as bp set bp.cum_fut_oi = (select sum(bf.oi) from bhavcopy_fo as bf where bf.symbol = bp.symbol and bf.date = bp.date and bf.instrument = 'FUTSTK');
 
+update bhavcopy_processed as bp set bp.change_cum_fut_oi_val = (select sum(bf.change_in_oi) from bhavcopy_fo as bf where bf.symbol = bp.symbol and bf.date = bp.date and bf.instrument = 'FUTSTK');
+
 update bhavcopy_processed as bp set bp.cum_pe_oi = (select sum(bf.oi) from bhavcopy_fo as bf where bf.symbol = bp.symbol and bf.date = bp.date and bf.instrument = 'OPTSTK' and bf.option_type = 'PE');
 
 update bhavcopy_processed as bp set bp.cum_ce_oi = (select sum(bf.oi) from bhavcopy_fo as bf where bf.symbol = bp.symbol and bf.date = bp.date and bf.instrument = 'OPTSTK' and bf.option_type = 'CE');
@@ -34,4 +36,4 @@ update bhavcopy_processed as bp set bp.low_fifteen = IFNULL((select min(low) as 
 
 update bhavcopy_processed as bp set bp.low_fiftytwo = IFNULL((select min(low) as min_low from (select low from bhavcopy_cm where symbol= bp.symbol and date < bp.date order by date desc limit 52) as lows), 0);
 
-
+update bhavcopy_processed set change_cum_fut_oi = ROUND((change_cum_fut_oi_val * 100) / (cum_fut_oi - (change_cum_fut_oi_val)), 2);
