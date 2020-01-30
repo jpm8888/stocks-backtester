@@ -10,7 +10,10 @@ update bhavcopy_delv_position set v1_processed = 1;
 update bhavcopy_processed set price_change = ROUND(((close - prevclose) * 100) / prevclose, 2);
 
 -- slow query
-update bhavcopy_processed as bp set bp.cum_fut_oi = (select sum(bf.oi) from bhavcopy_fo as bf where bf.symbol = bp.symbol and bf.date = bp.date and bf.instrument = 'FUTSTK');
+-- update bhavcopy_processed as bp set bp.cum_fut_oi = (select sum(bf.oi) from bhavcopy_fo as bf where bf.symbol = bp.symbol and bf.date = bp.date and bf.instrument = 'FUTSTK');
+
+UPDATE bhavcopy_processed bp inner join (select symbol, date, option_type, sum(oi) as total from bhavcopy_fo where option_type = "XX" group by symbol, date, option_type) x on bp.symbol = x.symbol and bp.date = x.date set bp.cum_fut_oi = x.total where bp.id between 1 and 20;
+
 
 
 update bhavcopy_processed as bp set bp.change_cum_fut_oi_val = (select sum(bf.change_in_oi) from bhavcopy_fo as bf where bf.symbol = bp.symbol and bf.date = bp.date and bf.instrument = 'FUTSTK');
