@@ -47,12 +47,10 @@ class UpdateCumulativeOpenInterest extends Command
                     $totals = DB::table('bhavcopy_fo')
                         ->select('symbol', 'date', 'option_type',
                             DB::raw('sum(change_in_oi) as total_change_oi'),
-                            DB::raw('max(change_in_oi) as total_change_oi'),
-
                             DB::raw('sum(oi) as total_oi'))
                         ->groupBy('symbol', 'date', 'option_type')
-                        ->where('symbol', $c->symbol)
                         ->whereDate('date', $c->date)
+                        ->where('symbol', $c->symbol)
                         ->get();
 
                     foreach ($totals as $t){
