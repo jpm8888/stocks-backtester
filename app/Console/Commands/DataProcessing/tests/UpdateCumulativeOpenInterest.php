@@ -41,11 +41,15 @@ class UpdateCumulativeOpenInterest extends Command
 
         ModelBhavcopyProcessed::where('v1_processed', 0)
             ->where('v1_processed', 0)
-            ->chunkById(3000, function ($chunks) {
+            ->chunkById(100, function ($chunks) {
                 $last_id = 0;
                 foreach ($chunks as $c) {
                     $totals = DB::table('bhavcopy_fo')
-                        ->select('symbol', 'date', 'option_type', DB::raw('sum(change_in_oi) as total_change_oi'), DB::raw('sum(oi) as total_oi'))
+                        ->select('symbol', 'date', 'option_type',
+                            DB::raw('sum(change_in_oi) as total_change_oi'),
+                            DB::raw('max(change_in_oi) as total_change_oi'),
+
+                            DB::raw('sum(oi) as total_oi'))
                         ->groupBy('symbol', 'date', 'option_type')
                         ->where('symbol', $c->symbol)
                         ->whereDate('date', $c->date)
