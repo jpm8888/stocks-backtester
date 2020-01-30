@@ -11,7 +11,7 @@ do
 
    command="/usr/local/apps/mysql/bin/mysql -u test_user -pjpm19901 isl_shcema -e \"$query\" >> updates.log";
    echo  $command >> $filename;
-   echo "echo '$logname : $max records...: '" >> $filename;
+   echo 'echo $(date) : ' $logname ' : ' $max ' records... : ' >> $filename;
 
    min=$(expr "$max" + 1);
    max=$(expr "$max" '+' "$limit");
@@ -28,7 +28,7 @@ do
 
    command="/usr/local/apps/mysql/bin/mysql -u test_user -pjpm19901 isl_shcema -e \"$query\" >> updates.log";
    echo  $command >> $filename;
-   echo "echo '$logname : $max records...: '" >> $filename;
+   echo 'echo $(date) : ' $logname ' : ' $max ' records... : ' >> $filename;
 
    min=$(expr "$max" + 1);
    max=$(expr "$max" '+' "$limit");
