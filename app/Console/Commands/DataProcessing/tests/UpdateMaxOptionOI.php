@@ -14,21 +14,18 @@ use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 
-class UpdateCumulativeOpenInterest extends Command
+class UpdateMaxOptionOI extends Command
 {
 
-    protected $signature = 'process:cumulative_oi';
-    protected $description = 'Process cumulative open interest';
+    protected $signature = 'process:maxOptionOI';
+    protected $description = 'Process max option open interest';
 
-    //cum_fut_oi
-    //cum_pe_oi
-    //cum_ce_oi
+    // max_ce_oi_strike
+    // max_pe_oi_strike
 
-    //change_cum_fut_oi_val
-    //change_cum_pe_oi_val
-    //change_cum_ce_oi_val
 
-    //base query : UPDATE bhavcopy_processed bp inner join (select symbol, date, option_type, sum(oi) as total from bhavcopy_fo where option_type = "XX" group by symbol, date, option_type) x on bp.symbol = x.symbol and bp.date = x.date set bp.cum_fut_oi = x.total where bp.id between 1 and 20;
+    //base query
+    //UPDATE bhavcopy_processed bp inner join (select symbol, date, option_type, sum(oi) as total from bhavcopy_fo where option_type = "XX" group by symbol, date, option_type) x on bp.symbol = x.symbol and bp.date = x.date set bp.cum_fut_oi = x.total where bp.id between 1 and 20;
 
     public function __construct(){
         parent::__construct();
@@ -43,9 +40,8 @@ class UpdateCumulativeOpenInterest extends Command
                 $last_id = 0;
                 foreach ($chunks as $c) {
                     $totals = DB::table('bhavcopy_fo')
-                        ->select('symbol', 'date', 'option_type',
-                            DB::raw('sum(change_in_oi) as total_change_oi'),
-                            DB::raw('sum(oi) as total_oi'))
+                        ->select('symbol', 'date', 'option_type', 'strike_price',
+                            DB::raw('max(oi) as max_oi'))
                         ->groupBy('symbol', 'date', 'option_type')
                         ->whereDate('date', $c->date)
                         ->where('symbol', $c->symbol)
@@ -53,17 +49,11 @@ class UpdateCumulativeOpenInterest extends Command
 
                     foreach ($totals as $t){
                         switch ($t->option_type){
-                            case 'XX':
-                                $c->cum_fut_oi = $t->total_oi;
-                                $c->change_cum_fut_oi_val = $t->total_change_oi;
-                                break;
                             case 'CE':
-                                $c->cum_ce_oi = $t->total_oi;
-                                $c->change_cum_ce_oi_val = $t->total_change_oi;
+                                $c->max_ce_oi_strike = $t->strike_price;
                                 break;
                             case 'PE':
-                                $c->cum_pe_oi = $t->total_oi;
-                                $c->change_cum_pe_oi_val = $t->total_change_oi;
+                                $c->max_pe_oi_strike = $t->strike_price;
                                 break;
                         }
                     }
