@@ -35,20 +35,28 @@ class UpdateMaxOptionOI extends Command
         $this->info('working...');
 
         ModelBhavcopyProcessed::where('v1_processed', 0)
-//            ->where('id', '<', 423781)
-            ->chunkById(100, function ($chunks) {
+            ->where('id', '<', 423781)
+            ->chunkById(100, function ($chunks){
                 $last_id = 0;
                 foreach ($chunks as $c) {
+
                     $now = Carbon::parse($c->date);
                     $partition_name = "p_" . $now->year;
 
-                    $query = "select strike_price from bhavcopy_fo partition($partition_name) where symbol = '$c->symbol' and date = '$c->date' and option_type = 'PE' order by oi desc limit 1";
+                    $type = 'PE';
+                    $column_name = 'max_pe_oi_strike';
+
+                    $query = "select strike_price from bhavcopy_fo partition($partition_name) where symbol = '$c->symbol' and date = '$c->date' and option_type = '$type' order by oi desc limit 1";
                     $output = DB::select(DB::raw($query));
-
                     $strike_price = (isset($output[0]->strike_price)) ? $output[0]->strike_price : 0;
+                    DB::statement("update bhavcopy_processed set $column_name = $strike_price where id = $c->id");
 
-
-                    DB::statement("update bhavcopy_processed set max_pe_oi_strike = $strike_price where id = $c->id");
+                    $type = 'CE';
+                    $column_name = 'max_ce_oi_strike';
+                    $query = "select strike_price from bhavcopy_fo partition($partition_name) where symbol = '$c->symbol' and date = '$c->date' and option_type = '$type' order by oi desc limit 1";
+                    $output = DB::select(DB::raw($query));
+                    $strike_price = (isset($output[0]->strike_price)) ? $output[0]->strike_price : 0;
+                    DB::statement("update bhavcopy_processed set $column_name = $strike_price where id = $c->id");
 
                     $last_id = $c->id;
                 }
@@ -56,6 +64,11 @@ class UpdateMaxOptionOI extends Command
             });
 
         $this->info(Carbon::now() . ' : all done');
+    }
+
+
+    private function update_strike_price($c, $type, $column_name){
+
     }
 
 }
