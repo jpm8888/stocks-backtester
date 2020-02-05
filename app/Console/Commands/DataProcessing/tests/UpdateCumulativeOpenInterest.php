@@ -38,7 +38,6 @@ class UpdateCumulativeOpenInterest extends Command
         $this->info('working...');
 
         ModelBhavcopyProcessed::where('v1_processed', 0)
-            ->where('v1_processed', 0)
             ->chunkById(100, function ($chunks) {
                 $last_id = 0;
                 foreach ($chunks as $c) {

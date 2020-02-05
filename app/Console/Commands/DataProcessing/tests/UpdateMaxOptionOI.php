@@ -35,33 +35,24 @@ class UpdateMaxOptionOI extends Command
         $this->info('working...');
 
         ModelBhavcopyProcessed::where('v1_processed', 0)
-            ->where('v1_processed', 0)
             ->chunkById(100, function ($chunks) {
                 $last_id = 0;
                 foreach ($chunks as $c) {
-                    $totals = DB::table('bhavcopy_fo')
-                        ->select('symbol', 'date', 'option_type', 'strike_price',
-                            DB::raw('max(oi) as max_oi'))
-                        ->groupBy('symbol', 'date', 'option_type')
-                        ->whereDate('date', $c->date)
-                        ->where('symbol', $c->symbol)
-                        ->get();
+                    $now = Carbon::parse($c->date);
+                    $partition_name = "p_" . $now->year;
+                    $current_id = $c->id;
 
-                    foreach ($totals as $t){
-                        switch ($t->option_type){
-                            case 'CE':
-                                $c->max_ce_oi_strike = $t->strike_price;
-                                break;
-                            case 'PE':
-                                $c->max_pe_oi_strike = $t->strike_price;
-                                break;
-                        }
-                    }
-                    $c->save();
+                    $query = "update bhavcopy_processed as bp set bp.max_pe_oi_strike = ifnull((select bf.strike_price from bhavcopy_fo partition($partition_name) as bf ";
+                    $query .= "where bf.symbol = bp.symbol and bf.date = bp.date and bf.option_type = 'PE' order by bf.oi desc limit 1), 0) where bp.id = $current_id;";
+                    DB::statement($query);
+
+                    $query = "update bhavcopy_processed as bp set bp.max_ce_oi_strike = ifnull((select bf.strike_price from bhavcopy_fo partition($partition_name) as bf ";
+                    $query .= "where bf.symbol = bp.symbol and bf.date = bp.date and bf.option_type = 'CE' order by bf.oi desc limit 1), 0) where bp.id = $current_id;";
+                    DB::statement($query);
+
                     $last_id = $c->id;
                 }
-
-                $this->info(Carbon::now() . " : $last_id records done");
+                $this->info(Carbon::now() . ' : last record computed : ' . $last_id);
             });
 
         $this->info(Carbon::now() . ' : all done');
