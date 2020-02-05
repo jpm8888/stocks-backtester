@@ -35,8 +35,8 @@ class UpdateMaxOptionOI extends Command
         $this->info('working...');
 
         ModelBhavcopyProcessed::where('v1_processed', 0)
-            ->where('id', '<', 423781)
-            ->chunkById(100, function ($chunks){
+//            ->where('id', '<', 423781)
+            ->chunkById(1000, function ($chunks){
                 $last_id = 0;
                 foreach ($chunks as $c) {
 
