@@ -17,7 +17,7 @@ use Illuminate\Support\Facades\DB;
 class UpdateMaxOptionOI extends Command
 {
 
-    protected $signature = 'process:maxOptionOI';
+    protected $signature = 'process:max_option_oi';
     protected $description = 'Process max option open interest';
 
     // max_ce_oi_strike
@@ -35,20 +35,20 @@ class UpdateMaxOptionOI extends Command
         $this->info('working...');
 
         ModelBhavcopyProcessed::where('v1_processed', 0)
+//            ->where('id', '<', 423781)
             ->chunkById(100, function ($chunks) {
                 $last_id = 0;
                 foreach ($chunks as $c) {
                     $now = Carbon::parse($c->date);
                     $partition_name = "p_" . $now->year;
-                    $current_id = $c->id;
 
-                    $query = "update bhavcopy_processed as bp set bp.max_pe_oi_strike = ifnull((select bf.strike_price from bhavcopy_fo partition($partition_name) as bf ";
-                    $query .= "where bf.symbol = bp.symbol and bf.date = bp.date and bf.option_type = 'PE' order by bf.oi desc limit 1), 0) where bp.id = $current_id;";
-                    DB::statement($query);
+                    $query = "select strike_price from bhavcopy_fo partition($partition_name) where symbol = '$c->symbol' and date = '$c->date' and option_type = 'PE' order by oi desc limit 1";
+                    $output = DB::select(DB::raw($query));
 
-                    $query = "update bhavcopy_processed as bp set bp.max_ce_oi_strike = ifnull((select bf.strike_price from bhavcopy_fo partition($partition_name) as bf ";
-                    $query .= "where bf.symbol = bp.symbol and bf.date = bp.date and bf.option_type = 'CE' order by bf.oi desc limit 1), 0) where bp.id = $current_id;";
-                    DB::statement($query);
+                    $strike_price = (isset($output[0]->strike_price)) ? $output[0]->strike_price : 0;
+
+
+                    DB::statement("update bhavcopy_processed set max_pe_oi_strike = $strike_price where id = $c->id");
 
                     $last_id = $c->id;
                 }
