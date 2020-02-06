@@ -14,16 +14,16 @@ use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 
-class UpdateLowPrices extends Command
+class UpdateHighLowPrices extends Command
 {
 
     protected $signature = 'process:low_prices';
     protected $description = 'Process 5, 10, 15, 52 low prices';
 
-    // low_five
-    // low_ten
-    // low_fifteen
-    // low_fiftytwo
+    // low_five, high_five
+    // low_ten, high_ten
+    // low_fifteen, high_fifteen
+    // low_fiftytwo, high_fiftytwo
 
     public function __construct(){
         parent::__construct();
@@ -45,6 +45,11 @@ class UpdateLowPrices extends Command
             DB::statement("update bhavcopy_processed as bp set bp.low_ten = IFNULL((select min(low) as min_low from (select low from bhavcopy_cm where symbol= bp.symbol and date < bp.date order by date desc limit 10) as lows), 0) where id between $min and $max");
             DB::statement("update bhavcopy_processed as bp set bp.low_fifteen = IFNULL((select min(low) as min_low from (select low from bhavcopy_cm where symbol= bp.symbol and date < bp.date order by date desc limit 15) as lows), 0) where id between $min and $max");
             DB::statement("update bhavcopy_processed as bp set bp.low_fiftytwo = IFNULL((select min(low) as min_low from (select low from bhavcopy_cm where symbol= bp.symbol and date < bp.date order by date desc limit 52) as lows), 0) where id between $min and $max");
+
+            DB::statement("update bhavcopy_processed as bp set bp.high_five = IFNULL((select max(high) as max_high from (select high from bhavcopy_cm where symbol= bp.symbol and date < bp.date order by date desc limit 5) as highs), 0) where id between $min and $max");
+            DB::statement("update bhavcopy_processed as bp set bp.high_ten = IFNULL((select max(high) as max_high from (select high from bhavcopy_cm where symbol= bp.symbol and date < bp.date order by date desc limit 10) as highs), 0) where id between $min and $max");
+            DB::statement("update bhavcopy_processed as bp set bp.high_fifteen = IFNULL((select max(high) as max_high from (select high from bhavcopy_cm where symbol= bp.symbol and date < bp.date order by date desc limit 15) as highs), 0) where id between $min and $max");
+            DB::statement("update bhavcopy_processed as bp set bp.high_fiftytwo = IFNULL((select max(high) as max_high from (select high from bhavcopy_cm where symbol= bp.symbol and date < bp.date order by date desc limit 52) as highs), 0) where id between $min and $max");
 
             DB::statement("update bhavcopy_processed set v1_processed = 1 where id between $min and $max");
 
