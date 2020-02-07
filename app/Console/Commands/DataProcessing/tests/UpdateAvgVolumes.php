@@ -45,7 +45,7 @@ class UpdateAvgVolumes extends Command
             DB::statement("update bhavcopy_processed as bp set bp.avg_volume_ten = IFNULL((select avg(volume) as avg_vol from (select volume from bhavcopy_cm where symbol= bp.symbol and date < bp.date order by date desc limit 10) as vols), 0) where id between $min and $max;");
             DB::statement("update bhavcopy_processed as bp set bp.avg_volume_fifteen = IFNULL((select avg(volume) as avg_vol from (select volume from bhavcopy_cm where symbol= bp.symbol and date < bp.date order by date desc limit 15) as vols), 0) where id between $min and $max;");
             DB::statement("update bhavcopy_processed as bp set bp.avg_volume_fiftytwo = IFNULL((select avg(volume) as avg_vol from (select volume from bhavcopy_cm where symbol= bp.symbol and date < bp.date order by date desc limit 52) as vols), 0) where id between $min and $max;");
-            DB::statement("update bhavcopy_processed set v1_processed = 1 where id between $min and $max");
+//            DB::statement("update bhavcopy_processed set v1_processed = 1 where id between $min and $max");
 
             $end_time = microtime(true);
             $execution_time = round(($end_time - $start_time), 2);
