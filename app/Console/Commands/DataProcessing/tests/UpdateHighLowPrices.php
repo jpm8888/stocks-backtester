@@ -17,7 +17,7 @@ use Illuminate\Support\Facades\DB;
 class UpdateHighLowPrices extends Command
 {
 
-    protected $signature = 'process:low_prices';
+    protected $signature = 'process:high_low_prices';
     protected $description = 'Process 5, 10, 15, 52 low prices';
 
     // low_five, high_five
