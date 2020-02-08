@@ -29,14 +29,25 @@ class ExcelModelVix implements ToModel, WithChunkReading, WithBatchInserts, With
             return null;
         }
 
+        $open = floatval($row['open']);
+        $high = floatval($row['high']);
+        $low = floatval($row['low']);
+        $close = floatval($row['close']);
+        $prevclose = floatval($row['prev_close']);
+
+        $pct_change = 0;
+        if ($prevclose != 0){
+            $pct_change = round((($close - $prevclose) * 100) / $prevclose, 2);
+        }
+
         $model = new ModelVix([
             'date'                   => $date,
-            'open'                   => $row['open'],
-            'high'                   => $row['high'],
-            'low'                    => $row['low'],
-            'close'                  => $row['close'],
-            'prevclose'              => floatval($row['prev_close']),
-            'pct_change'             => $row['change'],
+            'open'                   => $open,
+            'high'                   => $high,
+            'low'                    => $low,
+            'close'                  => $close,
+            'prevclose'              => $prevclose,
+            'pct_change'             => $pct_change,
         ]);
         return $model;
     }

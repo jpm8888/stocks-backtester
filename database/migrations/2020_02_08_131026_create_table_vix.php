@@ -16,11 +16,11 @@ class CreateTableVix extends Migration
         Schema::create('vix', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->date('date')->index();
-            $table->decimal('open', 10,2)->default(0);
-            $table->decimal('high', 10,2)->default(0);
-            $table->decimal('low', 10,2)->default(0);
-            $table->decimal('close', 10,2)->default(0);
-            $table->decimal('prevclose', 10,2)->default(0);
+            $table->decimal('open', 10,4)->default(0);
+            $table->decimal('high', 10,4)->default(0);
+            $table->decimal('low', 10,4)->default(0);
+            $table->decimal('close', 10,4)->default(0);
+            $table->decimal('prevclose', 10,4)->default(0);
             $table->decimal('pct_change', 10,2)->default(0);
         });
     }
