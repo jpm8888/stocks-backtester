@@ -26,10 +26,18 @@ class DeleteUselessFOEntries extends Command
         $arr = ModelMasterStocksFO::get()->pluck('symbol')->toArray();
         if (count($arr) == 0) return;
 
+        $start_time = microtime(true);
 
         $this->clean('bhavcopy_cm');
         $this->clean('bhavcopy_fo');
         $this->clean('bhavcopy_delv_position');
+
+
+
+        $end_time = microtime(true);
+        $execution_time = round(($end_time - $start_time), 2);
+
+        $this->info('all done for now : ' . $execution_time / 60 . ' minutes');
     }
 
 
