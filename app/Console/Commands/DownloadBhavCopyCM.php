@@ -6,6 +6,7 @@ use App\ExcelModels\ExcelModelBhavCopyCM;
 use App\Http\Controllers\MailController;
 use App\Http\Controllers\Utils\Logger;
 use App\ModelLog;
+use App\ModelMasterStocksFO;
 use Chumper\Zipper\Zipper;
 use Exception;
 use GuzzleHttp\Client;
@@ -29,6 +30,7 @@ class DownloadBhavCopyCM extends Command
     public function __construct(){
         parent::__construct();
     }
+
 
 
     public function handle(){
@@ -92,7 +94,9 @@ class DownloadBhavCopyCM extends Command
     private function import_to_database($filepath, $filename){
         $this->info('Importing records...');
         $this->output->title('Starting import');
-        (new ExcelModelBhavCopyCM())->withOutput($this->output)->import("$filepath/$filename");
+
+        $fo_stocks = ModelMasterStocksFO::select('symbol')->get()->pluck('symbol')->toArray();
+        (new ExcelModelBhavCopyCM($fo_stocks))->withOutput($this->output)->import("$filepath/$filename");
 
         $logger = new Logger();
         $msg = "Successfully imported CM records...";
