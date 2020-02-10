@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use App\Http\Controllers\MailController;
 use App\Http\Controllers\Utils\Logger;
 use App\ModelBhavCopyDelvPosition;
+use App\ModelMasterStocksFO;
 use Exception;
 use GuzzleHttp\Client;
 use Illuminate\Console\Command;
@@ -22,10 +23,12 @@ class DownloadSecurityWiseDelvPos extends Command
     private $MAX_DAYS = 20;
     protected $signature = 'download:delv_wise_positions {from_date?} {max_days?}';
     protected $description = 'Download security wise delivery position in cash market';
+
+    var $fo_stocks = null;
     public function __construct(){
         parent::__construct();
+        $this->fo_stocks = ModelMasterStocksFO::select('symbol')->get()->pluck('symbol')->toArray();
     }
-
 
     public function handle(){
         $from_date = $this->argument('from_date');
@@ -86,11 +89,13 @@ class DownloadSecurityWiseDelvPos extends Command
                 $model = new ModelBhavCopyDelvPosition();
                 $model->symbol = $str[2];
                 $model->series = $str[3];
-                $model->traded_qty = $str[4];
-                $model->dlv_qty = $str[5];
-                $model->pct_dlv_traded = $str[6];
-                $model->date = $formatted_date;
-                $model->save();
+                if ($this->is_present($model->symbol) && $model->series == 'EQ'){
+                    $model->traded_qty = $str[4];
+                    $model->dlv_qty = $str[5];
+                    $model->pct_dlv_traded = $str[6];
+                    $model->date = $formatted_date;
+                    $model->save();
+                }
                 $count++;
             }
         }
@@ -118,5 +123,9 @@ class DownloadSecurityWiseDelvPos extends Command
             $this->error('Download error...');
             return null;
         }
+    }
+
+    function is_present($symbol){
+        return (in_array(trim($symbol), $this->fo_stocks)) ? true : false;
     }
 }

@@ -6,6 +6,7 @@ use App\ExcelModels\ExcelModelBhavCopyFO;
 use App\Http\Controllers\MailController;
 use App\Http\Controllers\Utils\Logger;
 use App\ModelLog;
+use App\ModelMasterStocksFO;
 use Chumper\Zipper\Zipper;
 use Exception;
 use GuzzleHttp\Client;
@@ -86,7 +87,9 @@ class DownloadBhavCopyFO extends Command
     private function import_to_database($filepath, $filename){
         $this->info('Importing records...');
         $this->output->title('Starting import');
-        (new ExcelModelBhavCopyFO())->withOutput($this->output)->import("$filepath/$filename");
+
+        $fo_stocks = ModelMasterStocksFO::select('symbol')->get()->pluck('symbol')->toArray();
+        (new ExcelModelBhavCopyFO($fo_stocks))->withOutput($this->output)->import("$filepath/$filename");
 
         $logger = new Logger();
         $msg = "Successfully imported FNO records...";

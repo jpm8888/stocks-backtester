@@ -19,9 +19,19 @@ use Maatwebsite\Excel\Concerns\WithProgressBar;
 
 class ExcelModelBhavCopyFO implements ToModel, WithChunkReading, WithBatchInserts, WithHeadingRow, WithProgressBar {
 
+    var $fo_stocks = null;
+    public function __construct($fo_stocks){
+        $this->fo_stocks = $fo_stocks;
+    }
+
     use Importable;
     public function model(array $row)
     {
+
+        $val = $this->is_present(trim($row['symbol']));
+        if (!$val) return null;
+
+        if(intval($row['open_int']) == 0 && intval($row['chg_in_oi']) == 0) return null;
 
         $expiry_date = Carbon::parse($row['expiry_dt']);
         $bhavcopy_date = Carbon::parse($row['timestamp']);
@@ -57,5 +67,8 @@ class ExcelModelBhavCopyFO implements ToModel, WithChunkReading, WithBatchInsert
         return 4000;
     }
 
+    function is_present($symbol){
+        return (in_array($symbol, $this->fo_stocks)) ? true : false;
+    }
 
 }
