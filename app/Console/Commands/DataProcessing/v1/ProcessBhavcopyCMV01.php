@@ -28,6 +28,7 @@ class ProcessBhavcopyCMV01 extends Command
     public function handle(){
         DB::beginTransaction();
         try{
+            $pname = $this->partition_name;
             $copying = $this->copy_from_bhavcopies();
             $price_change = $this->calculate_price_change();
             $coi = $this->calculate_coi();
@@ -36,6 +37,8 @@ class ProcessBhavcopyCMV01 extends Command
             $avg_volumes = $this->avg_volumes();
             $highs = $this->highs();
             $lows = $this->lows();
+            DB::statement("update bhavcopy_processed partition($pname) set v1_processed = 1 where v1_processed = 0");
+            DB::statement("update bhavcopy_delv_position partition($pname) set v1_processed = 1 where v1_processed = 0");
             DB::commit();
         }catch (\Exception $e){
             $this->error($e->getMessage());
