@@ -8,6 +8,7 @@
 namespace App\Console\Commands\DataProcessing\v1;
 
 
+use App\ModelBhavCopyDelvPosition;
 use App\ModelBhavcopyProcessed;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
@@ -18,7 +19,7 @@ class ProcessBhavcopyCMV01 extends Command
     protected $signature = 'process:bhavcopy_v1';
     protected $description = 'Process version 1 of bhavcopy';
 
-    const LIMIT = 5;
+    const LIMIT = 10;
     private $partition_name; //partition name
     public function __construct(){
         parent::__construct();
@@ -30,8 +31,23 @@ class ProcessBhavcopyCMV01 extends Command
         $verification = $this->verify_data_integrity();
         if (!$verification) return;
         $this->info('data integrity passed.');
-        return;
 
+        $start_point = ModelBhavCopyDelvPosition::where('v1_processed', 0)->orderBy('id')->first();
+        $end_point = ModelBhavCopyDelvPosition::where('v1_processed', 0)->orderBy('id', 'desc')->first();
+
+        $start = ($start_point) ? $start_point->id : 0;
+        $end = ($end_point) ? $end_point->id + self::LIMIT : 0;
+
+        while ($start < $end){
+            $this->info(Carbon::now()  . ' : data process index : ' . $start);
+            $this->process();
+            $start += self::LIMIT;
+        }
+
+        $this->info('all data processed');
+    }
+
+    public function process(){
         DB::beginTransaction();
         try{
             $pname = $this->partition_name;
@@ -50,8 +66,6 @@ class ProcessBhavcopyCMV01 extends Command
             $this->error($e->getMessage());
             DB::rollBack();
         }
-
-        $this->info('all data processed');
     }
 
     public function copy_from_bhavcopies(){
