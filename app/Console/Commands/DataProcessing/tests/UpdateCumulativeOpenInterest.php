@@ -10,7 +10,6 @@ namespace App\Console\Commands\DataProcessing\tests;
 
 
 use App\ModelBhavcopyProcessed;
-use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 
@@ -35,7 +34,7 @@ class UpdateCumulativeOpenInterest extends Command
     }
 
     public function handle(){
-        $this->info('working...');
+//        $this->info('working...');
 
         ModelBhavcopyProcessed::where('v1_processed', 0)
             ->chunkById(100, function ($chunks) {
@@ -70,10 +69,10 @@ class UpdateCumulativeOpenInterest extends Command
                     $last_id = $c->id;
                 }
 
-                $this->info(Carbon::now() . " : $last_id records done");
+//                $this->info(Carbon::now() . " : $last_id records done");
             });
 
-        $this->info(Carbon::now() . ' : all done');
+//        $this->info(Carbon::now() . ' : all done');
     }
 
 }

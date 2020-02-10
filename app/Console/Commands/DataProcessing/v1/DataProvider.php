@@ -95,6 +95,11 @@ class DataProvider
 
     //get future data for date
     public function get_futures_for_date(string $symbol, Carbon $date, $is_index = false){
+//        $partition_name = "p_" . $date->year;
+//        $date = $date->format('Y-m-d');
+//        $instrument = ($is_index) ? 'FUTIDX' : 'FUTSTK';
+//        $out = DB::select(DB::raw("select * from bhavcopy_fo partition ($partition_name) where date=`$date` and symbol = $symbol and instrument = `$instrument`"))->get();
+//        return $out;
         return ModelBhavCopyFO::symbolAndDate($symbol, $date, ($is_index) ? 'FUTIDX' : 'FUTSTK')->get();
     }
 

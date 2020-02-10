@@ -8,7 +8,6 @@
 namespace App\Console\Commands\DataProcessing\v1;
 
 
-use App\ModelBhavCopyDelvPosition;
 use App\ModelBhavcopyProcessed;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
@@ -16,101 +15,141 @@ use Illuminate\Support\Facades\DB;
 
 class ProcessBhavcopyCMV01 extends Command
 {
-
-    private $MAX_DAYS = 4;
     protected $signature = 'process:bhavcopy_v1';
     protected $description = 'Process version 1 of bhavcopy';
 
+    const LIMIT = 5;
+    private $partition_name; //partition name
     public function __construct(){
         parent::__construct();
+        $this->partition_name = 'p_' . Carbon::now()->year;
     }
 
     public function handle(){
-        $provider = new DataProvider($this);
-
-        ModelBhavCopyDelvPosition::where('verified', 0)
-            ->where('v1_processed', 0)
-            ->chunkById(500, function ($chunks) use ($provider) {
-            foreach ($chunks as $c) {
-                $f_date = Carbon::createFromFormat('Y-m-d', $c->date);
-                $this->info("processing $c->symbol for $c->date");
-                $verification_id = $this->save_data($provider, $c->symbol, $f_date);
-                $c->update(['verified' => $verification_id]);
-            }
-        });
-    }
-
-
-    private function save_data(DataProvider $provider, $symbol, Carbon $date){
         DB::beginTransaction();
-        $is_index = false;
-        try {
-            $verified = $provider->verify_all_data_sources($symbol, $date, $is_index);
-            if (!$verified) {
-                DB::rollback();
-                return 2;
-            }
-
-            $this->info('verification_code -> ' . $verified);
-
-            $m = new ModelBhavcopyProcessed();
-            $cm = $provider->get_cm_for_date($symbol, $date);
-
-            $delv = $provider->get_delv_for_date($symbol, $date);
-            $options_data = $provider->get_calculated_option_data($symbol, $date, $is_index);
-
-            $m->symbol = $symbol;
-            $m->series = $cm->series;
-            $m->open = $cm->open;
-            $m->high = $cm->high;
-            $m->low = $cm->low;
-            $m->close = $cm->close;
-            $m->prevclose = $cm->prevclose;
-            $m->price_change = $provider->get_price_change($cm);
-            $m->volume = $cm->volume;
-            $m->dlv_qty = $delv->dlv_qty;
-            $m->pct_dlv_traded = $delv->pct_dlv_traded;
-            $m->cum_fut_oi = $provider->get_cum_fut_oi($symbol, $date, $is_index);
-            $m->change_cum_fut_oi = $provider->change_cum_fut_oi($symbol, $date, $is_index);
-
-            $m->cum_pe_oi = $options_data['cum_pe_oi'];
-            $m->cum_ce_oi = $options_data['cum_ce_oi'];
-
-            $m->change_cum_pe_oi = $options_data['change_cum_pe_oi'];
-            $m->change_cum_ce_oi = $options_data['change_cum_ce_oi'];
-
-            $m->pcr = $options_data['pcr'];
-
-            $m->max_pe_oi_strike = $options_data['max_pe_oi_strike'];
-            $m->max_ce_oi_strike = $options_data['max_ce_oi_strike'];
-
-            $m->avg_volume_five = $provider->avg_volume_cm_5($symbol, $date);
-            $m->avg_volume_ten = $provider->avg_volume_cm_10($symbol, $date);
-            $m->avg_volume_fifteen = $provider->avg_volume_cm_15($symbol, $date);
-            $m->avg_volume_fiftytwo = $provider->avg_volume_cm_52($symbol, $date);
-
-            $m->low_five = $provider->low_day_cm_5($symbol, $date);
-            $m->low_ten = $provider->low_day_cm_10($symbol, $date);
-            $m->low_fifteen = $provider->low_day_cm_15($symbol, $date);
-            $m->low_fiftytwo = $provider->low_day_cm_52($symbol, $date);
-
-            $m->high_five = $provider->high_day_cm_5($symbol, $date);
-            $m->high_ten = $provider->high_day_cm_10($symbol, $date);
-            $m->high_fifteen = $provider->high_day_cm_15($symbol, $date);
-            $m->high_fiftytwo = $provider->high_day_cm_52($symbol, $date);
-
-            $m->date = $date;
-            $m->save();
-
-            $delv->v1_processed = 1;
-            $delv->save();
-
+        try{
+            $copying = $this->copy_from_bhavcopies();
+            $price_change = $this->calculate_price_change();
+            $coi = $this->calculate_coi();
+            $delta_coi = $this->delta_coi();
+            $max_strike_price_oi = $this->max_strike_price_oi();
+            $avg_volumes = $this->avg_volumes();
+            $highs = $this->highs();
+            $lows = $this->lows();
             DB::commit();
-            return 1;
-        } catch (\Exception $e) {
+        }catch (\Exception $e){
             $this->error($e->getMessage());
-            DB::rollback();
-            return 2;
+            DB::rollBack();
         }
     }
+
+    public function copy_from_bhavcopies(){
+        $limit = self::LIMIT;
+        $pname = $this->partition_name;
+        $query = "insert into bhavcopy_processed (symbol, series, open, high, low, close, prevclose, volume, date, dlv_qty, pct_dlv_traded) ";
+        $query .= "select bc.symbol, bc.series, bc.open, bc.high, bc.low, bc.close, bc.prevclose, bc.volume, bc.date, bdp.dlv_qty, bdp.pct_dlv_traded from bhavcopy_cm partition($pname) as bc left join bhavcopy_delv_position as bdp on bc.symbol = bdp.symbol and bc.date = bdp.date and bc.series = bdp.series and bc.symbol in (select symbol from master_stocks_fo) and bc.series = 'EQ' where bdp.v1_processed = 0 limit $limit";
+        $output = DB::statement($query);
+        return $output;
+    }
+
+    public function calculate_price_change(){
+        $pname = $this->partition_name;
+        $query = "update bhavcopy_processed partition($pname) set price_change = ROUND(((close - prevclose) * 100) / prevclose, 2) where v1_processed = 0";
+        $output = DB::statement($query);
+        return $output;
+    }
+
+    public function calculate_coi(){
+        $pname = $this->partition_name;
+        $limit = self::LIMIT;
+        ModelBhavcopyProcessed::where('v1_processed', 0)
+            ->chunkById($limit, function ($chunks) use ($pname){
+                foreach ($chunks as $c) {
+                    $date = $c->date;
+                    $symbol = $c->symbol;
+                    $query = "select symbol, date, option_type, sum(oi) as total_oi, sum(change_in_oi) as total_change_oi from bhavcopy_fo partition($pname) where date= '$date' and symbol= '$symbol' group by symbol, date, option_type";
+                    $totals = DB::select(DB::raw($query));
+                    foreach ($totals as $t){
+                        switch ($t->option_type){
+                            case 'XX':
+                                $c->cum_fut_oi = $t->total_oi;
+                                $c->change_cum_fut_oi_val = $t->total_change_oi;
+                                break;
+                            case 'CE':
+                                $c->cum_ce_oi = $t->total_oi;
+                                $c->change_cum_ce_oi_val = $t->total_change_oi;
+                                break;
+                            case 'PE':
+                                $c->cum_pe_oi = $t->total_oi;
+                                $c->change_cum_pe_oi_val = $t->total_change_oi;
+                                break;
+                        }
+                    }
+                    $c->save();
+                }
+            });
+    }
+
+    public function delta_coi(){
+        $pname = $this->partition_name;
+        $query = "update bhavcopy_processed partition ($pname) set change_cum_fut_oi = ROUND((change_cum_fut_oi_val * 100) / (cum_fut_oi - (change_cum_fut_oi_val)), 2) where v1_processed = 0";
+        $output = DB::statement($query);
+
+        $query = "update bhavcopy_processed partition ($pname) set change_cum_pe_oi = ROUND((change_cum_pe_oi_val * 100) / (cum_pe_oi - (change_cum_pe_oi_val)), 2) where v1_processed = 0";
+        $output = DB::statement($query);
+
+        $query = "update bhavcopy_processed partition ($pname) set change_cum_ce_oi = ROUND((change_cum_ce_oi_val * 100) / (cum_ce_oi - (change_cum_ce_oi_val)), 2) where v1_processed = 0";
+        $output = DB::statement($query);
+
+        $query = "update bhavcopy_processed partition ($pname) set pcr = ROUND(cum_pe_oi / cum_ce_oi, 2) where v1_processed = 0";
+        $output = DB::statement($query);
+    }
+
+    public function max_strike_price_oi(){
+        ModelBhavcopyProcessed::where('v1_processed', 0)
+            ->chunkById(self::LIMIT, function ($chunks){
+                foreach ($chunks as $c) {
+
+                    $now = Carbon::parse($c->date);
+                    $partition_name = "p_" . $now->year;
+
+                    $type = 'PE';
+                    $column_name = 'max_pe_oi_strike';
+
+                    $query = "select strike_price from bhavcopy_fo partition($partition_name) where symbol = '$c->symbol' and date = '$c->date' and option_type = '$type' order by oi desc limit 1";
+                    $output = DB::select(DB::raw($query));
+                    $strike_price = (isset($output[0]->strike_price)) ? $output[0]->strike_price : 0;
+                    DB::statement("update bhavcopy_processed partition ($partition_name)  set $column_name = $strike_price where id = $c->id");
+
+                    $type = 'CE';
+                    $column_name = 'max_ce_oi_strike';
+                    $query = "select strike_price from bhavcopy_fo partition($partition_name) where symbol = '$c->symbol' and date = '$c->date' and option_type = '$type' order by oi desc limit 1";
+                    $output = DB::select(DB::raw($query));
+                    $strike_price = (isset($output[0]->strike_price)) ? $output[0]->strike_price : 0;
+                    DB::statement("update bhavcopy_processed partition ($partition_name) set $column_name = $strike_price where id = $c->id");
+                }
+            });
+    }
+
+    public function avg_volumes(){
+        DB::statement("update bhavcopy_processed as bp set bp.avg_volume_five = IFNULL((select avg(volume) as avg_vol from (select volume from bhavcopy_cm where symbol= bp.symbol and date < bp.date order by date desc limit 5) as vols), 0) where bp.v1_processed = 0");
+        DB::statement("update bhavcopy_processed as bp set bp.avg_volume_ten = IFNULL((select avg(volume) as avg_vol from (select volume from bhavcopy_cm where symbol= bp.symbol and date < bp.date order by date desc limit 10) as vols), 0) where bp.v1_processed = 0");
+        DB::statement("update bhavcopy_processed as bp set bp.avg_volume_fifteen = IFNULL((select avg(volume) as avg_vol from (select volume from bhavcopy_cm where symbol= bp.symbol and date < bp.date order by date desc limit 15) as vols), 0) where bp.v1_processed = 0");
+        DB::statement("update bhavcopy_processed as bp set bp.avg_volume_fiftytwo = IFNULL((select avg(volume) as avg_vol from (select volume from bhavcopy_cm where symbol= bp.symbol and date < bp.date order by date desc limit 52) as vols), 0) where bp.v1_processed = 0");
+    }
+
+    public function highs(){
+        DB::statement("update bhavcopy_processed as bp set bp.high_five = IFNULL((select max(high) as max_high from (select high from bhavcopy_cm as bc where bc.symbol= bp.symbol and bc.date < bp.date order by bc.date desc limit 5) as highs), 0) where bp.v1_processed = 0");
+        DB::statement("update bhavcopy_processed as bp set bp.high_ten = IFNULL((select max(high) as max_high from (select high from bhavcopy_cm as bc where bc.symbol= bp.symbol and bc.date < bp.date order by bc.date desc limit 10) as highs), 0) where bp.v1_processed = 0");
+        DB::statement("update bhavcopy_processed as bp set bp.high_fifteen = IFNULL((select max(high) as max_high from (select high from bhavcopy_cm as bc where bc.symbol= bp.symbol and bc.date < bp.date order by bc.date desc limit 15) as highs), 0) where bp.v1_processed = 0");
+        DB::statement("update bhavcopy_processed as bp set bp.high_fiftytwo = IFNULL((select max(high) as max_high from (select high from bhavcopy_cm as bc where bc.symbol= bp.symbol and bc.date < bp.date order by bc.date desc limit 52) as highs), 0) where bp.v1_processed = 0");
+    }
+
+    public function lows(){
+        DB::statement("update bhavcopy_processed as bp set bp.low_five = IFNULL((select min(low) as min_low from (select low from bhavcopy_cm as bc where bc.symbol= bp.symbol and bc.date < bp.date order by bc.date desc limit 5) as lows), 0) where bp.v1_processed = 0");
+        DB::statement("update bhavcopy_processed as bp set bp.low_ten = IFNULL((select min(low) as min_low from (select low from bhavcopy_cm as bc where bc.symbol= bp.symbol and bc.date < bp.date order by bc.date desc limit 10) as lows), 0) where bp.v1_processed = 0");
+        DB::statement("update bhavcopy_processed as bp set bp.low_fifteen = IFNULL((select min(low) as min_low from (select low from bhavcopy_cm as bc where bc.symbol= bp.symbol and bc.date < bp.date order by bc.date desc limit 15) as lows), 0) where bp.v1_processed = 0");
+        DB::statement("update bhavcopy_processed as bp set bp.low_fiftytwo = IFNULL((select min(low) as min_low from (select low from bhavcopy_cm as bc where bc.symbol= bp.symbol and bc.date < bp.date order by bc.date desc limit 52) as lows), 0) where bp.v1_processed = 0");
+    }
+
 }
