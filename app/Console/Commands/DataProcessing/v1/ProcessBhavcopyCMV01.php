@@ -26,6 +26,12 @@ class ProcessBhavcopyCMV01 extends Command
     }
 
     public function handle(){
+        $this->info('starting...');
+        $verification = $this->verify_data_integrity();
+        if (!$verification) return;
+        $this->info('data integrity passed.');
+        return;
+
         DB::beginTransaction();
         try{
             $pname = $this->partition_name;
@@ -44,6 +50,8 @@ class ProcessBhavcopyCMV01 extends Command
             $this->error($e->getMessage());
             DB::rollBack();
         }
+
+        $this->info('all data processed');
     }
 
     public function copy_from_bhavcopies(){
@@ -153,6 +161,35 @@ class ProcessBhavcopyCMV01 extends Command
         DB::statement("update bhavcopy_processed as bp set bp.low_ten = IFNULL((select min(low) as min_low from (select low from bhavcopy_cm as bc where bc.symbol= bp.symbol and bc.date < bp.date order by bc.date desc limit 10) as lows), 0) where bp.v1_processed = 0");
         DB::statement("update bhavcopy_processed as bp set bp.low_fifteen = IFNULL((select min(low) as min_low from (select low from bhavcopy_cm as bc where bc.symbol= bp.symbol and bc.date < bp.date order by bc.date desc limit 15) as lows), 0) where bp.v1_processed = 0");
         DB::statement("update bhavcopy_processed as bp set bp.low_fiftytwo = IFNULL((select min(low) as min_low from (select low from bhavcopy_cm as bc where bc.symbol= bp.symbol and bc.date < bp.date order by bc.date desc limit 52) as lows), 0) where bp.v1_processed = 0");
+    }
+
+    private function verify_data_integrity()
+    {
+        $limit = 10;
+        $cm = DB::table('bhavcopy_cm')->select('date')->distinct('date')->orderBy('date', 'desc')->limit(10)->get();
+        $fo = DB::table('bhavcopy_fo')->select('date')->distinct('date')->orderBy('date', 'desc')->limit(10)->get();
+        $delv = DB::table('bhavcopy_delv_position')->select('date')->distinct('date')->orderBy('date', 'desc')->limit(10)->get();
+
+
+        if (count($cm) != count($fo) || count($fo) != count($delv)){
+            $this->error('count does not match up');
+            return false;
+        }
+
+        for ($i = 0; $i < $limit; $i++){
+            $date_cm = $cm[$i]->date;
+            $date_fo = $fo[$i]->date;
+            $date_delv = $delv[$i]->date;
+
+            if ($date_cm == $date_fo && $date_cm == $date_delv){
+
+            }else{
+                $this->error('data dates does not match up.');
+                return false;
+            }
+        }
+
+        return true;
     }
 
 }
