@@ -33,7 +33,7 @@ class UpdateHighLowPrices extends Command
         $this->info('working...');
 
         $total_records = ModelBhavcopyProcessed::where('v1_processed', 0)->count();
-        $batch_size = 1000;
+        $batch_size = 100;
         $min = ModelBhavcopyProcessed::where('v1_processed', 0)->first();
         $min = ($min) ? $min->id : 1;
         $max = $min + $batch_size;

@@ -33,7 +33,6 @@ class DeleteUselessFOEntries extends Command
         $this->clean('bhavcopy_delv_position');
 
 
-
         $end_time = microtime(true);
         $execution_time = round(($end_time - $start_time), 2);
 
