@@ -34,7 +34,7 @@ class SendLogsViaMail extends Command{
         }else{
             $msg = '';
             foreach ($logs as $l){
-                $msg .= $l->created_at . ' : ' . $l->id . ' -> ' . $l->log_type . ' -> ' . $l->msg . '\n';
+                $msg .= $l->created_at . ' : ' . $l->id . ' -> ' . $l->log_type . ' -> ' . $l->msg . '<br>';
             }
             $mail->send_basic_email(['msg' => $msg], $subject);
             $this->info($msg);
