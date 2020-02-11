@@ -8,7 +8,6 @@
 namespace App\Console\Commands\DataProcessing\v1;
 
 
-use App\ModelBhavCopyDelvPosition;
 use App\ModelBhavcopyProcessed;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
@@ -19,7 +18,6 @@ class ProcessBhavcopyCMV01 extends Command
     protected $signature = 'process:bhavcopy_v1';
     protected $description = 'Process version 1 of bhavcopy';
 
-    const LIMIT = 10;
     private $partition_name; //partition name
     public function __construct(){
         parent::__construct();
@@ -31,18 +29,15 @@ class ProcessBhavcopyCMV01 extends Command
         $verification = $this->verify_data_integrity();
         if (!$verification) return;
         $this->info('data integrity passed.');
-
-        $start_point = ModelBhavCopyDelvPosition::where('v1_processed', 0)->orderBy('id')->first();
-        $end_point = ModelBhavCopyDelvPosition::where('v1_processed', 0)->orderBy('id', 'desc')->first();
-
-        $start = ($start_point) ? $start_point->id : 0;
-        $end = ($end_point) ? $end_point->id + self::LIMIT : 0;
-
-        while ($start < $end){
-            $this->info(Carbon::now()  . ' : data process index : ' . $start);
-            $this->process();
-            $start += self::LIMIT;
+        $this->info('copying from bhavcopy_delv_position');
+        $copying = $this->copy_from_bhavcopies();
+        if (!$copying){
+            $this->error('error in copying..');
+            return;
         }
+        $this->info('copying done, records copied :' . ModelBhavcopyProcessed::where('v1_processed', 0)->count());
+
+        $this->process();
 
         $this->info('all data processed');
     }
@@ -51,11 +46,6 @@ class ProcessBhavcopyCMV01 extends Command
         DB::beginTransaction();
         try{
             $pname = $this->partition_name;
-            $copying = $this->copy_from_bhavcopies();
-            if (!$copying){
-                $this->error('error in copying..');
-                return;
-            }
 
             $price_change = $this->calculate_price_change();
             if (!$price_change){
@@ -77,8 +67,10 @@ class ProcessBhavcopyCMV01 extends Command
             $highs = $this->highs();
             $lows = $this->lows();
 
+            $this->info(ModelBhavcopyProcessed::where('v1_processed', 0)->count() . ' records processed and ready to commit');
+
             DB::statement("update bhavcopy_processed partition($pname) set v1_processed = 1 where v1_processed = 0");
-            DB::statement("update bhavcopy_delv_position partition($pname) set v1_processed = 1 where v1_processed = 0");
+
             DB::commit();
         }catch (\Exception $e){
             $this->error($e->getMessage());
@@ -87,11 +79,11 @@ class ProcessBhavcopyCMV01 extends Command
     }
 
     public function copy_from_bhavcopies(){
-        $limit = self::LIMIT;
         $pname = $this->partition_name;
         $query = "insert into bhavcopy_processed (symbol, series, open, high, low, close, prevclose, volume, date, dlv_qty, pct_dlv_traded) ";
-        $query .= "select bc.symbol, bc.series, bc.open, bc.high, bc.low, bc.close, bc.prevclose, bc.volume, bc.date, bdp.dlv_qty, bdp.pct_dlv_traded from bhavcopy_cm partition($pname) as bc left join bhavcopy_delv_position as bdp on bc.symbol = bdp.symbol and bc.date = bdp.date and bc.series = bdp.series and bc.symbol in (select symbol from master_stocks_fo) and bc.series = 'EQ' where bdp.v1_processed = 0 limit $limit";
+        $query .= "select bc.symbol, bc.series, bc.open, bc.high, bc.low, bc.close, bc.prevclose, bc.volume, bc.date, bdp.dlv_qty, bdp.pct_dlv_traded from bhavcopy_cm partition($pname) as bc left join bhavcopy_delv_position as bdp on bc.symbol = bdp.symbol and bc.date = bdp.date and bc.series = bdp.series and bc.symbol in (select symbol from master_stocks_fo) and bc.series = 'EQ' where bdp.v1_processed = 0";
         $output = DB::statement($query);
+        $output = DB::statement("update bhavcopy_delv_position partition($pname) set v1_processed = 1 where v1_processed = 0");
         return $output;
     }
 
@@ -104,9 +96,8 @@ class ProcessBhavcopyCMV01 extends Command
 
     public function calculate_coi(){
         $pname = $this->partition_name;
-        $limit = self::LIMIT;
         ModelBhavcopyProcessed::where('v1_processed', 0)
-            ->chunkById($limit, function ($chunks) use ($pname){
+            ->chunkById(100, function ($chunks) use ($pname){
                 foreach ($chunks as $c) {
                     $date = $c->date;
                     $symbol = $c->symbol;
@@ -154,7 +145,7 @@ class ProcessBhavcopyCMV01 extends Command
 
     public function max_strike_price_oi(){
         ModelBhavcopyProcessed::where('v1_processed', 0)
-            ->chunkById(self::LIMIT, function ($chunks){
+            ->chunkById(100, function ($chunks){
                 foreach ($chunks as $c) {
 
                     $now = Carbon::parse($c->date);
