@@ -52,26 +52,32 @@ class ProcessBhavcopyCMV01 extends Command
                 $this->error('error in price change..');
                 return;
             }
-
+            $this->info('1. price change calculated success');
             $coi = $this->calculate_coi();
+            $this->info('2. coi calculated success');
 
             $delta_coi = $this->delta_coi();
             if (!$delta_coi){
                 $this->error('error in delta coi..');
                 return;
             }
-
+            $this->info('3. delta coi calculated success');
 
             $max_strike_price_oi = $this->max_strike_price_oi();
+            $this->info('4. max strike price oi calculated success');
             $avg_volumes = $this->avg_volumes();
+            $this->info('5. avg volumes calculated success');
             $highs = $this->highs();
+            $this->info('6. highs calculated success');
             $lows = $this->lows();
+            $this->info('7. lows calculated success');
 
             $this->info(ModelBhavcopyProcessed::where('v1_processed', 0)->count() . ' records processed and ready to commit');
 
             DB::statement("update bhavcopy_processed partition($pname) set v1_processed = 1 where v1_processed = 0");
 
             DB::commit();
+            $this->info('saved successfully');
         }catch (\Exception $e){
             $this->error($e->getMessage());
             DB::rollBack();
@@ -89,7 +95,7 @@ class ProcessBhavcopyCMV01 extends Command
 
     public function calculate_price_change(){
         $pname = $this->partition_name;
-        $query = "update bhavcopy_processed partition($pname) set price_change = ROUND(((close - prevclose) * 100) / prevclose, 2) where v1_processed = 0";
+        $query = "update bhavcopy_processed partition($pname) set price_change = ROUND(((close - prevclose) * 100) / NULLIF(prevclose, 0), 2) where v1_processed = 0";
         $output = DB::statement($query);
         return $output;
     }
@@ -126,19 +132,19 @@ class ProcessBhavcopyCMV01 extends Command
 
     public function delta_coi(){
         $pname = $this->partition_name;
-        $query = "update bhavcopy_processed partition ($pname) set change_cum_fut_oi = ROUND((change_cum_fut_oi_val * 100) / (cum_fut_oi - (change_cum_fut_oi_val)), 2) where v1_processed = 0";
+        $query = "update bhavcopy_processed partition ($pname) set change_cum_fut_oi = ROUND((change_cum_fut_oi_val * 100) / NULLIF((cum_fut_oi - (change_cum_fut_oi_val)), 0), 2) where v1_processed = 0";
         $output = DB::statement($query);
         if (!$output) return $output;
 
-        $query = "update bhavcopy_processed partition ($pname) set change_cum_pe_oi = ROUND((change_cum_pe_oi_val * 100) / (cum_pe_oi - (change_cum_pe_oi_val)), 2) where v1_processed = 0";
+        $query = "update bhavcopy_processed partition ($pname) set change_cum_pe_oi = ROUND((change_cum_pe_oi_val * 100) / NULLIF((cum_pe_oi - (change_cum_pe_oi_val)), 0), 2) where v1_processed = 0";
         $output = DB::statement($query);
         if (!$output) return $output;
 
-        $query = "update bhavcopy_processed partition ($pname) set change_cum_ce_oi = ROUND((change_cum_ce_oi_val * 100) / (cum_ce_oi - (change_cum_ce_oi_val)), 2) where v1_processed = 0";
+        $query = "update bhavcopy_processed partition ($pname) set change_cum_ce_oi = ROUND((change_cum_ce_oi_val * 100) / NULLIF((cum_ce_oi - (change_cum_ce_oi_val)), 0), 2) where v1_processed = 0";
         $output = DB::statement($query);
         if (!$output) return $output;
 
-        $query = "update bhavcopy_processed partition ($pname) set pcr = ROUND(cum_pe_oi / cum_ce_oi, 2) where v1_processed = 0";
+        $query = "update bhavcopy_processed partition ($pname) set pcr = ROUND(cum_pe_oi / NULLIF(cum_ce_oi, 0), 2) where v1_processed = 0";
         $output = DB::statement($query);
         if (!$output) return $output;
     }
