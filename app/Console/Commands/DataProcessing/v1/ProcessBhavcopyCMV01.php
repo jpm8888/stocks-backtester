@@ -16,16 +16,20 @@ use Illuminate\Support\Facades\DB;
 
 class ProcessBhavcopyCMV01 extends Command
 {
-    protected $signature = 'process:bhavcopy_v1';
+    protected $signature = 'process:bhavcopy_v1 {year}';
     protected $description = 'Process version 1 of bhavcopy';
 
     private $partition_name; //partition name
     public function __construct(){
         parent::__construct();
-        $this->partition_name = 'p_' . Carbon::now()->year;
+
     }
 
     public function handle(){
+        //year will be use in determining partition name
+        $year = $this->argument('year');
+        $this->partition_name = 'p_' . (trim($year) == '') ? Carbon::now()->year : $year;
+
         $this->write_log('starting...');
         $verification = $this->verify_data_integrity();
         if (!$verification) return;
@@ -243,6 +247,7 @@ class ProcessBhavcopyCMV01 extends Command
     private function write_log($msg){
         $logger = new Logger();
         $logger->insertLog(Logger::LOG_TYPE_V1_PROCESSING, $msg);
+        $this->info(Carbon::now() . ' : ' . $msg);
     }
 
 }
