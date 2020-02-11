@@ -159,6 +159,8 @@ class ProcessBhavcopyCMV01 extends Command
             $this->warn('error in pcr calculating...');
             return $output;
         }
+
+        return $output;
     }
 
     public function max_strike_price_oi(){
