@@ -14,6 +14,7 @@ class Kernel extends ConsoleKernel
         Commands\DownloadBhavCopyCM::class,
         Commands\DownloadBhavCopyFO::class,
         Commands\DownloadSecurityWiseDelvPos::class,
+        Commands\SendLogsViaMail::class,
         Commands\DataProcessing\v1\ProcessBhavcopyCMV01::class,
     ];
 
@@ -26,6 +27,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('download:delv_wise_positions')->weekdays()->at('18:35');
         $schedule->command('download:bhavcopy_fo')->weekdays()->at('18:40');
         $schedule->command('process:bhavcopy_v1')->weekdays()->at('18:50');
+        $schedule->command('send_mail:logs')->weekdays()->at('19:30');
         $schedule->command('delete:temp')->dailyAt('00:00');
     }
 
