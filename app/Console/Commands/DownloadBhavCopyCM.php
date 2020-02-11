@@ -3,7 +3,6 @@
 namespace App\Console\Commands;
 
 use App\ExcelModels\ExcelModelBhavCopyCM;
-use App\Http\Controllers\MailController;
 use App\Http\Controllers\Utils\Logger;
 use App\ModelLog;
 use App\ModelMasterStocksFO;
@@ -51,9 +50,9 @@ class DownloadBhavCopyCM extends Command
             $this->start_download($date);
         }
 
-         $mail = new MailController();
-         $msg = "Successfully imported cash market data for date : " .  Carbon::now()->format('d-m-Y');
-         $mail->send_basic_email(['msg' => $msg], 'Cash market copy added');
+         //$mail = new MailController();
+         //$msg = "Successfully imported cash market data for date : " .  Carbon::now()->format('d-m-Y');
+         //$mail->send_basic_email(['msg' => $msg], 'Cash market copy added');
     }
 
     public function start_download(Carbon $date){

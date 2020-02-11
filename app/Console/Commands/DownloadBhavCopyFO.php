@@ -3,7 +3,6 @@
 namespace App\Console\Commands;
 
 use App\ExcelModels\ExcelModelBhavCopyFO;
-use App\Http\Controllers\MailController;
 use App\Http\Controllers\Utils\Logger;
 use App\ModelLog;
 use App\ModelMasterStocksFO;
@@ -47,15 +46,9 @@ class DownloadBhavCopyFO extends Command
             $date = $from_date->addDay();
             $this->start_download($date);
         }
-
-        $mail = new MailController();
-        $msg = "Successfully imported fno market data for date : " .  Carbon::now()->format('d-m-Y');
-        $mail->send_basic_email(['msg' => $msg], 'FNO copy added');
     }
 
     private function start_download(Carbon $date){
-//        $flag = $date->isWeekday();
-//        if (!$flag) return false;
 
         $flag = $this->check_already_imported($date);
         if (!$flag) return false;
@@ -73,6 +66,9 @@ class DownloadBhavCopyFO extends Command
 
         $filepath = $this->extract_zip($filepath);
         $this->import_to_database($filepath, $filename);
+
+        $logger = new Logger();
+        $logger->insertLog(Logger::LOG_TYPE_FNO_COPY_ADDED, 'FNO records added for date : ' . $date->format('d-m-Y'));
     }
 
 
@@ -91,9 +87,7 @@ class DownloadBhavCopyFO extends Command
         $fo_stocks = ModelMasterStocksFO::select('symbol')->get()->pluck('symbol')->toArray();
         (new ExcelModelBhavCopyFO($fo_stocks))->withOutput($this->output)->import("$filepath/$filename");
 
-        $logger = new Logger();
         $msg = "Successfully imported FNO records...";
-        //$logger->insertLog(Logger::LOG_TYPE_FNO_COPY_ADDED, $msg);
         $this->output->success($msg);
     }
 

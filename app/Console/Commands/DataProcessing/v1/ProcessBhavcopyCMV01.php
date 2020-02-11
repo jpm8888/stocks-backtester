@@ -8,6 +8,7 @@
 namespace App\Console\Commands\DataProcessing\v1;
 
 
+use App\Http\Controllers\Utils\Logger;
 use App\ModelBhavcopyProcessed;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
@@ -25,21 +26,21 @@ class ProcessBhavcopyCMV01 extends Command
     }
 
     public function handle(){
-        $this->info('starting...');
+        $this->write_log('starting...');
         $verification = $this->verify_data_integrity();
         if (!$verification) return;
-        $this->info('data integrity passed.');
-        $this->info('copying from bhavcopy_delv_position');
+        $this->write_log('data integrity passed.');
+        $this->write_log('copying from bhavcopy_delv_position');
         $copying = $this->copy_from_bhavcopies();
         if (!$copying){
-            $this->error('error in copying..');
+            $this->write_log('error : in copying..');
             return;
         }
-        $this->info('copying done, records copied :' . ModelBhavcopyProcessed::where('v1_processed', 0)->count());
+        $this->write_log('copying done, records copied :' . ModelBhavcopyProcessed::where('v1_processed', 0)->count());
 
         $this->process();
 
-        $this->info('all data processed');
+        $this->write_log('all data processed');
     }
 
     public function process(){
@@ -49,37 +50,37 @@ class ProcessBhavcopyCMV01 extends Command
 
             $price_change = $this->calculate_price_change();
             if (!$price_change){
-                $this->error('error in price change..');
+                $this->write_log('error : in price change..');
                 return;
             }
-            $this->info('1. price change calculated success');
+            $this->write_log('1. price change calculated success');
             $coi = $this->calculate_coi();
-            $this->info('2. coi calculated success');
+            $this->write_log('2. coi calculated success');
 
             $delta_coi = $this->delta_coi();
             if (!$delta_coi){
-                $this->error('error in delta coi..');
+                $this->write_log('error : in delta coi..');
                 return;
             }
-            $this->info('3. delta coi calculated success');
+            $this->write_log('3. delta coi calculated success');
 
             $max_strike_price_oi = $this->max_strike_price_oi();
-            $this->info('4. max strike price oi calculated success');
+            $this->write_log('4. max strike price oi calculated success');
             $avg_volumes = $this->avg_volumes();
-            $this->info('5. avg volumes calculated success');
+            $this->write_log('5. avg volumes calculated success');
             $highs = $this->highs();
-            $this->info('6. highs calculated success');
+            $this->write_log('6. highs calculated success');
             $lows = $this->lows();
-            $this->info('7. lows calculated success');
+            $this->write_log('7. lows calculated success');
 
-            $this->info(ModelBhavcopyProcessed::where('v1_processed', 0)->count() . ' records processed and ready to commit');
+            $this->write_log(ModelBhavcopyProcessed::where('v1_processed', 0)->count() . ' records processed and ready to commit');
 
             DB::statement("update bhavcopy_processed partition($pname) set v1_processed = 1 where v1_processed = 0");
 
             DB::commit();
-            $this->info('saved successfully');
+            $this->write_log('saved successfully');
         }catch (\Exception $e){
-            $this->error($e->getMessage());
+            $this->write_log('error exception : ' . $e->getMessage());
             DB::rollBack();
         }
     }
@@ -135,28 +136,28 @@ class ProcessBhavcopyCMV01 extends Command
         $query = "update bhavcopy_processed partition ($pname) set change_cum_fut_oi = IFNULL(ROUND((change_cum_fut_oi_val * 100) / NULLIF((cum_fut_oi - (change_cum_fut_oi_val)), 0), 2), 0) where v1_processed = 0";
         $output = DB::statement($query);
         if (!$output) {
-            $this->warn('error in change_cum_fut_oi calculating...');
+            $this->write_log('error in change_cum_fut_oi calculating...');
             return $output;
         }
 
         $query = "update bhavcopy_processed partition ($pname) set change_cum_pe_oi = IFNULL(ROUND((change_cum_pe_oi_val * 100) / NULLIF((cum_pe_oi - (change_cum_pe_oi_val)), 0), 2), 0) where v1_processed = 0";
         $output = DB::statement($query);
         if (!$output) {
-            $this->warn('error in change_cum_pe_oi calculating...');
+            $this->write_log('error in change_cum_pe_oi calculating...');
             return $output;
         }
 
         $query = "update bhavcopy_processed partition ($pname) set change_cum_ce_oi = IFNULL(ROUND((change_cum_ce_oi_val * 100) / NULLIF((cum_ce_oi - (change_cum_ce_oi_val)), 0), 2), 0) where v1_processed = 0";
         $output = DB::statement($query);
         if (!$output) {
-            $this->warn('error in change_cum_ce_oi calculating...');
+            $this->write_log('error in change_cum_ce_oi calculating...');
             return $output;
         }
 
         $query = "update bhavcopy_processed partition ($pname) set pcr = IFNULL(ROUND(cum_pe_oi / NULLIF(cum_ce_oi, 0), 2), 0) where v1_processed = 0";
         $output = DB::statement($query);
         if (!$output) {
-            $this->warn('error in pcr calculating...');
+            $this->write_log('error in pcr calculating...');
             return $output;
         }
 
@@ -219,7 +220,7 @@ class ProcessBhavcopyCMV01 extends Command
 
 
         if (count($cm) != count($fo) || count($fo) != count($delv)){
-            $this->error('count does not match up');
+            $this->write_log('error : count does not match up');
             return false;
         }
 
@@ -231,12 +232,17 @@ class ProcessBhavcopyCMV01 extends Command
             if ($date_cm == $date_fo && $date_cm == $date_delv){
 
             }else{
-                $this->error('data dates does not match up.');
+                $this->write_log('error : data dates does not match up.');
                 return false;
             }
         }
 
         return true;
+    }
+
+    private function write_log($msg){
+        $logger = new Logger();
+        $logger->insertLog(Logger::LOG_TYPE_V1_PROCESSING, $msg);
     }
 
 }
