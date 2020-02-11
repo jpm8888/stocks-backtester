@@ -16,7 +16,7 @@ use Illuminate\Support\Facades\DB;
 
 class ProcessBhavcopyCMV01 extends Command
 {
-    protected $signature = 'process:bhavcopy_v1 {year}';
+    protected $signature = 'process:bhavcopy_v1 {year?}';
     protected $description = 'Process version 1 of bhavcopy';
 
     private $partition_name; //partition name
@@ -28,7 +28,10 @@ class ProcessBhavcopyCMV01 extends Command
     public function handle(){
         //year will be use in determining partition name
         $year = $this->argument('year');
-        $this->partition_name = 'p_' . (trim($year) == '') ? Carbon::now()->year : $year;
+        $this->partition_name = 'p_' . ((trim($year) == '') ? Carbon::now()->year : $year);
+
+        $this->info('working on partition : ' . $this->partition_name);
+        return;
 
         $this->write_log('starting...');
         $verification = $this->verify_data_integrity();
