@@ -1,5 +1,5 @@
 <html>
 <body>
-    <p>{{nl2br($msg)}}</p>
+    <p>{!! $msg !!}</p>
 </body>
 </html>
