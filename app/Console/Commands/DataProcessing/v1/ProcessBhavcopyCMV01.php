@@ -29,9 +29,8 @@ class ProcessBhavcopyCMV01 extends Command
         //year will be use in determining partition name
         $year = $this->argument('year');
         $this->partition_name = 'p_' . ((trim($year) == '') ? Carbon::now()->year : $year);
+        $this->write_log('working on partition : ' . $this->partition_name);
 
-        $this->info('working on partition : ' . $this->partition_name);
-        return;
 
         $this->write_log('starting...');
         $verification = $this->verify_data_integrity();
