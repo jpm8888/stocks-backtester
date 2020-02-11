@@ -2,7 +2,6 @@
 
 namespace App\Console\Commands;
 
-use App\Http\Controllers\MailController;
 use App\Http\Controllers\Utils\Logger;
 use App\ModelBhavCopyDelvPosition;
 use App\ModelMasterStocksFO;
@@ -47,9 +46,6 @@ class DownloadSecurityWiseDelvPos extends Command
             $this->start_download($date);
         }
 
-         $mail = new MailController();
-         $msg = "Successfully imported security wise delivery positions for date : " .  Carbon::now()->format('d-m-Y');
-         $mail->send_basic_email(['msg' => $msg], 'Security Wise Delivery Positions copy added');
     }
 
     private function start_download(Carbon $date){
