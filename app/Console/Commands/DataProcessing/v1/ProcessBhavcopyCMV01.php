@@ -52,13 +52,31 @@ class ProcessBhavcopyCMV01 extends Command
         try{
             $pname = $this->partition_name;
             $copying = $this->copy_from_bhavcopies();
+            if (!$copying){
+                $this->error('error in copying..');
+                return;
+            }
+
             $price_change = $this->calculate_price_change();
+            if (!$price_change){
+                $this->error('error in price change..');
+                return;
+            }
+
             $coi = $this->calculate_coi();
+
             $delta_coi = $this->delta_coi();
+            if (!$delta_coi){
+                $this->error('error in delta coi..');
+                return;
+            }
+
+
             $max_strike_price_oi = $this->max_strike_price_oi();
             $avg_volumes = $this->avg_volumes();
             $highs = $this->highs();
             $lows = $this->lows();
+
             DB::statement("update bhavcopy_processed partition($pname) set v1_processed = 1 where v1_processed = 0");
             DB::statement("update bhavcopy_delv_position partition($pname) set v1_processed = 1 where v1_processed = 0");
             DB::commit();
@@ -119,15 +137,19 @@ class ProcessBhavcopyCMV01 extends Command
         $pname = $this->partition_name;
         $query = "update bhavcopy_processed partition ($pname) set change_cum_fut_oi = ROUND((change_cum_fut_oi_val * 100) / (cum_fut_oi - (change_cum_fut_oi_val)), 2) where v1_processed = 0";
         $output = DB::statement($query);
+        if (!$output) return $output;
 
         $query = "update bhavcopy_processed partition ($pname) set change_cum_pe_oi = ROUND((change_cum_pe_oi_val * 100) / (cum_pe_oi - (change_cum_pe_oi_val)), 2) where v1_processed = 0";
         $output = DB::statement($query);
+        if (!$output) return $output;
 
         $query = "update bhavcopy_processed partition ($pname) set change_cum_ce_oi = ROUND((change_cum_ce_oi_val * 100) / (cum_ce_oi - (change_cum_ce_oi_val)), 2) where v1_processed = 0";
         $output = DB::statement($query);
+        if (!$output) return $output;
 
         $query = "update bhavcopy_processed partition ($pname) set pcr = ROUND(cum_pe_oi / cum_ce_oi, 2) where v1_processed = 0";
         $output = DB::statement($query);
+        if (!$output) return $output;
     }
 
     public function max_strike_price_oi(){
