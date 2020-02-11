@@ -134,19 +134,31 @@ class ProcessBhavcopyCMV01 extends Command
         $pname = $this->partition_name;
         $query = "update bhavcopy_processed partition ($pname) set change_cum_fut_oi = IFNULL(ROUND((change_cum_fut_oi_val * 100) / NULLIF((cum_fut_oi - (change_cum_fut_oi_val)), 0), 2), 0) where v1_processed = 0";
         $output = DB::statement($query);
-        if (!$output) return $output;
+        if (!$output) {
+            $this->warn('error in change_cum_fut_oi calculating...');
+            return $output;
+        }
 
         $query = "update bhavcopy_processed partition ($pname) set change_cum_pe_oi = IFNULL(ROUND((change_cum_pe_oi_val * 100) / NULLIF((cum_pe_oi - (change_cum_pe_oi_val)), 0), 2), 0) where v1_processed = 0";
         $output = DB::statement($query);
-        if (!$output) return $output;
+        if (!$output) {
+            $this->warn('error in change_cum_pe_oi calculating...');
+            return $output;
+        }
 
         $query = "update bhavcopy_processed partition ($pname) set change_cum_ce_oi = IFNULL(ROUND((change_cum_ce_oi_val * 100) / NULLIF((cum_ce_oi - (change_cum_ce_oi_val)), 0), 2), 0) where v1_processed = 0";
         $output = DB::statement($query);
-        if (!$output) return $output;
+        if (!$output) {
+            $this->warn('error in change_cum_ce_oi calculating...');
+            return $output;
+        }
 
         $query = "update bhavcopy_processed partition ($pname) set pcr = IFNULL(ROUND(cum_pe_oi / NULLIF(cum_ce_oi, 0), 2), 0) where v1_processed = 0";
         $output = DB::statement($query);
-        if (!$output) return $output;
+        if (!$output) {
+            $this->warn('error in pcr calculating...');
+            return $output;
+        }
     }
 
     public function max_strike_price_oi(){
