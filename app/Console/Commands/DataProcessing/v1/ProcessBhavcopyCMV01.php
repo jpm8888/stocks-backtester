@@ -95,7 +95,7 @@ class ProcessBhavcopyCMV01 extends Command
 
     public function calculate_price_change(){
         $pname = $this->partition_name;
-        $query = "update bhavcopy_processed partition($pname) set price_change = ROUND(((close - prevclose) * 100) / NULLIF(prevclose, 0), 2) where v1_processed = 0";
+        $query = "update bhavcopy_processed partition($pname) set price_change = IFNULL(ROUND(((close - prevclose) * 100) / NULLIF(prevclose, 0), 2), 0) where v1_processed = 0";
         $output = DB::statement($query);
         return $output;
     }
@@ -132,19 +132,19 @@ class ProcessBhavcopyCMV01 extends Command
 
     public function delta_coi(){
         $pname = $this->partition_name;
-        $query = "update bhavcopy_processed partition ($pname) set change_cum_fut_oi = ROUND((change_cum_fut_oi_val * 100) / NULLIF((cum_fut_oi - (change_cum_fut_oi_val)), 0), 2) where v1_processed = 0";
+        $query = "update bhavcopy_processed partition ($pname) set change_cum_fut_oi = IFNULL(ROUND((change_cum_fut_oi_val * 100) / NULLIF((cum_fut_oi - (change_cum_fut_oi_val)), 0), 2), 0) where v1_processed = 0";
         $output = DB::statement($query);
         if (!$output) return $output;
 
-        $query = "update bhavcopy_processed partition ($pname) set change_cum_pe_oi = ROUND((change_cum_pe_oi_val * 100) / NULLIF((cum_pe_oi - (change_cum_pe_oi_val)), 0), 2) where v1_processed = 0";
+        $query = "update bhavcopy_processed partition ($pname) set change_cum_pe_oi = IFNULL(ROUND((change_cum_pe_oi_val * 100) / NULLIF((cum_pe_oi - (change_cum_pe_oi_val)), 0), 2), 0) where v1_processed = 0";
         $output = DB::statement($query);
         if (!$output) return $output;
 
-        $query = "update bhavcopy_processed partition ($pname) set change_cum_ce_oi = ROUND((change_cum_ce_oi_val * 100) / NULLIF((cum_ce_oi - (change_cum_ce_oi_val)), 0), 2) where v1_processed = 0";
+        $query = "update bhavcopy_processed partition ($pname) set change_cum_ce_oi = IFNULL(ROUND((change_cum_ce_oi_val * 100) / NULLIF((cum_ce_oi - (change_cum_ce_oi_val)), 0), 2), 0) where v1_processed = 0";
         $output = DB::statement($query);
         if (!$output) return $output;
 
-        $query = "update bhavcopy_processed partition ($pname) set pcr = ROUND(cum_pe_oi / NULLIF(cum_ce_oi, 0), 2) where v1_processed = 0";
+        $query = "update bhavcopy_processed partition ($pname) set pcr = IFNULL(ROUND(cum_pe_oi / NULLIF(cum_ce_oi, 0), 2), 0) where v1_processed = 0";
         $output = DB::statement($query);
         if (!$output) return $output;
     }
