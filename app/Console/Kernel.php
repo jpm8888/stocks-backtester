@@ -21,8 +21,6 @@ class Kernel extends ConsoleKernel
 
     protected function schedule(Schedule $schedule)
     {
-//        $schedule->command('daily:update')->dailyAt('08:30');
-//        $schedule->command('download:bhavcopy_combined')->dailyAt('03:00');
         $schedule->command('download:bhavcopy_cm')->weekdays()->at('18:30');
         $schedule->command('download:delv_wise_positions')->weekdays()->at('18:35');
         $schedule->command('download:bhavcopy_fo')->weekdays()->at('18:40');
