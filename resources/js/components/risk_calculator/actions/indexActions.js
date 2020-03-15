@@ -1,39 +1,39 @@
-import {ON_CHANGE} from "./types";
-
-
-// export const fetch_params = () => (dispatch) =>{
-//     fetch('/bhavcopy_analyse/fetch_params')
-//         .then((res) => res.json()
-//             .then((res)=>{
-//                 dispatch({
-//                     type : FETCH_PARAMS,
-//                     payload : res,
-//                 });
-//                 dispatch({type : FETCH_PARAMS, payload : res});
-//             }));
-// };
-
+import {ON_CALC_COMPLETE, ON_CHANGE} from "./types";
+import store from '../store'
 
 export const on_change = (name, value) => (dispatch) =>{
     dispatch({
         type : ON_CHANGE,
         payload : {name : name, value : value}
     });
-}
 
-// export const on_change_symbol_select = (selected) => (dispatch) =>{
-//     dispatch({type : SET_LOADING, payload : true});
-//     const symbol = selected.label;
-//     fetch('/bhavcopy_analyse/analyse/' + symbol)
-//         .then((res) => res.json()
-//             .then((res)=>{
-//                 dispatch({
-//                     type : ON_CHANGE_SYMBOL_SELECT,
-//                     payload : {
-//                         res,
-//                         selected
-//                     },
-//                 });
-//                 dispatch({type : SET_LOADING, payload : false});
-//             }));
-// };
+    const state = store.getState().indexReducer;
+
+    let capital_amount = parseFloat(state.capital_amount);
+    let entry = parseFloat(state.entry);
+    let stop_loss = parseFloat(state.stop_loss);
+
+    if (!(capital_amount > 0 && entry > 0 && stop_loss > 0)) return;
+
+    let risk_pct = 1;
+    let target_pct = risk_pct * 2;
+
+    let is_short = (stop_loss > capital_amount);
+
+    let target_amount = entry + ((entry - stop_loss) * 2);
+    let qty = Math.floor(capital_amount / ((entry - stop_loss) * 100));
+    let expected_profit = (target_amount - entry) * qty;
+    let expected_loss = (stop_loss - entry) * qty;
+
+    dispatch({
+        type : ON_CALC_COMPLETE,
+        payload : {
+            risk_pct,
+            target_pct,
+            target_amount,
+            qty,
+            expected_profit,
+            expected_loss,
+        }
+    });
+}

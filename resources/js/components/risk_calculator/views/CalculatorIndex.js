@@ -20,9 +20,6 @@ class CalculatorIndex extends Component {
 
 
     render() {
-        // const symbols = this.props.symbols;
-        // const data = this.props.data;
-
         return (
             <ComponentContainer>
                 <ComponentCard label={'Filter'} loading={this.props.is_loading}>
@@ -49,12 +46,12 @@ class CalculatorIndex extends Component {
                             <Td>{this.props.capital_amount}</Td>
                             <Td>{this.props.entry}</Td>
                             <Td>{this.props.stop_loss}</Td>
-                            <Td>Risk %</Td>
-                            <Td>Target %</Td>
-                            <Td>Target Amount</Td>
-                            <Td>QTY</Td>
-                            <Td>Expected Profit</Td>
-                            <Td>Expected Loss</Td>
+                            <Td>{this.props.risk_pct + " %"}</Td>
+                            <Td>{this.props.target_pct + " %"}</Td>
+                            <Td>{this.props.target_amount}</Td>
+                            <Td>{this.props.qty}</Td>
+                            <Td>{this.props.expected_profit}</Td>
+                            <Td>{this.props.expected_loss}</Td>
                         </Tr>
 
                     </ComponentTable>
@@ -71,14 +68,18 @@ const mapStateToProps = (state) => {
         capital_amount : s.capital_amount,
         entry : s.entry,
         stop_loss : s.stop_loss,
+        risk_pct : s.risk_pct,
+        target_pct : s.target_pct,
+        target_amount : s.target_amount,
+        qty : s.qty,
+        expected_profit : s.expected_profit,
+        expected_loss : s.expected_loss,
     };
 };
 
 const mapDispatchToProps = (dispatch) => {
     return bindActionCreators({
-        // fetch_params : () => fetch_params(),
         on_change  : (name, value) => on_change(name, value),
-        // on_change_symbol_select  : (selected) => on_change_symbol_select(selected),
     },dispatch);
 };
 
