@@ -17,3 +17,5 @@ require('./components/Example');
 require('./components/nifty_live_oi/ComponentNiftyLiveOIIndex');
 
 require('./components/bhavcopy_analyse/ComponentIndex');
+
+require('./components/risk_calculator/ComponentIndex');

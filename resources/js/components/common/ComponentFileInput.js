@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 
-class ComponentInput extends Component {
+class ComponentFileInput extends Component {
 
     constructor(props) {
         super(props);
@@ -13,12 +13,12 @@ class ComponentInput extends Component {
         const RequiredView = (required) ? (<span style={{color : 'red'}}> <sup>*</sup></span>) : (<div></div>);
 
         const hint = (this.props.hint) ? this.props.hint : "";
-        const className = (this.props.className) ? this.props.className : "col-md-4";
+
         return (
-            <div className={className}>
+            <div className="col-md-4">
                 <div className="form-group">
                     <label style={{fontWeight: 'bold'}}>{label}{RequiredView}</label>
-                    <input {...this.props} autoComplete="off" className="form-control"/>
+                    <input {...this.props} autoComplete="off" type="file" className="form-control"/>
                     <small className="form-text text-muted">{hint}</small>
                 </div>
             </div>
@@ -26,4 +26,4 @@ class ComponentInput extends Component {
     }
 }
 
-export default ComponentInput;
+export default ComponentFileInput;

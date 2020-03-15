@@ -49,6 +49,10 @@ Route::group(['middleware' => ['auth'], 'prefix' => 'releases', 'as' => 'release
 });
 
 
+Route::group(['middleware' => ['auth'], 'prefix' => 'risk_calculator', 'as' => 'risk_calculator.'], function () {
+    Route::get('index', 'ControllerRiskCalculator@index')->name('index');
+});
+
 Route::group(['middleware' => ['auth'], 'prefix' => 'bhavcopy_analyse', 'as' => 'bhavcopy_analyse.'], function () {
     Route::get('index', 'ControllerBhavcopyAnalyse@index')->name('index');
     Route::get('fetch_params', 'ControllerBhavcopyAnalyse@fetch_params');

@@ -23,12 +23,14 @@ export default class ComponentMultiSelect extends Component {
         });
 
         const required = (this.props.required) ? this.props.required : false;
-        const RequiredView = (required) ? (<span className="red">*</span>) : (<div></div>);
+        const RequiredView = (required) ? (<span style={{color : 'red'}}> <sup>*</sup></span>) : (<div></div>);
         const isMulti = (this.props.isMulti);
+
+        const className = (this.props.className) ? this.props.className : "col-md-4";
         return (
-            <div className="col-md-4">
+            <div className={className}>
                 <div className="form-group">
-                    <label>{label}{RequiredView}</label>
+                    <label style={{fontWeight: 'bold'}}>{label}{RequiredView}</label>
                     <Select name={this.props.name}
                             isMulti={isMulti}
                             placeholder={label}

@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 
-class ComponentInput extends Component {
+class ComponentDateInput extends Component {
 
     constructor(props) {
         super(props);
@@ -18,7 +18,7 @@ class ComponentInput extends Component {
             <div className={className}>
                 <div className="form-group">
                     <label style={{fontWeight: 'bold'}}>{label}{RequiredView}</label>
-                    <input {...this.props} autoComplete="off" className="form-control"/>
+                    <input {...this.props} autoComplete="off" type="date" className="form-control"/>
                     <small className="form-text text-muted">{hint}</small>
                 </div>
             </div>
@@ -26,4 +26,4 @@ class ComponentInput extends Component {
     }
 }
 
-export default ComponentInput;
+export default ComponentDateInput;

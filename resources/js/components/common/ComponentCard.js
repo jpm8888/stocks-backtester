@@ -6,6 +6,11 @@ class ComponentCard extends Component {
     render() {
         const label = (this.props.label) ? this.props.label : "";
         const loading = (this.props.loading);
+        const hide = (this.props.hide) ? this.props.hide : false;
+
+        if (hide){
+            return <div></div>;
+        }
 
         const LoadingView = () =>{
             if (loading){

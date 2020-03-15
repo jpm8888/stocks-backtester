@@ -5,7 +5,7 @@ class Td extends Component {
         const backgroundColor = (this.props.backgroundColor) ? this.props.backgroundColor : "white";
         const color = (this.props.color) ? this.props.color : "black";
         return (
-            <td style={{textAlign: 'center', backgroundColor : backgroundColor, color: color}}>{this.props.children}</td>
+            <td style={{textAlign: 'right', backgroundColor: backgroundColor, color: color}}>{this.props.children}</td>
         );
     }
 }
