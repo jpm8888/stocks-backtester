@@ -57,6 +57,7 @@ Route::group(['middleware' => ['auth'], 'prefix' => 'bhavcopy_analyse', 'as' => 
     Route::get('index', 'ControllerBhavcopyAnalyse@index')->name('index');
     Route::get('fetch_params', 'ControllerBhavcopyAnalyse@fetch_params');
     Route::get('analyse/{symbol}', 'ControllerBhavcopyAnalyse@analyse');
+    Route::get('charts', 'ControllerBhavcopyAnalyse@charts')->name('charts');
 });
 
 Route::get('/hire_me', function () {

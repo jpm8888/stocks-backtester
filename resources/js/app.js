@@ -19,3 +19,5 @@ require('./components/nifty_live_oi/ComponentNiftyLiveOIIndex');
 require('./components/bhavcopy_analyse/ComponentIndex');
 
 require('./components/risk_calculator/ComponentIndex');
+
+require('./components/basic_charts/Index');

@@ -49,6 +49,7 @@
                             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
                                 <a class="dropdown-item" href="{{route('nifty_live_oi.index')}}">Nifty Live Open Interest</a>
                                 <a class="dropdown-item" href="{{route('bhavcopy_analyse.index')}}"> Bhavcopy Analyse</a>
+                                <a class="dropdown-item" href="{{route('bhavcopy_analyse.charts')}}"> Basic Charts</a>
                                 <a class="dropdown-item" href="{{route('risk_calculator.index')}}"> Risk Calculator</a>
                             </div>
                         </li>
@@ -113,4 +114,5 @@
         </main>
     </div>
 </body>
+@yield('script')
 </html>
