@@ -19,4 +19,8 @@ partitions are date wise and for 2030 done in following tables:
 3. `bhavcopy_processed`
 4. `bhavcopy_delv_position`
 
+###Trading View Upgrade Guide:
+
+1. Place `charting_library` and `datafeeds` in `/public` folder
+2. Place `charting_library` in `resources/js/` folder.
 
