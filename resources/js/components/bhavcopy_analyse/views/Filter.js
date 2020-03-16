@@ -41,23 +41,18 @@ class Filter extends Component {
                                 <Th>h</Th>
                                 <Th>l</Th>
                                 <Th>c</Th>
-                                <Th>Trade Val (in Cr.)</Th>
                                 <Th>Volume</Th>
                                 <Th>5-D Avg Vol</Th>
                                 <Th>Dlv Qty (in Lacs)</Th>
-                                <Th>Dlv Value (in Cr.)</Th>
-                                <Th>5-D Avg Dlv Value (in Cr.)</Th>
                                 <Th>%Dlv Qty</Th>
-                                <Th>%5-D Avg Vol</Th>
                                 <Th>Chng. Price</Th>
-                                <Th>%5-D Avg. Dlv</Th>
                                 <Th>FUT COI</Th>
                                 <Th>FUT Chng. COI</Th>
                                 <Th>FUT %Chng. COI</Th>
-                                {/*<Th>CE COI</Th>*/}
-                                {/*<Th>%Chng. CE COI</Th>*/}
-                                {/*<Th>PE COI</Th>*/}
-                                {/*<Th>%Chng. PE COI</Th>*/}
+                                <Th>CE COI</Th>
+                                <Th>%Chng. CE COI</Th>
+                                <Th>PE COI</Th>
+                                <Th>%Chng. PE COI</Th>
                             </Tr>
                             {
                                 data.map((item, index)=>{
@@ -69,23 +64,18 @@ class Filter extends Component {
                                          <Td>{item.high}</Td>
                                          <Td>{item.low}</Td>
                                          <Td>{item.close}</Td>
-                                         <Td>{item.f_traded_value}</Td>
                                          <Td>{item.volume}</Td>
-                                         <Td>{item.f_five_day_volume_avg.avg_volume}</Td>
+                                         <Td>{item.avg_volume_five}</Td>
                                          <Td>{Math.round(item.dlv_qty / 100000)}</Td>
-                                         <Td>{item.f_dlv_in_crores}</Td>
-                                         <Td>{item.f_avg_dlv_in_crores}</Td>
                                          <Td>{item.pct_dlv_traded + ' %'}</Td>
-                                         <FiveDayAvgPercentChange value={item.f_five_day_volume_avg.change}/>
-                                         <PriceChange value={item.f_price_change}/>
-                                         <FiveDayAvgPercentChange value={item.del_pct_five_day}/>
-                                         <Td>{item.f_cum_fut_oi}</Td>
-                                         <Td>{item.f_change_cum_fut_oi.coi}</Td>
-                                         <PriceChange value={item.f_change_cum_fut_oi.coi_pct}/>
-                                         {/*<Td>{item.f_option_data.today_cum_ce_oi}</Td>*/}
-                                         {/*<PriceChange value={item.f_option_data.coi_pct_ce}/>*/}
-                                         {/*<Td>{item.f_option_data.today_cum_pe_oi}</Td>*/}
-                                         {/*<PriceChange value={item.f_option_data.coi_pct_pe}/>*/}
+                                         <PriceChange value={item.price_change}/>
+                                         <Td>{item.cum_fut_oi}</Td>
+                                         <Td>{item.change_cum_fut_oi_val}</Td>
+                                         <PriceChange value={item.change_cum_fut_oi}/>
+                                         <Td>{item.cum_ce_oi}</Td>
+                                         <PriceChange value={item.change_cum_ce_oi}/>
+                                         <Td>{item.cum_pe_oi}</Td>
+                                         <PriceChange value={item.change_cum_pe_oi}/>
                                      </Tr>
                                    );
                                 })
