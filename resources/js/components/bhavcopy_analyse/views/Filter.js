@@ -53,6 +53,7 @@ class Filter extends Component {
                                 <Th>%Chng. CE COI</Th>
                                 <Th>PE COI</Th>
                                 <Th>%Chng. PE COI</Th>
+                                <Th>PCR</Th>
                             </Tr>
                             {
                                 data.map((item, index)=>{
@@ -76,6 +77,7 @@ class Filter extends Component {
                                          <PriceChange value={item.change_cum_ce_oi}/>
                                          <Td>{item.cum_pe_oi}</Td>
                                          <PriceChange value={item.change_cum_pe_oi}/>
+                                         <Td>{item.pcr}</Td>
                                      </Tr>
                                    );
                                 })
