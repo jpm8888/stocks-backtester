@@ -57,7 +57,14 @@ Route::group(['middleware' => ['auth'], 'prefix' => 'bhavcopy_analyse', 'as' => 
     Route::get('index', 'ControllerBhavcopyAnalyse@index')->name('index');
     Route::get('fetch_params', 'ControllerBhavcopyAnalyse@fetch_params');
     Route::get('analyse/{symbol}', 'ControllerBhavcopyAnalyse@analyse');
-    Route::get('charts', 'ControllerBhavcopyAnalyse@charts')->name('charts');
+});
+
+Route::group(['middleware' => ['auth'], 'prefix' => 'basic_charts', 'as' => 'basic_charts.'], function () {
+    Route::get('index', 'ControllerBasicChart@index')->name('index');
+    Route::get('api/config', 'ControllerBasicChart@config');
+    Route::get('api/symbols', 'ControllerBasicChart@symbols');
+    Route::get('api/search', 'ControllerBasicChart@search');
+    Route::get('api/history', 'ControllerBasicChart@history');
 });
 
 Route::get('/hire_me', function () {

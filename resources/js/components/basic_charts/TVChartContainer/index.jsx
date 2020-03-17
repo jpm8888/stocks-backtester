@@ -11,10 +11,10 @@ function getLanguageFromURL() {
 
 export class TVChartContainer extends Component {
 	static defaultProps = {
-		symbol: 'AAPL',
+		symbol: 'AXISBANK',
 		interval: 'D',
 		containerId: 'tv_chart_container',
-		datafeedUrl: 'https://demo_feed.tradingview.com',
+		datafeedUrl: 'api',
 		libraryPath: '/charting_library/',
 		chartsStorageUrl: 'https://saveload.tradingview.com',
 		chartsStorageApiVersion: '1.1',
@@ -23,6 +23,7 @@ export class TVChartContainer extends Component {
 		fullscreen: false,
 		autosize: true,
 		studiesOverrides: {},
+        supported_resolutions: ['1D', '1W', '1M'],
 	};
 
 	tvWidget = null;
@@ -31,7 +32,7 @@ export class TVChartContainer extends Component {
 		const widgetOptions = {
 			symbol: this.props.symbol,
 			// BEWARE: no trailing slash is expected in feed URL
-			datafeed: new window.Datafeeds.UDFCompatibleDatafeed(this.props.datafeedUrl),
+			datafeed: new window.Datafeeds.UDFCompatibleDatafeed(this.props.datafeedUrl, (60 * 1000)),
 			interval: this.props.interval,
 			container_id: this.props.containerId,
 			library_path: this.props.libraryPath,

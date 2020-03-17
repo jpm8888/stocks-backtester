@@ -25,10 +25,4 @@ class ControllerBhavcopyAnalyse extends Controller
         return response()->json($raw);
     }
 
-    public function charts(){
-        $data = ['div_id' => 'div_basic_charts'];
-        return view('common_charts.react_empty', $data);
-    }
-
-
 }
