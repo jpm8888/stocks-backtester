@@ -75,7 +75,7 @@ class ControllerBasicChart extends Controller
         $resolution = $_GET['resolution'];
 
         $data = ModelBhavcopyProcessed::where('symbol', '=', "$symbol")
-            ->whereBetween('date', [$from, $to])->get();
+            ->whereBetween('date', [$from, $to])->orderBy('date', 'asc')->get();
 
 
         $s = "ok";
