@@ -148,4 +148,5 @@ INSERT INTO `master_stocks_fo` (`id`, `symbol`, `sector_id`, `in_nf`, `in_bnf`) 
 (147, 'BANDHANBNK', '99', 1, 1),
 (148, 'ZEEL', '99', 1, 0),
 (149, 'BANKNIFTY', '99', 0, 0),
-(150, 'NIFTY', '99', 0, 0);
+(150, 'NIFTY', '99', 0, 0),
+(151, 'YESBANK', '99', 1, 0);
