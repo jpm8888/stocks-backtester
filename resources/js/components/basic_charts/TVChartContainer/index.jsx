@@ -60,13 +60,21 @@ export class TVChartContainer extends Component {
 			autosize: this.props.autosize,
 			studies_overrides: this.props.studiesOverrides,
             symbol_search_request_delay : (2 * 1000), //2 seconds delay after type
-            // debug: true,
+            debug: true,
+            custom_indicators_getter: function(PineJS) {
+                return Promise.resolve([
+
+                ]);
+            },
 		};
 
 		const tvWidget = new widget(widgetOptions);
 		this.tvWidget = tvWidget;
 
 		tvWidget.onChartReady(() => {
+            tvWidget.activeChart().createStudy('FutureCOI', false, true);
+
+
 			tvWidget.headerReady().then(() => {
 				// const button = tvWidget.createButton();
 				// button.setAttribute('title', 'Click to show a notification popup');
@@ -80,6 +88,8 @@ export class TVChartContainer extends Component {
 				// }));
                 //
 				// button.innerHTML = 'Check API';
+
+
 			});
 		});
 	}
