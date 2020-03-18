@@ -13,6 +13,7 @@ export class TVChartContainer extends Component {
 	static defaultProps = {
 		symbol: 'AXISBANK',
 		interval: 'D',
+        toolbar_bg: '#f4f7f9',
 		containerId: 'tv_chart_container',
 		datafeedUrl: 'api', //path of the url without trailing slash
 		libraryPath: '/charting_library/',
@@ -24,6 +25,14 @@ export class TVChartContainer extends Component {
 		autosize: true,
 		studiesOverrides: {},
         supported_resolutions: ['1D', '1W', '1M'],
+        time_frames: [
+            { text: "3y", resolution: "W", description: "3 Years", title: "3yr" },
+            { text: "1y", resolution: "D", description: "1 Year", title: "1yr" },
+            { text: "9m", resolution: "D", description: "9 Months", title: "9m" },
+            { text: "6m", resolution: "D", description: "6 Months", title: "6m" },
+            { text: "3m", resolution: "D", description: "3 Months", title: "3m" },
+        ],
+        // timeframe : '1D',
 	};
 
 	tvWidget = null;
@@ -31,6 +40,9 @@ export class TVChartContainer extends Component {
 	componentDidMount() {
 		const widgetOptions = {
 			symbol: this.props.symbol,
+            time_frames : this.props.time_frames,
+            // theme : 'Dark',
+            //timeframe : this.props.timeframe,
 			// BEWARE: no trailing slash is expected in feed URL
 			datafeed: new window.Datafeeds.UDFCompatibleDatafeed(this.props.datafeedUrl, (60 * 1000)),
 			interval: this.props.interval,
@@ -48,19 +60,7 @@ export class TVChartContainer extends Component {
 			autosize: this.props.autosize,
 			studies_overrides: this.props.studiesOverrides,
             symbol_search_request_delay : (2 * 1000), //2 seconds delay after type
-            time_frames: [
-                { text: "50y", resolution: "6M" },
-                { text: "3y", resolution: "W" },
-                { text: "8m", resolution: "D" },
-                { text: "2m", resolution: "D" },
-                { text: "1m", resolution: "60" },
-                { text: "1w", resolution: "30" },
-                { text: "7d", resolution: "30" },
-                { text: "5d", resolution: "10" },
-                { text: "3d", resolution: "10" },
-                { text: "2d", resolution: "5" },
-                { text: "1d", resolution: "5" }
-            ],
+            // debug: true,
 		};
 
 		const tvWidget = new widget(widgetOptions);
@@ -68,18 +68,18 @@ export class TVChartContainer extends Component {
 
 		tvWidget.onChartReady(() => {
 			tvWidget.headerReady().then(() => {
-				const button = tvWidget.createButton();
-				button.setAttribute('title', 'Click to show a notification popup');
-				button.classList.add('apply-common-tooltip');
-				button.addEventListener('click', () => tvWidget.showNoticeDialog({
-					title: 'Notification',
-					body: 'TradingView Charting Library API works correctly',
-					callback: () => {
-						console.log('Noticed!');
-					},
-				}));
-
-				button.innerHTML = 'Check API';
+				// const button = tvWidget.createButton();
+				// button.setAttribute('title', 'Click to show a notification popup');
+				// button.classList.add('apply-common-tooltip');
+				// button.addEventListener('click', () => tvWidget.showNoticeDialog({
+				// 	title: 'Notification',
+				// 	body: 'TradingView Charting Library API works correctly',
+				// 	callback: () => {
+				// 		console.log('Noticed!');
+				// 	},
+				// }));
+                //
+				// button.innerHTML = 'Check API';
 			});
 		});
 	}

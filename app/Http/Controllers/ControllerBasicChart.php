@@ -17,9 +17,9 @@ class ControllerBasicChart extends Controller
         return response()->json([
             'supported_resolutions'=> ['1D', '1W', '2W', '1M'],
             'supports_group_request'=> false,
-            'supports_marks'=> false,
+            'supports_marks'=> true,
             'supports_search'=> true,
-            'supports_timescale_marks'=> false,
+            'supports_timescale_marks'=> true,
         ]);
     }
 
