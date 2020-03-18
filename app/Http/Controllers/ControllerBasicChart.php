@@ -17,9 +17,9 @@ class ControllerBasicChart extends Controller
         return response()->json([
             'supported_resolutions'=> ['1D', '1W', '2W', '1M'],
             'supports_group_request'=> false,
-            'supports_marks'=> true,
+            'supports_marks'=> false,
             'supports_search'=> true,
-            'supports_timescale_marks'=> true,
+            'supports_timescale_marks'=> false,
         ]);
     }
 
@@ -60,7 +60,7 @@ class ControllerBasicChart extends Controller
             'has_intraday' => false,
             'has_seconds' => false,
             'has_daily' => true,
-            'data_status' => "endofday",
+//            'data_status' => "endofday",
             'expired' => false,
             'sector' => "",
             'industry' => "",
@@ -71,8 +71,8 @@ class ControllerBasicChart extends Controller
     public function history(){
         try{
             $symbol = $_GET['symbol'];
-            $from = Carbon::createFromTimestamp($_GET['from']);
-            $to = Carbon::createFromTimestamp($_GET['to']);
+            $from = Carbon::createFromTimestamp($_GET['from'])->format('Y-m-d');
+            $to = Carbon::createFromTimestamp($_GET['to'])->format('Y-m-d');
             $resolution = $_GET['resolution'];
 
             $data = ModelBhavcopyProcessed::where('symbol', '=', "$symbol")
@@ -87,7 +87,7 @@ class ControllerBasicChart extends Controller
             $l = [];
             $v = [];
             foreach ($data as $d){
-                $t[] = Carbon::parse($d->date)->timestamp;
+                $t[] = Carbon::createFromFormat('Y-m-d', $d->date)->timestamp;
                 $c[] = $d->close;
                 $o[] = $d->open;
                 $h[] = $d->high;
@@ -98,7 +98,10 @@ class ControllerBasicChart extends Controller
                 's' => $s, 't' => $t, 'c' => $c, 'o' => $o, 'h' => $h, 'l' => $l, 'v' => $v
             ]);
         }catch (\Exception $e){
-
+            return response()->json([
+                's' => 'error',
+                'error_msg' => $e->getMessage(),
+            ]);
         }
 
     }
