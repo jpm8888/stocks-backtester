@@ -5,6 +5,8 @@ use App\ModelBhavCopyCM;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
+include_once 'web_common.php';
+
 Route::get('/', function () {
     return view('welcome');
 });

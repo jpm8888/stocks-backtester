@@ -1,6 +1,9 @@
 import React, {Component} from 'react';
 import './index.css';
 import {widget} from "../../../charting_library/charting_library.min";
+import connect from "react-redux/es/connect/connect";
+import {bindActionCreators} from "redux";
+import {setWidget} from "../actions/indexActions";
 
 function getLanguageFromURL() {
 	const regex = new RegExp('[\\?&]lang=([^&#]*)');
@@ -8,7 +11,7 @@ function getLanguageFromURL() {
 	return results === null ? null : decodeURIComponent(results[1].replace(/\+/g, ' '));
 }
 
-export class TVChartContainer extends Component {
+class TVChartContainer extends Component {
 	static defaultProps = {
 		symbol: 'AXISBANK',
 		interval: 'D',
@@ -25,13 +28,13 @@ export class TVChartContainer extends Component {
 		studiesOverrides: {},
         supported_resolutions: ['1D', '1W', '1M'],
         time_frames: [
+            { text: "100y", resolution: "M", description: "100 Years", title: "100yr" },
             { text: "3y", resolution: "W", description: "3 Years", title: "3yr" },
             { text: "1y", resolution: "D", description: "1 Year", title: "1yr" },
             { text: "9m", resolution: "D", description: "9 Months", title: "9m" },
             { text: "6m", resolution: "D", description: "6 Months", title: "6m" },
             { text: "3m", resolution: "D", description: "3 Months", title: "3m" },
         ],
-        // timeframe : '1D',
 	};
 
 	tvWidget = null;
@@ -40,9 +43,6 @@ export class TVChartContainer extends Component {
 		const widgetOptions = {
 			symbol: this.props.symbol,
             time_frames : this.props.time_frames,
-            // theme : 'Dark',
-            //timeframe : this.props.timeframe,
-			// BEWARE: no trailing slash is expected in feed URL
 			datafeed: new window.Datafeeds.UDFCompatibleDatafeed(this.props.datafeedUrl, (60 * 1000)),
 			interval: this.props.interval,
 			container_id: this.props.containerId,
@@ -58,20 +58,23 @@ export class TVChartContainer extends Component {
 			fullscreen: this.props.fullscreen,
 			autosize: this.props.autosize,
 			studies_overrides: this.props.studiesOverrides,
-            symbol_search_request_delay : (2 * 1000), //2 seconds delay after type
+            symbol_search_request_delay : (1 * 1000), //2 seconds delay after type
             debug: true,
-            custom_indicators_getter: function(PineJS) {
-                return Promise.resolve([
-
-                ]);
-            },
+            // custom_indicators_getter: function(PineJS) {
+            //     return Promise.resolve([
+			//
+            //     ]);
+            // },
 		};
 
 		const tvWidget = new widget(widgetOptions);
 		this.tvWidget = tvWidget;
+		this.props.setWidget(tvWidget);
+
+
 
 		tvWidget.onChartReady(() => {
-            tvWidget.activeChart().createStudy('FutureCOI', false, true);
+            //tvWidget.activeChart().createStudy('FutureCOI', false, true);
 
 
 			tvWidget.headerReady().then(() => {
@@ -109,3 +112,34 @@ export class TVChartContainer extends Component {
 		);
 	}
 }
+
+const mapStateToProps = (state) => {
+    const s = state.indexReducer;
+    return {
+        // mode: s.mode,
+        // amount: s.amount,
+        // ref_num: s.ref_num,
+        // verified: s.verified,
+        // msg_type: s.msg_type,
+        // msg: s.msg,
+        // is_loading: s.is_loading,
+        // user_id: s.user_id,
+        // user_balance: s.user_balance,
+        // player_id: s.player_id,
+        // player_name: s.player_name,
+        // is_fetching_transactions: s.is_fetching_transactions,
+        // transactions: s.transactions,
+    };
+};
+
+const mapDispatchToProps = (dispatch) => {
+    return bindActionCreators({
+		setWidget: (widget) => setWidget(widget),
+
+        // verify_user: (user_id) => verify_user(user_id),
+        // add_transaction: (player_id, amount, type, remarks) => add_transaction(player_id, amount, type, remarks),
+        // reset: () => reset()
+    }, dispatch);
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(TVChartContainer);
