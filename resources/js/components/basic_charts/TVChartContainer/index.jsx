@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
 import './index.css';
-// import {widget} from "../../../../../public/charting_library/charting_library/charting_library.min";
 import {widget} from "../../../charting_library/charting_library.min";
 
 function getLanguageFromURL() {

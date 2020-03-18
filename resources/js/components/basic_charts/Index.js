@@ -7,9 +7,14 @@ import {TVChartContainer} from "./TVChartContainer";
 class Index extends Component {
     render() {
         return (
-            <ComponentContainer>
-                <TVChartContainer/>
-            </ComponentContainer>
+            <div>
+                <div className="col-md-10">
+                    <TVChartContainer/>
+                </div>
+                <div className="col-md-2">
+
+                </div>
+            </div>
         );
     }
 }

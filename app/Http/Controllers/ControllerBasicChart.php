@@ -52,7 +52,7 @@ class ControllerBasicChart extends Controller
             'ticker' => $m->symbol,
             'description' => $m->symbol,
             'type' => $m->stock,
-            'session' => "0900-1530",
+            //'session' => "0900-1530",
             'exchange' => "NSE",
             'listed_exchange' => "NSE",
             'timezone' => "Asia/Kolkata",
@@ -69,32 +69,37 @@ class ControllerBasicChart extends Controller
     }
 
     public function history(){
-        $symbol = $_GET['symbol'];
-        $from = Carbon::createFromTimestamp($_GET['from']);
-        $to = Carbon::createFromTimestamp($_GET['to']);
-        $resolution = $_GET['resolution'];
+        try{
+            $symbol = $_GET['symbol'];
+            $from = Carbon::createFromTimestamp($_GET['from']);
+            $to = Carbon::createFromTimestamp($_GET['to']);
+            $resolution = $_GET['resolution'];
 
-        $data = ModelBhavcopyProcessed::where('symbol', '=', "$symbol")
-            ->whereBetween('date', [$from, $to])->orderBy('date', 'asc')->get();
+            $data = ModelBhavcopyProcessed::where('symbol', '=', "$symbol")
+                ->whereBetween('date', [$from, $to])->orderBy('date', 'asc')->get();
 
 
-        $s = "ok";
-        $t = [];
-        $c = [];
-        $o = [];
-        $h = [];
-        $l = [];
-        $v = [];
-        foreach ($data as $d){
-            $t[] = Carbon::parse($d->date)->timestamp;
-            $c[] = $d->close;
-            $o[] = $d->open;
-            $h[] = $d->high;
-            $l[] = $d->low;
-            $v[] = $d->volume;
+            $s = "ok";
+            $t = [];
+            $c = [];
+            $o = [];
+            $h = [];
+            $l = [];
+            $v = [];
+            foreach ($data as $d){
+                $t[] = Carbon::parse($d->date)->timestamp;
+                $c[] = $d->close;
+                $o[] = $d->open;
+                $h[] = $d->high;
+                $l[] = $d->low;
+                $v[] = $d->volume;
+            }
+            return response()->json([
+                's' => $s, 't' => $t, 'c' => $c, 'o' => $o, 'h' => $h, 'l' => $l, 'v' => $v
+            ]);
+        }catch (\Exception $e){
+
         }
-        return response()->json([
-            's' => $s, 't' => $t, 'c' => $c, 'o' => $o, 'h' => $h, 'l' => $l, 'v' => $v
-        ]);
+
     }
 }
