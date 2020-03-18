@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
-cd public/trading_view_lib
+cd public
+git clone https://github.com/tradingview/charting_library.git
+mv charting_library trading_view_lib
+cd trading_view_lib
 git checkout master
 git branch
 git pull
