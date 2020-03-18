@@ -13,8 +13,8 @@ function extractField(data, field, arrayIndex) {
  */
 var UDFCompatibleDatafeedBase = /** @class */ (function () {
     function UDFCompatibleDatafeedBase(datafeedURL, quotesProvider, requester, updateFrequency) {
-        if (updateFrequency === void 0) { updateFrequency = 10 * 1000; }
         var _this = this;
+        if (updateFrequency === void 0) { updateFrequency = 10 * 1000; }
         this._configuration = defaultConfiguration();
         this._symbolsStorage = null;
         this._datafeedURL = datafeedURL;

@@ -14,7 +14,7 @@ export class TVChartContainer extends Component {
 		symbol: 'AXISBANK',
 		interval: 'D',
 		containerId: 'tv_chart_container',
-		datafeedUrl: 'api',
+		datafeedUrl: 'api', //path of the url without trailing slash
 		libraryPath: '/charting_library/',
 		chartsStorageUrl: 'https://saveload.tradingview.com',
 		chartsStorageApiVersion: '1.1',
@@ -36,7 +36,7 @@ export class TVChartContainer extends Component {
 			interval: this.props.interval,
 			container_id: this.props.containerId,
 			library_path: this.props.libraryPath,
-
+            timezone: "Asia/Kolkata",
 			locale: getLanguageFromURL() || 'en',
 			disabled_features: ['use_localstorage_for_settings'],
 			enabled_features: ['study_templates'],
@@ -47,6 +47,20 @@ export class TVChartContainer extends Component {
 			fullscreen: this.props.fullscreen,
 			autosize: this.props.autosize,
 			studies_overrides: this.props.studiesOverrides,
+            symbol_search_request_delay : (2 * 1000), //2 seconds delay after type
+            time_frames: [
+                { text: "50y", resolution: "6M" },
+                { text: "3y", resolution: "W" },
+                { text: "8m", resolution: "D" },
+                { text: "2m", resolution: "D" },
+                { text: "1m", resolution: "60" },
+                { text: "1w", resolution: "30" },
+                { text: "7d", resolution: "30" },
+                { text: "5d", resolution: "10" },
+                { text: "3d", resolution: "10" },
+                { text: "2d", resolution: "5" },
+                { text: "1d", resolution: "5" }
+            ],
 		};
 
 		const tvWidget = new widget(widgetOptions);

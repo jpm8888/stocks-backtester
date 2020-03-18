@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
-// import { widget } from '../../charting_library/charting_library/charting_library.min';
 import ComponentContainer from "../common/ComponentContainer";
 import {TVChartContainer} from "./TVChartContainer";
 
