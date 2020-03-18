@@ -6,8 +6,6 @@ import TVChartContainer from "./TVChartContainer/TVChartContainer";
 import SymbolsWatchlist from "./WatchLists/SymbolsWatchlist";
 
 
-// import Panel from "./views/Panel";
-
 class ComponentIndex extends Component {
     render() {
         return (

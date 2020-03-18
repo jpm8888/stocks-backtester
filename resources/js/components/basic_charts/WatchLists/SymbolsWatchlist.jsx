@@ -1,5 +1,4 @@
 import React, {Component} from 'react';
-// import './symbols_watch_list.css';
 import {bindActionCreators} from "redux";
 import connect from "react-redux/es/connect/connect";
 import {download_fno_symbols, on_filter} from "../actions/symbolWatchListAction";
@@ -13,7 +12,7 @@ class SymbolsWatchlist extends Component {
 
     render() {
         return (
-            <div>
+            <div className="col-md-2">
                 <div>
                     <ComponentInput value={this.props.queryStr} label={"Filter"} className="col" onChange={(e)=>this.props.on_filter('queryStr', e.target.value)}/>
                 </div>
