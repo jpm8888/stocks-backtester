@@ -5,6 +5,7 @@ import connect from "react-redux/es/connect/connect";
 import {bindActionCreators} from "redux";
 import {setWidget} from "../actions/indexActions";
 import {configFutCoi} from "./indicators/fut_coi/meta";
+import {FutureCoi} from "./indicators/fut_coi/code";
 
 
 function getLanguageFromURL() {
@@ -66,26 +67,10 @@ class TVChartContainer extends Component {
 
 				// let x = new FutureCoi(PineJS);
 				// let config = configFutCoi;
+                // let x = new FutureCoi(PineJS);
+                FutureCoi.prototype.PineJS = PineJS;
                 return Promise.resolve([
-					{ name: "Equity", metainfo : configFutCoi,   constructor: function() {
-							this.init = function(context, inputCallback) {
-								this._context = context;
-								this._input = inputCallback;
-
-								var symbol = "AXISBANK";
-								this._context.new_sym(symbol, PineJS.Std.period(this._context), PineJS.Std.period(this._context));
-							};
-
-							this.main = function(context, inputCallback) {
-								this._context = context;
-								this._input = inputCallback;
-
-								this._context.select_sym(1);
-
-								var v = PineJS.Std.close(this._context);
-								return [v];
-							}
-						}}
+					{ name: "Equity", metainfo : configFutCoi, constructor : FutureCoi}
                 ]);
             },
 		};

@@ -1,54 +1,38 @@
+//Vec.js
+class FutureCoi {
+    constructor() {
+        console.log('hello cons');
+        this.init = function(context, inputCallback) {
+            this._context = context;
+            this._input = inputCallback;
 
-export default class FutureCoi {
-    constructor(PineJS) {
-        this.PineJS = PineJS;
-        console.log('FFU');
+            // console.log(this._context);
+            let ticker = this.PineJS.Std.ticker(this._context);
 
+            const regex = /(["'])(?:(?=(\\?))\2.)*?\1/g;
+
+            const found = ticker.match(regex);
+            let symbol = "";
+            if (found && found.length > 0){
+                symbol = found[0].split('"').join("");
+            }else{
+                console.log('No symbol ->' + symbol);
+            }
+
+            this._context.new_sym(symbol, this.PineJS.Std.period(this._context), this.PineJS.Std.period(this._context));
+            console.log('hello init');
+        };
+
+        this.main = function(context, inputCallback) {
+            this._context = context;
+            this._input = inputCallback;
+            this._context.select_sym(1);
+            let v = this.PineJS.Std.close(this._context);
+            return [v];
+        }
     }
 
-    init(context, inputCallback) {
-        this._context = context;
-        this._input = inputCallback;
-
-        var symbol = "AXISBANK";
-        this._context.new_sym(symbol, this.PineJS.Std.period(this._context), this.PineJS.Std.period(this._context));
-        console.log('HOLAINIT');
-    }
-
-    main(context, inputCallback) {
-        this._context = context;
-        this._input = inputCallback;
-
-        this._context.select_sym(1);
-
-        var v = this.PineJS.Std.close(this._context);
-        console.log('HOLAMAIN');
-        return [v];
-
-    }
 
 }
 
-
-
-// export function futureCoi(PineJS) {
-//
-//
-//     this.init = function(context, inputCallback) {
-//         this._context = context;
-//         this._input = inputCallback;
-//
-//         var symbol = "AXISBANK";
-//         this._context.new_sym(symbol, PineJS.Std.period(this._context), PineJS.Std.period(this._context));
-//     };
-//
-//     this.main = function(context, inputCallback) {
-//         this._context = context;
-//         this._input = inputCallback;
-//
-//         this._context.select_sym(1);
-//
-//         var v = PineJS.Std.close(this._context);
-//         return [v];
-//     }
-// }
+module.exports.FutureCoi = FutureCoi;

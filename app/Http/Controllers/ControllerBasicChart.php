@@ -63,8 +63,8 @@ class ControllerBasicChart extends Controller
             'has_daily' => true,
             'data_status' => "endofday",
             'expired' => false,
-            'sector' => "",
-            'industry' => "",
+            'sector' => "NA",
+            'industry' => "NA",
             'currency_code' => "INR",
         ]);
     }
