@@ -61,7 +61,6 @@ class ControllerBasicChart extends Controller
             'has_intraday' => false,
             'has_seconds' => false,
             'has_daily' => true,
-            'data_status' => "endofday",
             'expired' => false,
             'sector' => "NA",
             'industry' => "NA",
