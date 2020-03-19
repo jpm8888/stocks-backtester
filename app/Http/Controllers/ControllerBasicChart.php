@@ -57,10 +57,11 @@ class ControllerBasicChart extends Controller
             'listed_exchange' => "NSE",
             'timezone' => "Asia/Kolkata",
 
+            'has_no_volume' => (!$m->has_volume),
             'has_intraday' => false,
             'has_seconds' => false,
             'has_daily' => true,
-//            'data_status' => "endofday",
+            'data_status' => "endofday",
             'expired' => false,
             'sector' => "",
             'industry' => "",
