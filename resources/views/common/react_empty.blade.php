@@ -5,6 +5,6 @@
     </section>
 @endsection
 
-@section('script')
-    <script src="{{ asset('js/app.js') . '?random=' . \App\Http\Controllers\Base\AppConstants::BUILD_VERSION}}"></script>
-@endsection
+{{--@section('script')--}}
+{{--    <script src="{{ asset('js/app.js') . '?random=' . \App\Http\Controllers\Base\AppConstants::BUILD_VERSION}}"></script>--}}
+{{--@endsection--}}
