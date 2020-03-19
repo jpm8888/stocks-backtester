@@ -15,7 +15,7 @@
                         </p>
                         <p>
                             Feel free to contact me via whatsapp/telegram/call :
-                            <br><b>Jeetu</b>
+                            <br><b>Jitu</b>
                             <br><b>(+91) 8800-50-7427</b>
                         </p>
                     </div>
