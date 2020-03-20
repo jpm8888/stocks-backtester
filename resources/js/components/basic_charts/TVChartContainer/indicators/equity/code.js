@@ -1,4 +1,4 @@
-class FutureCoi {
+class Equity {
     constructor() {
         this.init = function(context, inputCallback) {
             this._context = context;
@@ -25,4 +25,4 @@ class FutureCoi {
     }
 }
 
-module.exports.FutureCoi = FutureCoi;
+module.exports.Equity = Equity;

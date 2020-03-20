@@ -4,8 +4,9 @@ import {widget} from "../../../charting_library/charting_library.min";
 import connect from "react-redux/es/connect/connect";
 import {bindActionCreators} from "redux";
 import {setWidget} from "../actions/indexActions";
-import {configFutCoi} from "./indicators/fut_coi/meta";
 import {FutureCoi} from "./indicators/fut_coi/code";
+import {Equity} from "./indicators/equity/code";
+import {configFutureCoi} from "./indicators/fut_coi/meta";
 
 
 function getLanguageFromURL() {
@@ -64,13 +65,11 @@ class TVChartContainer extends Component {
             symbol_search_request_delay : (1 * 1000), //2 seconds delay after type
             debug: true,
             custom_indicators_getter: function(PineJS) {
-
-				// let x = new FutureCoi(PineJS);
-				// let config = configFutCoi;
-                // let x = new FutureCoi(PineJS);
+                Equity.prototype.PineJS = PineJS;
                 FutureCoi.prototype.PineJS = PineJS;
                 return Promise.resolve([
-					{ name: "Equity", metainfo : configFutCoi, constructor : FutureCoi}
+					// { name: "Equity", metainfo : configEquity, constructor : Equity},
+					{ name: "FutureCOI", metainfo : configFutureCoi, constructor : FutureCoi},
                 ]);
             },
 		};
@@ -79,26 +78,11 @@ class TVChartContainer extends Component {
 		this.tvWidget = tvWidget;
 		this.props.setWidget(tvWidget);
 
-
-
 		tvWidget.onChartReady(() => {
-            tvWidget.activeChart().createStudy('Equity', false, true);
-
+            // tvWidget.activeChart().createStudy('Equity', false, true);
+            tvWidget.activeChart().createStudy('FutureCOI', false, true);
 
 			tvWidget.headerReady().then(() => {
-				// const button = tvWidget.createButton();
-				// button.setAttribute('title', 'Click to show a notification popup');
-				// button.classList.add('apply-common-tooltip');
-				// button.addEventListener('click', () => tvWidget.showNoticeDialog({
-				// 	title: 'Notification',
-				// 	body: 'TradingView Charting Library API works correctly',
-				// 	callback: () => {
-				// 		console.log('Noticed!');
-				// 	},
-				// }));
-                //
-				// button.innerHTML = 'Check API';
-
 
 			});
 		});

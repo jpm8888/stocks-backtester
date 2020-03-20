@@ -1,8 +1,8 @@
-export const id = "FutureCOI"; //id should be same as title without spaces
-export const title = "FutureCOI";
-export const shortDesc = "Futures COI";
+export const id = "Equity"; //id should be same as title without spaces
+export const title = "Equity";
+export const shortDesc = "Short description";
 
-export const configFutureCoi = {
+export const configEquity = {
     "_metainfoVersion": 40,
     "id": `${id}@tv-basicstudies-1`,
     "scriptIdPart": "",
