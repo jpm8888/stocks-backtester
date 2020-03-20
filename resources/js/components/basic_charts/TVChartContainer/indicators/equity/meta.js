@@ -37,3 +37,14 @@ export const configEquity = {
     },
     "inputs": [],
 };
+
+
+// Plot type:
+//    1 - Histogram
+//    2 - Line
+//    3 - Cross
+//    4 - Area
+//    5 - Columns
+//    6 - Circles
+//    7 - Line With Breaks
+//    8 - Area With Breaks

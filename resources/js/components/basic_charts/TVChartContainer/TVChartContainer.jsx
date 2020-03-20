@@ -7,6 +7,7 @@ import {setWidget} from "../actions/indexActions";
 import {FutureCoi} from "./indicators/fut_coi/code";
 import {Equity} from "./indicators/equity/code";
 import {configFutureCoi} from "./indicators/fut_coi/meta";
+import {configEquity} from "./indicators/equity/meta";
 
 
 function getLanguageFromURL() {
@@ -68,7 +69,7 @@ class TVChartContainer extends Component {
                 Equity.prototype.PineJS = PineJS;
                 FutureCoi.prototype.PineJS = PineJS;
                 return Promise.resolve([
-					// { name: "Equity", metainfo : configEquity, constructor : Equity},
+					{ name: "Equity", metainfo : configEquity, constructor : Equity},
 					{ name: "FutureCOI", metainfo : configFutureCoi, constructor : FutureCoi},
                 ]);
             },
@@ -79,7 +80,7 @@ class TVChartContainer extends Component {
 		this.props.setWidget(tvWidget);
 
 		tvWidget.onChartReady(() => {
-            // tvWidget.activeChart().createStudy('Equity', false, true);
+            tvWidget.activeChart().createStudy('Equity', false, true);
             tvWidget.activeChart().createStudy('FutureCOI', false, true);
 
 			tvWidget.headerReady().then(() => {
