@@ -1,2 +1,5 @@
 *
 !.gitignore
+!vix_data
+!nifty_data
+!bnf_data
