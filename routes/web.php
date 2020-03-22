@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 include_once 'web_common.php';
+include_once 'web_routes_utils.php';
 
 Route::get('/', function () {
     return view('welcome');

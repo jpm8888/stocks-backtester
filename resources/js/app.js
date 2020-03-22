@@ -21,3 +21,5 @@ require('./components/bhavcopy_analyse/ComponentIndex');
 require('./components/risk_calculator/ComponentIndex');
 
 require('./components/basic_charts/ComponentIndex');
+
+require('./components/import_csv/ComponentIndex');
