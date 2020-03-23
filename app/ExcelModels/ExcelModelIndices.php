@@ -41,10 +41,13 @@ class ExcelModelIndices implements ToModel, WithChunkReading, WithBatchInserts, 
         $high = floatval($row['high']);
         $low = floatval($row['low']);
         $close = floatval($row['close']);
-        $volume = trim($row['volume']);
-        $turnover = floatval($row['turnover']);
+        $volume = trim($row['shares_traded']);
+        $turnover = floatval($row['turnover_rs_cr']);
+
+
 
         $model = new ModelIndices([
+            'symbol'                 => $this->symbol,
             'date'                   => $date,
             'open'                   => $open,
             'high'                   => $high,
