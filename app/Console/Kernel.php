@@ -2,6 +2,7 @@
 
 namespace App\Console;
 
+use App\Console\Commands\DeleteTemp;
 use App\Console\Commands\DeleteTempFiles;
 use App\Console\Commands\ImportIndicesData;
 use App\Console\Commands\ImportVixData;
@@ -22,6 +23,7 @@ class Kernel extends ConsoleKernel
         DeleteTempFiles::class,
         ImportVixData::class,
         ImportIndicesData::class,
+        DeleteTemp::class,
     ];
 
 

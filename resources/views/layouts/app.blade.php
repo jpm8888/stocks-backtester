@@ -70,6 +70,7 @@
 
                             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
                                 <a class="dropdown-item" href="{{route('utils.import_csv_xlsx')}}"> Import CSV/XLSX </a>
+                                <a class="dropdown-item" href="{{route('process_indices.index')}}"> Process Indices CSV </a>
                             </div>
                         </li>
 

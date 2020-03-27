@@ -18,7 +18,9 @@ class DeleteTemp extends Command
 
     public function handle(){
         $this->delete_temp();
-        $this->delete_vix_files();
+        $this->delete_csv_files('public/vix_data');
+        $this->delete_csv_files('public/nifty_data');
+        $this->delete_csv_files('public/bnf_data');
         $this->info('All done for now');
     }
 
@@ -28,9 +30,8 @@ class DeleteTemp extends Command
         Storage::deleteDirectory('temp');
     }
 
-    private function delete_vix_files(){
-        $this->info('deleting vix files');
-        $files = Storage::disk('local')->files('public/vix_data');
+    private function delete_csv_files($path){
+        $files = Storage::disk('local')->files($path);
         foreach ($files as $f){
             $extension = substr($f,strlen($f) - 3,strlen($f));
             if ($extension === 'csv'){
@@ -38,6 +39,4 @@ class DeleteTemp extends Command
             }
         }
     }
-
-
 }

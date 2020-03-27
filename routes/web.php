@@ -70,6 +70,12 @@ Route::group(['middleware' => ['auth'], 'prefix' => 'basic_charts', 'as' => 'bas
     Route::get('api/history', 'ControllerBasicChart@history');
 });
 
+
+Route::group(['middleware' => ['auth'], 'prefix' => 'process_indices', 'as' => 'process_indices.'], function () {
+    Route::get('index', 'ControllerImportCSV@index')->name('index');
+    Route::post('import', 'ControllerImportCSV@import')->name('import');
+});
+
 Route::get('/hire_me', function () {
     return view('hire_me');
 })->name('hire_me');
