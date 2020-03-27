@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\ModelBhavcopyProcessed;
 use App\ModelMasterStocksFO;
+use App\ModelVix;
 use Illuminate\Support\Carbon;
 
 class ControllerBasicChart extends Controller
@@ -75,8 +76,13 @@ class ControllerBasicChart extends Controller
             $to = Carbon::createFromTimestamp($_GET['to'])->format('Y-m-d');
             $resolution = $_GET['resolution'];
 
-            $data = ModelBhavcopyProcessed::where('symbol', '=', "$symbol")
-                ->whereBetween('date', [$from, $to])->orderBy('date', 'asc')->get();
+
+            $data = [];
+            if ($symbol === 'VIX'){
+                $data = ModelVix::whereBetween('date', [$from, $to])->orderBy('date', 'asc')->get();
+            }else{
+                $data = ModelBhavcopyProcessed::where('symbol', '=', "$symbol")->whereBetween('date', [$from, $to])->orderBy('date', 'asc')->get();
+            }
 
 
             $s = "ok";
