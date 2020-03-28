@@ -20,6 +20,7 @@ class Kernel extends ConsoleKernel
         Commands\DownloadSecurityWiseDelvPos::class,
         Commands\SendLogsViaMail::class,
         Commands\DataProcessing\v1\ProcessBhavcopyCMV01::class,
+        Commands\DataProcessing\v1\ProcessBhavcopyIndices::class,
         DeleteTempFiles::class,
         ImportVixData::class,
         ImportIndicesData::class,
@@ -37,6 +38,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('import:indices')->weekdays()->at('21:00');
 
         $schedule->command('process:bhavcopy_v1')->weekdays()->at('18:50');
+        $schedule->command('process:bhavcopy_indices_v1')->weekdays()->at('19:00');
         $schedule->command('send_mail:logs')->weekdays()->at('19:30');
 
 
