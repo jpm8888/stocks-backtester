@@ -9,7 +9,6 @@ namespace App\ExcelModels;
 
 
 use App\ModelIndices;
-use App\ModelVix;
 use Carbon\Carbon;
 use Maatwebsite\Excel\Concerns\Importable;
 use Maatwebsite\Excel\Concerns\ToModel;
@@ -45,6 +44,10 @@ class ExcelModelIndices implements ToModel, WithChunkReading, WithBatchInserts, 
         $turnover = floatval($row['turnover_rs_cr']);
 
 
+        $data = ModelIndices::where('symbol', $this->symbol)->whereDate('date', '<', $date)->orderBy('date', 'desc')->first();
+
+        $prevclose = ($data) ? $data->close : 0;
+
 
         $model = new ModelIndices([
             'symbol'                 => $this->symbol,
@@ -53,22 +56,25 @@ class ExcelModelIndices implements ToModel, WithChunkReading, WithBatchInserts, 
             'high'                   => $high,
             'low'                    => $low,
             'close'                  => $close,
+            'prevclose'              => $prevclose,
             'volume'                 => $volume,
             'turnover'               => $turnover,
         ]);
+
         return $model;
     }
 
 
+    // do not change this, else prevclose will not be calculated.
     public function chunkSize(): int
     {
-        return 2000;
+        return 1;
     }
 
-
+    // do not change this, else prevclose will not be calculated.
     public function batchSize(): int
     {
-        return 2000;
+        return 1;
     }
 
 
