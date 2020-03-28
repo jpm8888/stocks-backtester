@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Storage;
 
@@ -37,9 +36,9 @@ class ControllerImportCSV extends Controller
                 $i++;
             }
 
-            Artisan::call('import:vix_data');
-            Artisan::call('import:indices');
-            Artisan::call('delete:temp');
+//            Artisan::call('import:vix_data');
+//            Artisan::call('import:indices');
+//            Artisan::call('delete:temp');
 
             return Redirect::back()->with('success', "successfully processed $i files.");
         }catch (\Exception $e){
