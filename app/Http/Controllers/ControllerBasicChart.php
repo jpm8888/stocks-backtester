@@ -6,11 +6,12 @@ use App\ModelBhavcopyProcessed;
 use App\ModelMasterStocksFO;
 use App\ModelVix;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Auth;
 
 class ControllerBasicChart extends Controller
 {
     public function index(){
-        $data = ['div_id' => 'div_basic_charts'];
+        $data = ['div_id' => 'div_basic_charts', 'id' => Auth::id()];
         return view('common_charts.react_empty', $data);
     }
 
@@ -92,6 +93,7 @@ class ControllerBasicChart extends Controller
             $h = [];
             $l = [];
             $v = [];
+            $fut_oi = [];
             foreach ($data as $d){
                 $t[] = Carbon::createFromFormat('Y-m-d', $d->date)->timestamp;
                 $c[] = $d->close;
@@ -99,9 +101,10 @@ class ControllerBasicChart extends Controller
                 $h[] = $d->high;
                 $l[] = $d->low;
                 $v[] = $d->volume;
+                $fut_oi[] = $d->cum_fut_oi;
             }
             return response()->json([
-                's' => $s, 't' => $t, 'c' => $c, 'o' => $o, 'h' => $h, 'l' => $l, 'v' => $v
+                's' => $s, 't' => $t, 'c' => $c, 'o' => $o, 'h' => $h, 'l' => $l, 'v' => $v, 'foi' => $fut_oi
             ]);
         }catch (\Exception $e){
             return response()->json([

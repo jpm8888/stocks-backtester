@@ -17,6 +17,11 @@ function getLanguageFromURL() {
 }
 
 class TVChartContainer extends Component {
+
+	constructor(props){
+		super(props);
+	}
+
 	static defaultProps = {
 		symbol: 'AXISBANK',
 		interval: 'D',
@@ -24,10 +29,10 @@ class TVChartContainer extends Component {
 		containerId: 'tv_chart_container',
 		datafeedUrl: 'api', //path of the url without trailing slash
 		libraryPath: '/charting_library/',
-		chartsStorageUrl: 'https://saveload.tradingview.com',
-		chartsStorageApiVersion: '1.1',
-		clientId: 'tradingview.com',
-		userId: 'public_user_id',
+		chartsStorageUrl: '/api/chart_save_engine',
+		chartsStorageApiVersion: 'v1',
+		clientId: 'shivafno',
+		// userId: this.props.user_id,
 		fullscreen: false,
 		autosize: true,
 		studiesOverrides: {},
@@ -55,11 +60,11 @@ class TVChartContainer extends Component {
             timezone: "Asia/Kolkata",
 			locale: getLanguageFromURL() || 'en',
 			disabled_features: ['use_localstorage_for_settings'],
-			enabled_features: ['study_templates'],
+			enabled_features: [],
 			charts_storage_url: this.props.chartsStorageUrl,
 			charts_storage_api_version: this.props.chartsStorageApiVersion,
 			client_id: this.props.clientId,
-			user_id: this.props.userId,
+			user_id: this.props.user_id,
 			fullscreen: this.props.fullscreen,
 			autosize: this.props.autosize,
 			studies_overrides: this.props.studiesOverrides,
@@ -80,8 +85,8 @@ class TVChartContainer extends Component {
 		this.props.setWidget(tvWidget);
 
 		tvWidget.onChartReady(() => {
-            tvWidget.activeChart().createStudy('Equity', false, true);
-            tvWidget.activeChart().createStudy('FutureCOI', false, true);
+            // tvWidget.activeChart().createStudy('Equity', false, true);
+            // tvWidget.activeChart().createStudy('FutureCOI', false, true);
 
 			tvWidget.headerReady().then(() => {
 

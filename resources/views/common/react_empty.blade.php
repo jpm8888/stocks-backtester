@@ -1,7 +1,7 @@
 @extends('layouts.app')
 @section('content')
     <section class="content">
-        <div id="{{$div_id}}"></div>
+        <div id="{{$div_id}}" data="{{isset($id) ? $id : ''}}"></div>
     </section>
 @endsection
 

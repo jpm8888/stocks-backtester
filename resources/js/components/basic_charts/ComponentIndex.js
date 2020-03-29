@@ -11,7 +11,7 @@ class ComponentIndex extends Component {
         return (
             <div className={"row"}>
                 <div className="col-md-10">
-                    <TVChartContainer/>
+                    <TVChartContainer user_id={this.props.user_id}/>
                 </div>
                 <SymbolsWatchlist/>
             </div>
@@ -20,9 +20,10 @@ class ComponentIndex extends Component {
 }
 
 if (document.getElementById('div_basic_charts')) {
+    let id = document.getElementById('div_basic_charts').getAttribute('data');
     ReactDOM.render(
         <Provider store={store}>
-            <ComponentIndex/>
+            <ComponentIndex user_id={id}/>
         </Provider>
         , document.getElementById('div_basic_charts'));
 }

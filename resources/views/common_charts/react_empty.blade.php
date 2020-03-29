@@ -24,7 +24,7 @@
     <script src="{{ asset('js/app.js') . '?random=' . \App\Http\Controllers\Base\AppConstants::BUILD_VERSION}}"></script>
 </head>
 <body>
-    <div id="{{$div_id}}"></div>
+    <div id="{{$div_id}}" data="{{isset($id) ? $id : ''}}"></div>
 </body>
 
 </html>
