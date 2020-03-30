@@ -67,6 +67,11 @@ class ControllerBasicChart extends Controller
             'sector' => "NA",
             'industry' => "NA",
             'currency_code' => "INR",
+
+            'minmov' => 1,
+            'pricescale' => 100,
+            'minmove2' => 0,
+            'fractional' => false,
         ]);
     }
 

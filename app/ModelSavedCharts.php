@@ -10,11 +10,11 @@ class ModelSavedCharts extends Model
     public $timestamps = false;
     protected $table = 'saved_charts';
     protected $guarded = [];
-    protected $appends = ['timestamp', 'id'];
+    protected $appends = ['timestamp', 'chart_id'];
 
 
-    public function getIdAttribute(){
-        return $this->chart_id;
+    public function getChartIdAttribute(){
+        return $this->id;
     }
 
     public function getTimestampAttribute(){

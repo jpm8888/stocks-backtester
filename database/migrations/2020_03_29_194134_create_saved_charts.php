@@ -14,7 +14,7 @@ class CreateSavedCharts extends Migration
     public function up()
     {
         Schema::create('saved_charts', function (Blueprint $table) {
-            $table->bigIncrements('chart_id');
+            $table->bigIncrements('id');
             $table->string('name');
             $table->string('symbol')->index();
             $table->string('resolution');

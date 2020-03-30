@@ -13,7 +13,7 @@ class ControllerChartSaveEngine extends Controller
         $chart_id = (isset($_GET['chart'])) ? $_GET['chart'] : 0;
 
         if ($chart_id > 0){
-            $model = ModelSavedCharts::where('chart_id' , $chart_id)->where('user_id', $_GET['user'])->first();
+            $model = ModelSavedCharts::where('id' , $chart_id)->where('user_id', $_GET['user'])->first();
             return response()->json([
                'status' => 'ok',
                 'data' => $model
@@ -32,12 +32,23 @@ class ControllerChartSaveEngine extends Controller
         try{
             $chart_id = (isset($_GET['chart'])) ? $_GET['chart'] : 0;
 
-            $model = ($chart_id == 0) ? new ModelSavedCharts() : ModelSavedCharts::where('chart_id', $chart_id)->first();
-            $model->name = $request->input('name');
-            $model->symbol = $request->input('symbol');
+            $name = $request->input('name');
+            $symbol = $request->input('symbol');
+            $user_id = $_GET['user'];
+
+            $model = ($chart_id == 0) ? new ModelSavedCharts() : ModelSavedCharts::where('id', $chart_id)->first();
+
+            if ($chart_id == 0){
+                $temp = ModelSavedCharts::where('user_id', $user_id)->where('symbol', $symbol)->where('name', $name)->first();
+                if ($temp) $model = $temp;
+            }
+
+
+            $model->name = $name;
+            $model->symbol = $symbol;
             $model->resolution = $request->input('resolution');
             $model->content = $request->input('content');
-            $model->user_id = $_GET['user'];
+            $model->user_id = $user_id;
             $model->created_at = Carbon::now();
             $model->save();
             return response()->json([
@@ -47,13 +58,14 @@ class ControllerChartSaveEngine extends Controller
         }catch (\Exception $e){
             return response()->json([
                 'status' => 'error',
-                'id' => 0
+                'id' => 0,
+                'msg' => $e->getMessage()
             ]);
         }
     }
 
     public function destroy(){
-        DB::table('saved_charts')->where('chart_id', $_GET['chart'])->where('user_id', $_GET['user'])->delete();
+        DB::table('saved_charts')->where('id', $_GET['chart'])->where('user_id', $_GET['user'])->delete();
         return response()->json([
             'status' => 'ok',
             'id' => 0

@@ -84,9 +84,32 @@ class TVChartContainer extends Component {
 		this.tvWidget = tvWidget;
 		this.props.setWidget(tvWidget);
 
+
+
 		tvWidget.onChartReady(() => {
             // tvWidget.activeChart().createStudy('Equity', false, true);
             // tvWidget.activeChart().createStudy('FutureCOI', false, true);
+			// tvWidget.save(function(data) {
+			// 	console.log('charts json content is', data);
+			// 	// data; // <----- here
+			// });
+
+			tvWidget.getSavedCharts(function (chartRecord) {
+				chartRecord.map((item)=>{
+					if (item.name === 'default'){
+						tvWidget.loadChartFromServer(item);
+					}
+				});
+			});
+
+			tvWidget.subscribe('onAutoSaveNeeded', ()=>{
+				tvWidget.saveChartToServer(function () {
+					console.log('on_complete');
+				}, function () {
+					console.log('on_fail');
+				}, {defaultChartName : 'default', chartName : 'default'});
+			});
+
 
 			tvWidget.headerReady().then(() => {
 
