@@ -11,26 +11,36 @@ class SymbolsWatchlist extends Component {
     }
 
     render() {
+        let listStyleNormal = {
+            borderBottom: '1px solid #f0f3fa',
+            paddingTop : 5,
+            paddingLeft : 3,
+            fontWeight : 'bold',
+        };
+
+        let listStyleSelected = {
+            border: '2px solid #2196f3',
+            paddingTop : 5,
+            paddingLeft : 3,
+            fontWeight : 'bold',
+        };
+
+
         return (
-            <div className="col-md-2">
+            <div>
                 <div>
                     <ComponentInput value={this.props.queryStr} label={"Filter"} className="col" onChange={(e)=>this.props.on_filter('queryStr', e.target.value)}/>
                 </div>
 
-                <div className="col" style={{overflowX : 'auto', overflowY : 'scroll', fontSize : 11, whiteSpace : 'nowrap', height: 400, backgroundColor: 'white', marginTop : 5, padding : 5}}>
-                    <table className="table table-bordered table-sm table-hover">
-                            <tbody>
-                            {
-                                this.props.symbols.map((item, index)=>{
-                                    return (
-                                      <tr key={'sym_' + index} onClick={()=> this.props.onSymbolClicked(item.symbol)}>
-                                          <td>{item.symbol}</td>
-                                      </tr>
-                                    );
-                                })
-                            }
-                            </tbody>
-                    </table>
+                <div style={{overflowY : 'scroll', height: 450, backgroundColor: 'white', marginTop : 5}}>
+                    <ul style={{listStyle : 'none', paddingLeft : 0}}>
+                        {
+                            this.props.symbols.map((item, index)=>{
+                                let listStyle = (item.symbol === this.props.selectedSymbol) ? listStyleSelected : listStyleNormal;
+                                return <li key={'tx' + index} style={listStyle} onClick={()=> this.props.onSymbolClicked(item.symbol)}>{item.symbol}</li>
+                            })
+                        }
+                    </ul>
                 </div>
             </div>
         );
@@ -42,6 +52,7 @@ const mapStateToProps = (state) => {
     return {
         symbols: s.filteredSymbols,
         queryStr: s.queryStr,
+        selectedSymbol : state.indexReducer.selectedSymbol,
     };
 };
 

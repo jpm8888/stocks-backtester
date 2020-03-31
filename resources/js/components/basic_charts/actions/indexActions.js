@@ -1,4 +1,4 @@
-import {ON_CHANGE, ON_CHART_CREATED} from "./types";
+import {ON_CHANGE, ON_CHART_CREATED, ON_SYMBOL_SELECTED} from "./types";
 import store from '../store'
 
 export const on_change = (name, value) => (dispatch) => {
@@ -20,13 +20,12 @@ export const setWidget = (widget) => (dispatch) => {
 
 export const onSymbolClicked = (symbol) => (dispatch) => {
     let reducer = store.getState().indexReducer;
-
     let widget = reducer.widget;
+    dispatch({type: ON_SYMBOL_SELECTED, payload: symbol});
 
     if (widget){
         let chart = widget.activeChart();
         chart.setSymbol(symbol, ()=>{
-            //success callback
         })
     }
 };
