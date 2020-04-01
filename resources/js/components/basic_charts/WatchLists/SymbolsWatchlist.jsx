@@ -15,14 +15,13 @@ class SymbolsWatchlist extends Component {
             borderBottom: '1px solid #f0f3fa',
             paddingTop : 5,
             paddingLeft : 3,
-            fontWeight : 'bold',
+
         };
 
         let listStyleSelected = {
             border: '2px solid #2196f3',
             paddingTop : 5,
             paddingLeft : 3,
-            fontWeight : 'bold',
         };
 
 
