@@ -22,6 +22,7 @@
     <script src="{{asset('datafeeds/udf/dist/polyfills.js'). '?random=' . \App\Http\Controllers\Base\AppConstants::BUILD_VERSION}}"></script>
     <script src="{{asset('datafeeds/udf/dist/bundle.js'). '?random=' . \App\Http\Controllers\Base\AppConstants::BUILD_VERSION}}"></script>
     <script src="{{ asset('js/app.js') . '?random=' . \App\Http\Controllers\Base\AppConstants::BUILD_VERSION}}"></script>
+    <script src="https://kit.fontawesome.com/03a9e85f7e.js" crossorigin="anonymous"></script>
 </head>
 <body style="font-family: 'Roboto Mono', monospace;">
     <div id="{{$div_id}}" data="{{isset($id) ? $id : ''}}"></div>

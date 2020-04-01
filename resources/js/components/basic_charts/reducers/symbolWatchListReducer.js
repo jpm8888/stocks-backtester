@@ -1,10 +1,12 @@
-import {ON_FETCH_FNO_SYMBOLS, ON_FILTER} from "../actions/types";
+import {ON_FETCH_FNO_SYMBOLS, ON_FILTER, SET_LOADING_ON_LIKE} from "../actions/types";
 
 const initialState = {
     is_loading: false,
     queryStr : '',
     fno_symbols : [],
     filteredSymbols : [],
+    idx : 0,
+    loading : false,
 };
 
 
@@ -22,6 +24,13 @@ export default function (state = initialState, action) {
                 ...state,
                 fno_symbols : action.payload,
                 filteredSymbols : action.payload,
+            };
+
+        case SET_LOADING_ON_LIKE:
+            return {
+                ...state,
+                idx : action.payload.idx,
+                loading : action.payload.loading,
             };
         default : return state;
     }

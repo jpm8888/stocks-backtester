@@ -29,3 +29,5 @@ export const onSymbolClicked = (symbol) => (dispatch) => {
         })
     }
 };
+
+

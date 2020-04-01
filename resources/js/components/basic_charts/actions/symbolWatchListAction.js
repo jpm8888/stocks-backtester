@@ -1,5 +1,6 @@
-import {ON_FETCH_FNO_SYMBOLS, ON_FILTER} from "./types";
+import {ON_FETCH_FNO_SYMBOLS, ON_FILTER, SET_LOADING_ON_LIKE} from "./types";
 import store from '../store';
+import axios from "axios";
 
 export const download_fno_symbols = () => (dispatch) => {
     fetch('/fetch/fno_stocks')
@@ -34,3 +35,22 @@ export const on_filter = (name, value) => (dispatch) => {
         filteredSymbols : filtered,
     }});
 };
+
+
+export const onToggleFavorite = (idx, symbol) => (dispatch) => {
+    dispatch({type: SET_LOADING_ON_LIKE, payload: {idx : idx, loading : true}});
+    axios.post('/fetch/toggle_favorite', {symbol: symbol})
+        .then((response) => {
+            const data = response.data;
+            if (data.status === 1) {
+                let fav_id = data.fav_id;
+                let reducer = store.getState().symbolWatchListReducer;
+                let symbols = reducer.fno_symbols;
+                symbols.map((item, index)=>{
+                   if (index === idx) item.fav_id = fav_id;
+                });
+                dispatch({type: ON_FETCH_FNO_SYMBOLS, payload: symbols});
+            }
+            dispatch({type: SET_LOADING_ON_LIKE, payload: {idx : idx, loading : false}});
+        });
+}
