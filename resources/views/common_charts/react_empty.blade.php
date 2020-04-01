@@ -15,7 +15,7 @@
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
 
-    <link href="https://fonts.googleapis.com/css?family=Exo+2:400,600,700,800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500;700&display=swap" rel="stylesheet">
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
 
@@ -23,7 +23,7 @@
     <script src="{{asset('datafeeds/udf/dist/bundle.js'). '?random=' . \App\Http\Controllers\Base\AppConstants::BUILD_VERSION}}"></script>
     <script src="{{ asset('js/app.js') . '?random=' . \App\Http\Controllers\Base\AppConstants::BUILD_VERSION}}"></script>
 </head>
-<body>
+<body style="font-family: 'Roboto Mono', monospace;">
     <div id="{{$div_id}}" data="{{isset($id) ? $id : ''}}"></div>
 </body>
 

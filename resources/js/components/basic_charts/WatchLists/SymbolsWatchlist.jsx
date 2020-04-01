@@ -27,7 +27,7 @@ class SymbolsWatchlist extends Component {
 
 
         return (
-            <div>
+            <div className="col-md-2">
                 <div>
                     <ComponentInput value={this.props.queryStr} label={"Filter"} className="col" onChange={(e)=>this.props.on_filter('queryStr', e.target.value)}/>
                 </div>
