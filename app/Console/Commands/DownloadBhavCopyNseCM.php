@@ -49,15 +49,10 @@ class DownloadBhavCopyNseCM extends Command
             $this->start_download($date);
         }
 
-         //$mail = new MailController();
-         //$msg = "Successfully imported cash market data for date : " .  Carbon::now()->format('d-m-Y');
-         //$mail->send_basic_email(['msg' => $msg], 'Cash market copy added');
     }
 
     public function start_download(Carbon $date){
         try{
-//            $flag = $date->isWeekday();
-//            if (!$flag) return false;
 
             $flag = $this->check_already_imported($date);
             if (!$flag) return false;
@@ -82,7 +77,7 @@ class DownloadBhavCopyNseCM extends Command
     }
 
     private function check_already_imported(Carbon $date){
-        $count = DB::table('bhavcopy_cm')->where('date', $date->format('Y-m-d'))->count();
+        $count = DB::table('bhavcopy_nse_cm')->where('date', $date->format('Y-m-d'))->count();
         if ($count == 0) return true;
         $this->info('Already imported data for this date : ' . $date->format('d-m-Y'));
         return false;
@@ -149,7 +144,7 @@ class DownloadBhavCopyNseCM extends Command
 
     private function write_download_error_log(Carbon $date){
         $log = new ModelLog();
-        $log->log_type = 'CM_MARKET_DATE_DOWNLOAD_ERROR';
+        $log->log_type = 'NSE_CM_MARKET_DATE_DOWNLOAD_ERROR';
         $log->added_by = 1;
         $log->msg = $date->format('d-m-Y');
         $log->save();
