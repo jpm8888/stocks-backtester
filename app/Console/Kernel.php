@@ -14,21 +14,21 @@ class Kernel extends ConsoleKernel
         Commands\DailyUpdate::class,
         Commands\DownloadBhavCopyCombined::class,
         Commands\DownloadBhavCopyCM::class,
+        Commands\DownloadBhavCopyNseCM::class,
         Commands\DownloadBhavCopyFO::class,
         Commands\DownloadSecurityWiseDelvPos::class,
         Commands\SendLogsViaMail::class,
         Commands\DataProcessing\v1\ProcessBhavcopyCMV01::class,
         Commands\DataProcessing\v1\ProcessBhavcopyIndices::class,
         DeleteTempFiles::class,
-//        ImportVixData::class,
-//        ImportIndicesData::class,
         DeleteTemp::class,
     ];
 
 
     protected function schedule(Schedule $schedule)
     {
-        $schedule->command('download:bhavcopy_cm')->weekdays()->at('18:30');
+        $schedule->command('download:bhavcopy_cm')->weekdays()->at('18:20');
+        $schedule->command('download:bhavcopy_nse_cm')->weekdays()->at('18:25');
         $schedule->command('download:delv_wise_positions')->weekdays()->at('18:35');
         $schedule->command('download:bhavcopy_fo')->weekdays()->at('18:40');
 
@@ -37,7 +37,7 @@ class Kernel extends ConsoleKernel
 
         $schedule->command('process:bhavcopy_v1')->weekdays()->at('18:50');
         $schedule->command('process:bhavcopy_indices_v1')->weekdays()->at('19:00');
-        $schedule->command('send_mail:logs')->weekdays()->at('19:30');
+        $schedule->command('send_mail:logs')->weekdays()->at('19:10');
 
 
         $schedule->command('delete:temp')->dailyAt('00:00');
