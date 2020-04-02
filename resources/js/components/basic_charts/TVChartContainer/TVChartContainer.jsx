@@ -132,18 +132,6 @@ const mapStateToProps = (state) => {
     const s = state.indexReducer;
     return {
         debug: s.debug,
-        // amount: s.amount,
-        // ref_num: s.ref_num,
-        // verified: s.verified,
-        // msg_type: s.msg_type,
-        // msg: s.msg,
-        // is_loading: s.is_loading,
-        // user_id: s.user_id,
-        // user_balance: s.user_balance,
-        // player_id: s.player_id,
-        // player_name: s.player_name,
-        // is_fetching_transactions: s.is_fetching_transactions,
-        // transactions: s.transactions,
     };
 };
 
@@ -151,11 +139,6 @@ const mapDispatchToProps = (dispatch) => {
     return bindActionCreators({
 		setWidget: (widget) => setWidget(widget),
 		fetch_app_info: () => fetch_app_info(),
-
-
-        // verify_user: (user_id) => verify_user(user_id),
-        // add_transaction: (player_id, amount, type, remarks) => add_transaction(player_id, amount, type, remarks),
-        // reset: () => reset()
     }, dispatch);
 };
 
