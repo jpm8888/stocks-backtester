@@ -1,4 +1,4 @@
-import {ON_FETCH_FNO_SYMBOLS, ON_FILTER, SET_LOADING_ON_LIKE} from "../actions/types";
+import {LIST_FNO, ON_FETCH_FNO_SYMBOLS, ON_FILTER, ON_SELECT_LIST, SET_LOADING_ON_LIKE} from "../actions/types";
 
 const initialState = {
     is_loading: false,
@@ -7,6 +7,9 @@ const initialState = {
     filteredSymbols : [],
     idx : 0,
     loading : false,
+
+
+    selectedList : LIST_FNO, //LIST_FNO, LIST_FAVS
 };
 
 
@@ -32,6 +35,13 @@ export default function (state = initialState, action) {
                 idx : action.payload.idx,
                 loading : action.payload.loading,
             };
+
+        case ON_SELECT_LIST:
+            return {
+                ...state,
+                selectedList : action.payload,
+            };
+
         default : return state;
     }
 }

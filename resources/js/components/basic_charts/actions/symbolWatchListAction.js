@@ -1,14 +1,26 @@
-import {ON_FETCH_FNO_SYMBOLS, ON_FILTER, SET_LOADING_ON_LIKE} from "./types";
+import {LIST_FAVS, LIST_FNO, ON_FETCH_FNO_SYMBOLS, ON_FILTER, ON_SELECT_LIST, SET_LOADING_ON_LIKE} from "./types";
 import store from '../store';
 import axios from "axios";
 
 export const download_fno_symbols = () => (dispatch) => {
+    fetch_fno_symbols(dispatch);
+};
+
+function fetch_fno_symbols(dispatch) {
     fetch('/fetch/fno_stocks')
         .then((res) => res.json()
             .then((res) => {
                 dispatch({type: ON_FETCH_FNO_SYMBOLS, payload: res});
             }));
-};
+}
+
+function fetch_fav_symbols(dispatch) {
+    fetch('/fetch/favorites_stocks')
+        .then((res) => res.json()
+            .then((res) => {
+                dispatch({type: ON_FETCH_FNO_SYMBOLS, payload: res});
+            }));
+}
 
 export const on_filter = (name, value) => (dispatch) => {
 
@@ -54,3 +66,16 @@ export const onToggleFavorite = (idx, symbol) => (dispatch) => {
             dispatch({type: SET_LOADING_ON_LIKE, payload: {idx : idx, loading : false}});
         });
 }
+
+export const onListSelected = (type) => (dispatch) => {
+    switch (type) {
+        case LIST_FNO:
+            fetch_fno_symbols(dispatch);
+            dispatch({type: ON_SELECT_LIST, payload: LIST_FNO});
+            break;
+        case LIST_FAVS:
+            fetch_fav_symbols(dispatch)
+            dispatch({type: ON_SELECT_LIST, payload: LIST_FAVS});
+            break;
+    }
+};
