@@ -9,8 +9,8 @@ import SymbolsWatchlist from "./WatchLists/SymbolsWatchlist";
 class ComponentIndex extends Component {
     render() {
         return (
-            <div className={"row"}>
-                <div className="col-md-10">
+            <div style={{width : '100%'}}>
+                <div style={{width : '80%', float : 'left'}}>
                     <TVChartContainer user_id={this.props.user_id}/>
                 </div>
                 <SymbolsWatchlist/>
