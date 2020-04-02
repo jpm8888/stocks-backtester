@@ -34,7 +34,6 @@ export const fetch_app_info = () => (dispatch) => {
     fetch('/fetch/app_info')
         .then((res) => res.json()
             .then((res) => {
-                console.log(res);
                 dispatch({type: ON_FETCH_APP_INFO, payload: res});
             }));
 };

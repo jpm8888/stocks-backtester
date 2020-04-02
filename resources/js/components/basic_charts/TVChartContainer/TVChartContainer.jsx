@@ -24,19 +24,13 @@ class TVChartContainer extends Component {
 
 	static defaultProps = {
 		symbol: 'AXISBANK',
-		interval: 'D',
-        toolbar_bg: '#f4f7f9',
-		containerId: 'tv_chart_container',
+        toolbar_bg: '#f9a281',
 		datafeedUrl: 'api', //path of the url without trailing slash
 		libraryPath: '/charting_library/',
 		chartsStorageUrl: '/api/chart_save_engine',
 		chartsStorageApiVersion: 'v1',
 		clientId: 'shivafno',
 		// userId: this.props.user_id,
-		fullscreen: false,
-		autosize: true,
-		studiesOverrides: {},
-        supported_resolutions: ['1D', '1W', '1M'],
         time_frames: [
             { text: "100y", resolution: "M", description: "100 Years", title: "100yr" },
             { text: "3y", resolution: "W", description: "3 Years", title: "3yr" },
@@ -55,8 +49,8 @@ class TVChartContainer extends Component {
 			symbol: this.props.symbol,
             time_frames : this.props.time_frames,
 			datafeed: new window.Datafeeds.UDFCompatibleDatafeed(this.props.datafeedUrl, (60 * 1000)),
-			interval: this.props.interval,
-			container_id: this.props.containerId,
+			interval: 'D',
+			container_id: 'tv_chart_container',
 			library_path: this.props.libraryPath,
             timezone: "Asia/Kolkata",
 			locale: getLanguageFromURL() || 'en',
@@ -66,9 +60,9 @@ class TVChartContainer extends Component {
 			charts_storage_api_version: this.props.chartsStorageApiVersion,
 			client_id: this.props.clientId,
 			user_id: this.props.user_id,
-			fullscreen: this.props.fullscreen,
-			autosize: this.props.autosize,
-			studies_overrides: this.props.studiesOverrides,
+			fullscreen: false,
+			autosize: true,
+			studies_overrides: {},
             symbol_search_request_delay : (1 * 1000), //2 seconds delay after type
             debug: this.props.debug,
             custom_indicators_getter: function(PineJS) {
@@ -127,7 +121,7 @@ class TVChartContainer extends Component {
 	render() {
 		return (
 			<div
-				id={ this.props.containerId }
+				id={ 'tv_chart_container' }
 				className={ 'TVChartContainer' }
 			/>
 		);
