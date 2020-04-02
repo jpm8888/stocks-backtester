@@ -1,9 +1,11 @@
-import {ON_CHANGE, ON_CHART_CREATED, ON_SYMBOL_SELECTED} from "../actions/types";
+import {ON_CHANGE, ON_CHART_CREATED, ON_FETCH_APP_INFO, ON_SYMBOL_SELECTED} from "../actions/types";
 
 const initialState = {
     is_loading: false,
     widget: undefined,
     selectedSymbol : '',
+
+    debug : false,
 };
 
 
@@ -23,6 +25,11 @@ export default function (state = initialState, action) {
             return {
                 ...state,
                 selectedSymbol: action.payload,
+            };
+        case ON_FETCH_APP_INFO:
+            return {
+                ...state,
+                debug: action.payload.debug,
             };
         default : return state;
     }

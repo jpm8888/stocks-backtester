@@ -50,9 +50,9 @@ class SymbolsWatchlist extends Component {
                                 let loading = (this.props.loading && this.props.idx === index) ? "fas fa-fan fa-spin" : heartStyle;
 
                                 return (
-                                    <div>
+                                    <div key={'tx' + index}>
                                         <button style={likeButtonStyle} onClick={()=>this.props.onToggleFavorite(index, item.symbol)}><i className={loading} style={{color: '#FD4659'}}/></button>
-                                        <li key={'tx' + index} style={listStyle} onClick={()=> this.props.onSymbolClicked(item.symbol)}>{item.symbol}</li>
+                                        <li style={listStyle} onClick={()=> this.props.onSymbolClicked(item.symbol)}>{item.symbol}</li>
                                     </div>
                                 );
                             })
@@ -61,8 +61,8 @@ class SymbolsWatchlist extends Component {
                 </div>
 
                 <ul className="pagination" style={{marginTop : 10}}>
-                    <li className={`page-item ${(this.props.selectedList === LIST_FNO) ? 'active' : ''}`} onClick={()=>this.props.onListSelected(LIST_FNO)}><a className="page-link">🍇</a></li>
-                    <li className={`page-item ${(this.props.selectedList === LIST_FAVS) ? 'active' : ''}`} onClick={()=>this.props.onListSelected(LIST_FAVS)}><a className="page-link"><i className={'fas fa-heart'} style={{color: '#FD4659'}}/></a></li>
+                    <li key="list_fno" className={`page-item ${(this.props.selectedList === LIST_FNO) ? 'active' : ''}`} onClick={()=>this.props.onListSelected(LIST_FNO)}><a className="page-link">🍇</a></li>
+                    <li key="list_favs" className={`page-item ${(this.props.selectedList === LIST_FAVS) ? 'active' : ''}`} onClick={()=>this.props.onListSelected(LIST_FAVS)}><a className="page-link"><i className={'fas fa-heart'} style={{color: '#FD4659'}}/></a></li>
                 </ul>
             </div>
         );

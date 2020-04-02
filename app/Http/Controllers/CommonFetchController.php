@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Utils\Version;
 use App\ModelFavorite;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -9,6 +10,15 @@ use Illuminate\Support\Facades\DB;
 
 class CommonFetchController extends Controller
 {
+
+    public function app_info(){
+        return response()->json([
+           'debug' => Version::isDebug(),
+           'build_version' => Version::getBuildVersion(),
+           'version' => Version::getProjectVersion(),
+        ]);
+    }
+
     public function fno_stocks(){
         $data = DB::table('master_stocks_fo as msf')
             ->select('msf.*', 'f.id as fav_id')

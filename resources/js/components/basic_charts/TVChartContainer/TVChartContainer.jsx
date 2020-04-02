@@ -3,7 +3,7 @@ import './index.css';
 import {widget} from "../../../charting_library/charting_library.min";
 import connect from "react-redux/es/connect/connect";
 import {bindActionCreators} from "redux";
-import {setWidget} from "../actions/indexActions";
+import {fetch_app_info, setWidget} from "../actions/indexActions";
 import {FutureCoi} from "./indicators/fut_coi/code";
 import {Equity} from "./indicators/equity/code";
 import {configFutureCoi} from "./indicators/fut_coi/meta";
@@ -50,6 +50,7 @@ class TVChartContainer extends Component {
 	tvWidget = null;
 
 	componentDidMount() {
+		this.props.fetch_app_info();
 		const widgetOptions = {
 			symbol: this.props.symbol,
             time_frames : this.props.time_frames,
@@ -69,7 +70,7 @@ class TVChartContainer extends Component {
 			autosize: this.props.autosize,
 			studies_overrides: this.props.studiesOverrides,
             symbol_search_request_delay : (1 * 1000), //2 seconds delay after type
-            debug: true,
+            debug: this.props.debug,
             custom_indicators_getter: function(PineJS) {
                 Equity.prototype.PineJS = PineJS;
                 FutureCoi.prototype.PineJS = PineJS;
@@ -83,7 +84,6 @@ class TVChartContainer extends Component {
 		const tvWidget = new widget(widgetOptions);
 		this.tvWidget = tvWidget;
 		this.props.setWidget(tvWidget);
-
 
 
 		tvWidget.onChartReady(() => {
@@ -104,9 +104,9 @@ class TVChartContainer extends Component {
 
 			tvWidget.subscribe('onAutoSaveNeeded', ()=>{
 				tvWidget.saveChartToServer(function () {
-					console.log('on_complete');
+					// console.log('on_complete');
 				}, function () {
-					console.log('on_fail');
+					// console.log('on_fail');
 				}, {defaultChartName : 'default', chartName : 'default'});
 			});
 
@@ -137,7 +137,7 @@ class TVChartContainer extends Component {
 const mapStateToProps = (state) => {
     const s = state.indexReducer;
     return {
-        // mode: s.mode,
+        debug: s.debug,
         // amount: s.amount,
         // ref_num: s.ref_num,
         // verified: s.verified,
@@ -156,6 +156,8 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
     return bindActionCreators({
 		setWidget: (widget) => setWidget(widget),
+		fetch_app_info: () => fetch_app_info(),
+
 
         // verify_user: (user_id) => verify_user(user_id),
         // add_transaction: (player_id, amount, type, remarks) => add_transaction(player_id, amount, type, remarks),
