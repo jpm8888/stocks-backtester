@@ -56,6 +56,7 @@
                                 <a class="dropdown-item" href="{{route('nifty_live_oi.index')}}">Nifty Live Open Interest</a>
                                 <a class="dropdown-item" href="{{route('bhavcopy_analyse.index')}}"> Bhavcopy Analyse</a>
                                 <a class="dropdown-item" target="_blank" href="{{route('fno_charts.index')}}"> FNO Charts</a>
+                                <a class="dropdown-item" target="_blank" href="{{route('nse_cm_charts.index')}}"> NSE CM Charts</a>
                                 <a class="dropdown-item" href="{{route('risk_calculator.index')}}"> Risk Calculator</a>
                             </div>
                         </li>

@@ -19,11 +19,11 @@ class ComponentIndex extends Component {
     }
 }
 
-if (document.getElementById('div_fno_charts')) {
-    let id = document.getElementById('div_fno_charts').getAttribute('data');
+if (document.getElementById('div_nse_cm_charts')) {
+    let id = document.getElementById('div_nse_cm_charts').getAttribute('data');
     ReactDOM.render(
         <Provider store={store}>
             <ComponentIndex user_id={id}/>
         </Provider>
-        , document.getElementById('div_fno_charts'));
+        , document.getElementById('div_nse_cm_charts'));
 }

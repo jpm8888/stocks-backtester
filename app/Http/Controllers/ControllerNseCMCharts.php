@@ -2,16 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use App\ModelBhavcopyProcessed;
-use App\ModelMasterStocksFO;
-use App\ModelVix;
+use App\ModelBhavCopyNseCM;
+use App\ModelMasterStocksCM;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 
-class ControllerBasicChart extends Controller
+class ControllerNseCMCharts extends Controller
 {
     public function index(){
-        $data = ['div_id' => 'div_basic_charts', 'id' => Auth::id()];
+        $data = ['div_id' => 'div_nse_cm_charts', 'id' => Auth::id()];
         return view('common_charts.react_empty', $data);
     }
 
@@ -28,7 +27,7 @@ class ControllerBasicChart extends Controller
     public function search(){
         $symbol = $_GET['query'];
         $limit = $_GET['limit'];
-        $models = ModelMasterStocksFO::where('symbol','like', "%$symbol%")->limit($limit)->get();
+        $models = ModelMasterStocksCM::where('symbol','like', "%$symbol%")->limit($limit)->get();
 
         foreach ($models as $m){
             $m->full_name = "";
@@ -48,18 +47,18 @@ class ControllerBasicChart extends Controller
             $symbol = $split[1];
         }
 
-        $m = ModelMasterStocksFO::where('symbol','=', "$symbol")->first();
+        $m = ModelMasterStocksCM::where('symbol','=', "$symbol")->first();
         return response()->json([
             'name' => $m->symbol,
             'ticker' => $m->symbol,
             'description' => $m->symbol,
-            'type' => $m->stock,
+            'type' => 'stock',
             //'session' => "0900-1530",
             'exchange' => "NSE",
             'listed_exchange' => "NSE",
             'timezone' => "Asia/Kolkata",
 
-            'has_no_volume' => (!$m->has_volume),
+            'has_no_volume' => false,
             'has_intraday' => false,
             'has_seconds' => false,
             'has_daily' => true,
@@ -82,14 +81,7 @@ class ControllerBasicChart extends Controller
             $to = Carbon::createFromTimestamp($_GET['to'])->format('Y-m-d');
             $resolution = $_GET['resolution'];
 
-
-            $data = [];
-            if ($symbol === 'VIX'){
-                $data = ModelVix::whereBetween('date', [$from, $to])->orderBy('date', 'asc')->get();
-            }else{
-                $data = ModelBhavcopyProcessed::where('symbol', '=', "$symbol")->whereBetween('date', [$from, $to])->orderBy('date', 'asc')->get();
-            }
-
+            $data = ModelBhavCopyNseCM::where('symbol', '=', "$symbol")->whereBetween('date', [$from, $to])->orderBy('date', 'asc')->get();
 
             $s = "ok";
             $t = [];

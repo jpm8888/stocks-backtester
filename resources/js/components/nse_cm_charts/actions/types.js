@@ -1,4 +1,4 @@
-export const MODULE_KEY = "module_shiva_";
+export const MODULE_KEY = "module_nse_cm_";
 export const ON_CHANGE = MODULE_KEY + 'on_change';
 export const ON_FILTER = MODULE_KEY + 'on_filter';
 export const ON_FETCH_FNO_SYMBOLS = MODULE_KEY + 'on_fetch_fno_symbols';

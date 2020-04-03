@@ -4,10 +4,6 @@ import {widget} from "../../../charting_library/charting_library.min";
 import connect from "react-redux/es/connect/connect";
 import {bindActionCreators} from "redux";
 import {fetch_app_info, setWidget} from "../actions/indexActions";
-import {FutureCoi} from "./indicators/fut_coi/code";
-import {Equity} from "./indicators/equity/code";
-import {configFutureCoi} from "./indicators/fut_coi/meta";
-import {configEquity} from "./indicators/equity/meta";
 
 
 function getLanguageFromURL() {
@@ -25,7 +21,7 @@ class TVChartContainer extends Component {
 	static defaultProps = {
 		symbol: 'AXISBANK',
         toolbar_bg: '#f9a281',
-		datafeedUrl: 'fno_charts/api', //path of the url without trailing slash
+		datafeedUrl: 'nse_cm_charts/api', //path of the url without trailing slash
 		libraryPath: '/charting_library/',
 		chartsStorageUrl: '/api/chart_save_engine',
 		chartsStorageApiVersion: 'v1',
@@ -66,12 +62,7 @@ class TVChartContainer extends Component {
             symbol_search_request_delay : (1 * 1000), //2 seconds delay after type
             debug: this.props.debug,
             custom_indicators_getter: function(PineJS) {
-                Equity.prototype.PineJS = PineJS;
-                FutureCoi.prototype.PineJS = PineJS;
-                return Promise.resolve([
-					{ name: "Equity", metainfo : configEquity, constructor : Equity},
-					{ name: "FutureCOI", metainfo : configFutureCoi, constructor : FutureCoi},
-                ]);
+
             },
 		};
 
@@ -81,16 +72,10 @@ class TVChartContainer extends Component {
 
 
 		tvWidget.onChartReady(() => {
-            // tvWidget.activeChart().createStudy('Equity', false, true);
-            // tvWidget.activeChart().createStudy('FutureCOI', false, true);
-			// tvWidget.save(function(data) {
-			// 	console.log('charts json content is', data);
-			// 	// data; // <----- here
-			// });
 
 			tvWidget.getSavedCharts(function (chartRecord) {
 				chartRecord.map((item)=>{
-					if (item.name === 'default'){
+					if (item.name === 'default_cash_market'){
 						tvWidget.loadChartFromServer(item);
 					}
 				});
@@ -100,7 +85,7 @@ class TVChartContainer extends Component {
 					tvWidget.saveChartToServer(function () {
 				}, function () {
 						console.log('on fail')
-				}, {defaultChartName : 'default', chartName : 'default'});
+				}, {defaultChartName : 'default_cash_market', chartName : 'default_cash_market'});
 			});
 		});
 	}

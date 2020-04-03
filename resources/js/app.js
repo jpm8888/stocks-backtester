@@ -20,6 +20,8 @@ require('./components/bhavcopy_analyse/ComponentIndex');
 
 require('./components/risk_calculator/ComponentIndex');
 
-require('./components/basic_charts/ComponentIndex');
+require('./components/fno_charts/ComponentIndex');
+
+require('./components/nse_cm_charts/ComponentIndex');
 
 require('./components/import_csv/ComponentIndex');

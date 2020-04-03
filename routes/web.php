@@ -71,6 +71,15 @@ Route::group(['middleware' => ['auth'], 'prefix' => 'fno_charts', 'as' => 'fno_c
 });
 
 
+Route::group(['middleware' => ['auth'], 'prefix' => 'nse_cm_charts', 'as' => 'nse_cm_charts.'], function () {
+    Route::get('', 'ControllerNseCMCharts@index')->name('index');
+    Route::get('api/config', 'ControllerNseCMCharts@config');
+    Route::get('api/symbols', 'ControllerNseCMCharts@symbols');
+    Route::get('api/search', 'ControllerNseCMCharts@search');
+    Route::get('api/history', 'ControllerNseCMCharts@history');
+});
+
+
 Route::group(['middleware' => ['auth'], 'prefix' => 'process_indices', 'as' => 'process_indices.'], function () {
     Route::get('index', 'ControllerImportCSV@index')->name('index');
     Route::post('import', 'ControllerImportCSV@import')->name('import');

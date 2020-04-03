@@ -7,7 +7,7 @@ export const download_fno_symbols = () => (dispatch) => {
 };
 
 function fetch_fno_symbols(dispatch) {
-    fetch('/fetch/fno_stocks')
+    fetch('/fetch/fno_stocks/1') //1 -> type_fno
         .then((res) => res.json()
             .then((res) => {
                 dispatch({type: ON_FETCH_FNO_SYMBOLS, payload: res});
@@ -15,7 +15,7 @@ function fetch_fno_symbols(dispatch) {
 }
 
 function fetch_fav_symbols(dispatch) {
-    fetch('/fetch/favorites_stocks')
+    fetch('/fetch/favorites_stocks/1') //1 -> type_fno
         .then((res) => res.json()
             .then((res) => {
                 dispatch({type: ON_FETCH_FNO_SYMBOLS, payload: res});
@@ -51,7 +51,7 @@ export const on_filter = (name, value) => (dispatch) => {
 
 export const onToggleFavorite = (idx, symbol) => (dispatch) => {
     dispatch({type: SET_LOADING_ON_LIKE, payload: {idx : idx, loading : true}});
-    axios.post('/fetch/toggle_favorite', {symbol: symbol})
+    axios.post('/fetch/toggle_favorite', {symbol: symbol, type : 1}) //1 -> type_fno
         .then((response) => {
             const data = response.data;
             if (data.status === 1) {
