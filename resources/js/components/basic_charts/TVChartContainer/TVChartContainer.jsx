@@ -25,7 +25,7 @@ class TVChartContainer extends Component {
 	static defaultProps = {
 		symbol: 'AXISBANK',
         toolbar_bg: '#f9a281',
-		datafeedUrl: 'api', //path of the url without trailing slash
+		datafeedUrl: 'fno_charts/api', //path of the url without trailing slash
 		libraryPath: '/charting_library/',
 		chartsStorageUrl: '/api/chart_save_engine',
 		chartsStorageApiVersion: 'v1',
@@ -97,16 +97,10 @@ class TVChartContainer extends Component {
 			});
 
 			tvWidget.subscribe('onAutoSaveNeeded', ()=>{
-				tvWidget.saveChartToServer(function () {
-					// console.log('on_complete');
+					tvWidget.saveChartToServer(function () {
 				}, function () {
-					// console.log('on_fail');
+						console.log('on fail')
 				}, {defaultChartName : 'default', chartName : 'default'});
-			});
-
-
-			tvWidget.headerReady().then(() => {
-
 			});
 		});
 	}
