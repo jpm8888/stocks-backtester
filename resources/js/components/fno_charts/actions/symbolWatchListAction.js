@@ -67,7 +67,7 @@ export const onToggleFavorite = (idx, symbol) => (dispatch) => {
                 let reducer = store.getState().symbolWatchListReducer;
                 let symbols = reducer.fno_symbols;
                 let queryStr = reducer.queryStr;
-                symbols.map((item, index)=>{
+                symbols.map((item)=>{
                    if (symbol === item.symbol) item.fav_id = fav_id;
                 });
 

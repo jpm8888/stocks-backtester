@@ -1,4 +1,12 @@
-import {LIST_FAVS, LIST_FNO, ON_FETCH_FNO_SYMBOLS, ON_FILTER, ON_SELECT_LIST, SET_LOADING_ON_LIKE} from "./types";
+import {
+    LIST_FAVS,
+    LIST_FNO,
+    ON_FAV_DONE,
+    ON_FETCH_FNO_SYMBOLS,
+    ON_FILTER,
+    ON_SELECT_LIST,
+    SET_LOADING_ON_LIKE
+} from "./types";
 import store from '../store';
 import axios from "axios";
 
@@ -51,17 +59,30 @@ export const on_filter = (name, value) => (dispatch) => {
 
 export const onToggleFavorite = (idx, symbol) => (dispatch) => {
     dispatch({type: SET_LOADING_ON_LIKE, payload: {idx : idx, loading : true}});
-    axios.post('/fetch/toggle_favorite', {symbol: symbol, type : 2})//2 -> type_cash_market
+    axios.post('/fetch/toggle_favorite', {symbol: symbol, type : 2}) //1 -> type_cash_market
         .then((response) => {
             const data = response.data;
             if (data.status === 1) {
                 let fav_id = data.fav_id;
                 let reducer = store.getState().symbolWatchListReducer;
                 let symbols = reducer.fno_symbols;
-                symbols.map((item, index)=>{
-                   if (index === idx) item.fav_id = fav_id;
+                let queryStr = reducer.queryStr;
+                symbols.map((item)=>{
+                    if (symbol === item.symbol) item.fav_id = fav_id;
                 });
-                dispatch({type: ON_FETCH_FNO_SYMBOLS, payload: symbols});
+
+                let filtered;
+                if (queryStr === ''){
+                    filtered = symbols;
+                }else{
+                    filtered = symbols.filter((item => {
+                        if (item.symbol.match(queryStr)){
+                            return item;
+                        }
+                    }));
+                }
+
+                dispatch({type: ON_FAV_DONE, payload: {symbols : symbols, filtered : filtered}});
             }
             dispatch({type: SET_LOADING_ON_LIKE, payload: {idx : idx, loading : false}});
         });

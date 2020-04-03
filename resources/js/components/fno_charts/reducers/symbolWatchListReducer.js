@@ -54,6 +54,7 @@ export default function (state = initialState, action) {
             return {
                 ...state,
                 selectedList : action.payload,
+                queryStr : ''
             };
 
         default : return state;
