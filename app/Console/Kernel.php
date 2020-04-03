@@ -4,6 +4,7 @@ namespace App\Console;
 
 use App\Console\Commands\DeleteTemp;
 use App\Console\Commands\DeleteTempFiles;
+use App\Console\Commands\MakeStocksCMList;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -22,6 +23,7 @@ class Kernel extends ConsoleKernel
         Commands\DataProcessing\v1\ProcessBhavcopyIndices::class,
         DeleteTempFiles::class,
         DeleteTemp::class,
+        MakeStocksCMList::class,
     ];
 
 
@@ -29,6 +31,7 @@ class Kernel extends ConsoleKernel
     {
         $schedule->command('download:bhavcopy_cm')->weekdays()->at('18:20');
         $schedule->command('download:bhavcopy_nse_cm')->weekdays()->at('18:25');
+        $schedule->command('make:stocks_cm')->weekdays()->at('18:32');
         $schedule->command('download:delv_wise_positions')->weekdays()->at('18:35');
         $schedule->command('download:bhavcopy_fo')->weekdays()->at('18:40');
 
