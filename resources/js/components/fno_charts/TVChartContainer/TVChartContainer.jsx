@@ -6,6 +6,8 @@ import {bindActionCreators} from "redux";
 import {fetch_app_info, setWidget} from "../actions/indexActions";
 import {FutureCoi} from "./indicators/fut_coi/code";
 import {configFutureCoi} from "./indicators/fut_coi/meta";
+import {configOptionCoi} from "./indicators/opt_coi/meta";
+import {OptionCoi} from "./indicators/opt_coi/code";
 
 
 function getLanguageFromURL() {
@@ -66,9 +68,11 @@ class TVChartContainer extends Component {
             custom_indicators_getter: function(PineJS) {
                 // Equity.prototype.PineJS = PineJS;
                 FutureCoi.prototype.PineJS = PineJS;
+				OptionCoi.prototype.PineJS = PineJS;
                 return Promise.resolve([
 					// { name: "Equity", metainfo : configEquity, constructor : Equity},
 					{ name: "FutureCOI", metainfo : configFutureCoi, constructor : FutureCoi},
+					{ name: "OptionCOI", metainfo : configOptionCoi, constructor : OptionCoi},
                 ]);
             },
 		};
@@ -81,6 +85,7 @@ class TVChartContainer extends Component {
 		tvWidget.onChartReady(() => {
             // tvWidget.activeChart().createStudy('Equity', false, true);
             tvWidget.activeChart().createStudy('FutureCOI', false, false);
+            tvWidget.activeChart().createStudy('OptionCOI', false, false);
 
 			// tvWidget.getSavedCharts(function (chartRecord) {
 			// 	chartRecord.map((item)=>{

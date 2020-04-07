@@ -14,35 +14,17 @@ export const configFutureCoi = {
     "isCustomIndicator": true,
     isTVScript: false,
     isTVScriptStub: true,
-    "plots": [{"id": "plot_0", "type": "line"}, {"id": "plot_1", "type": "line"}, {"id": "plot_2", "type": "line"}],
+    "plots": [{"id": "plot_0", "type": "line"}],
     "defaults": {
         "styles": {
             "plot_0": {
                 "linestyle": 0,
                 "visible": true,
-                "linewidth": 2, // Make the line thinner
-                "plottype": 2, // Plot type is Area
-                "trackPrice": false, // Show price line
-                "transparency": 40,
-                "color": "#247AFD" // Set the plotted line color to dark red
-            },
-            "plot_1": {
-                "linestyle": 0,
-                "visible": true,
-                "linewidth": 2, // Make the line thinner
-                "plottype": 2, // Plot type is Area
-                "trackPrice": false, // Show price line
-                "transparency": 40,
-                "color": "#FD4659" // Set the plotted line color to dark red
-            },
-            "plot_2": {
-                "linestyle": 0,
-                "visible": true,
-                "linewidth": 2, // Make the line thinner
-                "plottype": 2, // Plot type is Area
-                "trackPrice": false, // Show price line
-                "transparency": 40,
-                "color": "#32BF84" // Set the plotted line color to dark red
+                "linewidth": 2,
+                "plottype": 1,
+                "trackPrice": false,
+                "transparency": 20,
+                "color": "#247AFD"
             }
         },
         "precision": 4, // Precision is set to one digit, e.g. 777.7
@@ -55,7 +37,7 @@ export const configFutureCoi = {
             "histogramBase": 0,
         }
     },
-    "inputs": [10],
+    "inputs": [],
 };
 
 // Plot type:
