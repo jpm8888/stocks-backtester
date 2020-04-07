@@ -119,16 +119,16 @@ class ControllerFNOCharts extends Controller
             $c = []; //change_cum_fut_oi
             $o = []; //change_cum_pe_oi
             $h = []; //change_cum_ce_oi
-            $l = [];
-            $v = [];
+            $l = []; // max_pe_oi_strike
+            $v = []; // max_ce_oi_strike
             foreach ($data as $d){
                 $t[] = Carbon::createFromFormat('Y-m-d', $d->date)->timestamp;
                 $c[] = $d->change_cum_fut_oi;
                 $o[] = $d->change_cum_pe_oi;
-
                 $h[] = $d->change_cum_ce_oi;
-                $l[] = $d->change_cum_fut_oi_val;
-                $v[] = $d->change_cum_fut_oi_val;
+
+                $l[] = $d->max_pe_oi_strike;
+                $v[] = $d->max_ce_oi_strike;
             }
             return response()->json([
                 's' => $s, 't' => $t, 'c' => $c, 'o' => $o, 'h' => $h, 'l' => $l, 'v' => $v
