@@ -41,18 +41,29 @@ class ControllerFNOCharts extends Controller
     }
 
     public function symbols(){
-        $symbol = $_GET['symbol'];
+        $raw_symbol = $_GET['symbol'];
+
+        $symbol = $raw_symbol;
+        $second_series_name = null;
 
         $split = explode(':', $symbol);
         if (count($split) > 1){
+            $second_series_name = $split[0];
             $symbol = $split[1];
+        }
+
+        $use_second_series = false;
+        switch ($second_series_name){
+            case 'FOI':
+                $use_second_series = true;
+                break;
         }
 
         $m = ModelMasterStocksFO::where('symbol','=', "$symbol")->first();
         return response()->json([
-            'name' => $m->symbol,
-            'ticker' => $m->symbol,
-            'description' => $m->symbol,
+            'name' => ($use_second_series) ? $raw_symbol : $symbol,
+            'ticker' => ($use_second_series) ? $raw_symbol : $symbol,
+            'description' => ($use_second_series) ? $raw_symbol : $symbol,
             'type' => $m->stock,
             //'session' => "0900-1530",
             'exchange' => "NSE",
@@ -76,13 +87,63 @@ class ControllerFNOCharts extends Controller
     }
 
     public function history(){
+        $symbol = $_GET['symbol'];
+        $from = Carbon::createFromTimestamp($_GET['from'])->format('Y-m-d');
+        $to = Carbon::createFromTimestamp($_GET['to'])->format('Y-m-d');
+        $resolution = $_GET['resolution'];
+
+
+        $second_series_name = null;
+        $split = explode(':', $symbol);
+        if (count($split) > 1){
+            $second_series_name = $split[0];
+            $symbol = $split[1];
+        }
+
+        switch ($second_series_name){
+            case 'FOI':
+                return $this->history_foi($symbol, $from, $to, $resolution);
+                break;
+            default:
+                return $this->history_symbol($symbol, $from, $to, $resolution);
+        }
+
+    }
+
+    private function history_foi($symbol, $from, $to, $resolution){
         try{
-            $symbol = $_GET['symbol'];
-            $from = Carbon::createFromTimestamp($_GET['from'])->format('Y-m-d');
-            $to = Carbon::createFromTimestamp($_GET['to'])->format('Y-m-d');
-            $resolution = $_GET['resolution'];
+            $data = ModelBhavcopyProcessed::where('symbol', '=', "$symbol")->whereBetween('date', [$from, $to])->orderBy('date', 'asc')->get();
+
+            $s = "ok";
+            $t = [];
+            $c = []; //change_cum_fut_oi
+            $o = []; //change_cum_pe_oi
+            $h = []; //change_cum_ce_oi
+            $l = [];
+            $v = [];
+            foreach ($data as $d){
+                $t[] = Carbon::createFromFormat('Y-m-d', $d->date)->timestamp;
+                $c[] = $d->change_cum_fut_oi;
+                $o[] = $d->change_cum_pe_oi;
+
+                $h[] = $d->change_cum_ce_oi;
+                $l[] = $d->change_cum_fut_oi_val;
+                $v[] = $d->change_cum_fut_oi_val;
+            }
+            return response()->json([
+                's' => $s, 't' => $t, 'c' => $c, 'o' => $o, 'h' => $h, 'l' => $l, 'v' => $v
+            ]);
+        }catch (\Exception $e){
+            return response()->json([
+                's' => 'error',
+                'error_msg' => $e->getMessage(),
+            ]);
+        }
+    }
 
 
+    private function history_symbol($symbol, $from, $to, $resolution){
+        try{
             $data = [];
             if ($symbol === 'VIX'){
                 $data = ModelVix::whereBetween('date', [$from, $to])->orderBy('date', 'asc')->get();
@@ -98,7 +159,6 @@ class ControllerFNOCharts extends Controller
             $h = [];
             $l = [];
             $v = [];
-            $fut_oi = [];
             foreach ($data as $d){
                 $t[] = Carbon::createFromFormat('Y-m-d', $d->date)->timestamp;
                 $c[] = $d->close;
@@ -106,10 +166,9 @@ class ControllerFNOCharts extends Controller
                 $h[] = $d->high;
                 $l[] = $d->low;
                 $v[] = $d->volume;
-                $fut_oi[] = $d->cum_fut_oi;
             }
             return response()->json([
-                's' => $s, 't' => $t, 'c' => $c, 'o' => $o, 'h' => $h, 'l' => $l, 'v' => $v, 'foi' => $fut_oi
+                's' => $s, 't' => $t, 'c' => $c, 'o' => $o, 'h' => $h, 'l' => $l, 'v' => $v
             ]);
         }catch (\Exception $e){
             return response()->json([
@@ -117,6 +176,5 @@ class ControllerFNOCharts extends Controller
                 'error_msg' => $e->getMessage(),
             ]);
         }
-
     }
 }

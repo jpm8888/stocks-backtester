@@ -10,24 +10,42 @@ export const configFutureCoi = {
     "description": id, //should be same as id
     "shortDescription": shortDesc,
     "is_hidden_study": false,
-    "is_price_study": true,
+    "is_price_study": false,
     "isCustomIndicator": true,
-    isTVScript: true,
+    isTVScript: false,
     isTVScriptStub: true,
-    "plots": [{"id": "plot_0", "type": "line"}],
+    "plots": [{"id": "plot_0", "type": "line"}, {"id": "plot_1", "type": "line"}, {"id": "plot_2", "type": "line"}],
     "defaults": {
         "styles": {
             "plot_0": {
                 "linestyle": 0,
                 "visible": true,
                 "linewidth": 2, // Make the line thinner
-                "plottype": 2, // Plot type is Line
-                "trackPrice": true, // Show price line
+                "plottype": 2, // Plot type is Area
+                "trackPrice": false, // Show price line
                 "transparency": 40,
-                "color": "#0ea91f" // Set the plotted line color to dark red
+                "color": "#247AFD" // Set the plotted line color to dark red
+            },
+            "plot_1": {
+                "linestyle": 0,
+                "visible": true,
+                "linewidth": 2, // Make the line thinner
+                "plottype": 2, // Plot type is Area
+                "trackPrice": false, // Show price line
+                "transparency": 40,
+                "color": "#FD4659" // Set the plotted line color to dark red
+            },
+            "plot_2": {
+                "linestyle": 0,
+                "visible": true,
+                "linewidth": 2, // Make the line thinner
+                "plottype": 2, // Plot type is Area
+                "trackPrice": false, // Show price line
+                "transparency": 40,
+                "color": "#32BF84" // Set the plotted line color to dark red
             }
         },
-        "precision": 2, // Precision is set to one digit, e.g. 777.7
+        "precision": 4, // Precision is set to one digit, e.g. 777.7
         "inputs": {}
     },
 
@@ -37,5 +55,15 @@ export const configFutureCoi = {
             "histogramBase": 0,
         }
     },
-    "inputs": [],
+    "inputs": [10],
 };
+
+// Plot type:
+//    1 - Histogram
+//    2 - Line
+//    3 - Cross
+//    4 - Area
+//    5 - Columns
+//    6 - Circles
+//    7 - Line With Breaks
+//    8 - Area With Breaks

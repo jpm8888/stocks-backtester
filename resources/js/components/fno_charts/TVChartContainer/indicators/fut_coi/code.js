@@ -3,6 +3,7 @@ class FutureCoi {
         this.init = function(context, inputCallback) {
             this._context = context;
             this._input = inputCallback;
+
             let ticker = this.PineJS.Std.ticker(this._context);
             const regex = /(["'])(?:(?=(\\?))\2.)*?\1/g;
             const found = ticker.match(regex);
@@ -12,6 +13,10 @@ class FutureCoi {
             }else{
                 console.log('No symbol ->' + symbol);
             }
+
+            symbol = 'FOI:' + symbol;
+
+
             this._context.new_sym(symbol, this.PineJS.Std.period(this._context), this.PineJS.Std.period(this._context));
         };
 
@@ -19,8 +24,11 @@ class FutureCoi {
             this._context = context;
             this._input = inputCallback;
             this._context.select_sym(1);
-            let v = this.PineJS.Std.close(this._context);
-            return [v];
+            let change_cum_fut_oi = this.PineJS.Std.close(this._context);
+            let change_cum_pe_oi = this.PineJS.Std.open(this._context);
+            let change_cum_ce_oi = this.PineJS.Std.high(this._context);
+            // let cum_ce_oi = this.PineJS.Std.high(this._context);
+            return [change_cum_fut_oi, change_cum_pe_oi, change_cum_ce_oi];
         }
     }
 }
