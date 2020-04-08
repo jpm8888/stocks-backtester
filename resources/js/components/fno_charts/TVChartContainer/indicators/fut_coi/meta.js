@@ -43,7 +43,7 @@ export const configFutureCoi = {
             palette_0: {
                 colors: {
                     0 : { color: "#F10C45", width: 1, style: 1},
-                    1 : { color: "#20C073", width: 1, style: 1 }
+                    1 : { color: "#048243", width: 1, style: 1 }
                 }
             }
         },
