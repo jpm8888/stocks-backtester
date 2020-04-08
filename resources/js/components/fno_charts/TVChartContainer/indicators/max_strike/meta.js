@@ -2,6 +2,8 @@ export const id = "MaxStrike"; //id should be same as title without spaces
 export const title = "MaxStrike";
 export const shortDesc = "Max Strike";
 
+export const plotType = 3;
+
 export const configMaxStrike = {
     "_metainfoVersion": 40,
     "id": `${id}@tv-basicstudies-1`,
@@ -21,7 +23,7 @@ export const configMaxStrike = {
                 "linestyle": 0,
                 "visible": true,
                 "linewidth": 2,
-                "plottype": 3,
+                "plottype": plotType,
                 "trackPrice": false,
                 "transparency": 0,
                 "color": "#FD4659"
@@ -30,7 +32,7 @@ export const configMaxStrike = {
                 "linestyle": 0,
                 "visible": true,
                 "linewidth": 2,
-                "plottype": 3,
+                "plottype": plotType,
                 "trackPrice": false,
                 "transparency": 0,
                 "color": "#32BF84"
