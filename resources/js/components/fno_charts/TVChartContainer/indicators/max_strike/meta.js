@@ -14,8 +14,8 @@ export const configMaxStrike = {
     "is_hidden_study": false,
     "is_price_study": true,
     "isCustomIndicator": true,
-    isTVScript: false,
-    isTVScriptStub: true,
+    isTVScript: true,
+    isTVScriptStub: false,
     "plots": [{"id": "PE", "type": "line"}, {"id": "CE", "type": "line"}],
     "defaults": {
         "styles": {
