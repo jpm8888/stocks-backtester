@@ -1,6 +1,7 @@
 export const id = "OptionCOI"; //id should be same as title without spaces
 export const title = "OptionCOI";
 export const shortDesc = "Option COI";
+export const plotType = 2;
 
 export const configOptionCoi = {
     "_metainfoVersion": 40,
@@ -21,7 +22,7 @@ export const configOptionCoi = {
                 "linestyle": 0,
                 "visible": true,
                 "linewidth": 2,
-                "plottype": 2,
+                "plottype": {plotType},
                 "trackPrice": false,
                 "transparency": 0,
                 "color": "#FD4659"
@@ -30,7 +31,7 @@ export const configOptionCoi = {
                 "linestyle": 0,
                 "visible": true,
                 "linewidth": 2,
-                "plottype": 2,
+                "plottype": {plotType},
                 "trackPrice": false,
                 "transparency": 0,
                 "color": "#32BF84"
