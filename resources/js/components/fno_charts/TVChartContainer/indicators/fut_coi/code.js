@@ -28,7 +28,8 @@ class FutureCoi {
             // let change_cum_pe_oi = this.PineJS.Std.open(this._context);
             // let change_cum_ce_oi = this.PineJS.Std.high(this._context);
             // let cum_ce_oi = this.PineJS.Std.high(this._context);
-            return [change_cum_fut_oi];
+            let color = (change_cum_fut_oi >= 0) ? 1 : 0;
+            return [change_cum_fut_oi, color];
         }
     }
 }

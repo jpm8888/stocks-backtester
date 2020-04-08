@@ -36,18 +36,18 @@ export const configOptionCoi = {
                 "color": "#32BF84"
             }
         },
-        "precision": 4, // Precision is set to one digit, e.g. 777.7
+        "precision": 0, // Precision is set to one digit, e.g. 777.7
         "inputs": {}
     },
 
     "styles": {
         "PE": {
-            "title": 'Change COI Put %', // Output name will be displayed in the Style window
-            "histogramBase": 1,
+            "title": 'COI Put',
+            "histogramBase": 0,
         },
         "CE": {
-            "title": 'Change COI CE %', // Output name will be displayed in the Style window
-            "histogramBase": 1,
+            "title": 'COI CE',
+            "histogramBase": 0,
         }
     },
     "inputs": [10],

@@ -14,27 +14,47 @@ export const configFutureCoi = {
     "isCustomIndicator": true,
     isTVScript: false,
     isTVScriptStub: true,
-    "plots": [{"id": "plot_0", "type": "line"}],
+    "plots": [{"id": "plot_0", "type": "line"}, {"id": "plot_1", "type": "color", palette: "palette_0", "target": "plot_0",}],
+    palettes: {
+        palette_0: {
+            valToIndex: {
+                0 : 0,
+                1 : 1,
+            },
+            colors: {
+                0 : { name: "Color 0" },
+                1 : { name: "Color 1" }
+            },
+        }
+    },
     "defaults": {
         "styles": {
             "plot_0": {
                 "linestyle": 0,
                 "visible": true,
                 "linewidth": 2,
-                "plottype": 1,
+                "plottype": 5,
                 "trackPrice": false,
                 "transparency": 20,
                 "color": "#247AFD"
             }
         },
-        "precision": 4, // Precision is set to one digit, e.g. 777.7
+        palettes: {
+            palette_0: {
+                colors: {
+                    0 : { color: "#ff4c1e"},
+                    1 : { color: "#16ff22" }
+                }
+            }
+        },
+        "precision": 0, // Precision is set to one digit, e.g. 777.7
         "inputs": {}
     },
 
     "styles": {
         "plot_0": {
             "title": title, // Output name will be displayed in the Style window
-            "histogramBase": 0,
+            "histogramBase": 1,
         }
     },
     "inputs": [],
