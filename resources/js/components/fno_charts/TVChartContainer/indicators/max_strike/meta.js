@@ -2,7 +2,7 @@ export const id = "MaxStrike"; //id should be same as title without spaces
 export const title = "MaxStrike";
 export const shortDesc = "Max Strike";
 
-export const plotType = 3;
+export const plotType = 6;
 
 export const configMaxStrike = {
     "_metainfoVersion": 40,
@@ -22,7 +22,7 @@ export const configMaxStrike = {
             "PE": {
                 "linestyle": 0,
                 "visible": true,
-                "linewidth": 2,
+                "linewidth": 3,
                 "plottype": plotType,
                 "trackPrice": false,
                 "transparency": 0,
@@ -31,7 +31,7 @@ export const configMaxStrike = {
             "CE": {
                 "linestyle": 0,
                 "visible": true,
-                "linewidth": 2,
+                "linewidth": 3,
                 "plottype": plotType,
                 "trackPrice": false,
                 "transparency": 0,
