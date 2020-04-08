@@ -116,9 +116,9 @@ class ControllerFNOCharts extends Controller
 
             $s = "ok";
             $t = [];
-            $c = []; //change_cum_fut_oi
-            $o = []; //change_cum_pe_oi
-            $h = []; //change_cum_ce_oi
+            $c = []; //change_cum_fut_oi_val
+            $o = []; //cum_pe_oi
+            $h = []; //cum_ce_oi
             $l = []; // max_pe_oi_strike
             $v = []; // max_ce_oi_strike
             foreach ($data as $d){
