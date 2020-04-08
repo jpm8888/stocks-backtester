@@ -1,6 +1,6 @@
 export const id = "FutureCOI"; //id should be same as title without spaces
-export const title = "FutureCOI";
-export const shortDesc = "Futures COI";
+export const title = "Change in Fut COI";
+export const shortDesc = "Chng. Fut COI";
 
 export const configFutureCoi = {
     "_metainfoVersion": 40,
@@ -14,7 +14,7 @@ export const configFutureCoi = {
     "isCustomIndicator": true,
     isTVScript: false,
     isTVScriptStub: true,
-    "plots": [{"id": "plot_0", "type": "line"}, {"id": "plot_1", "type": "color", palette: "palette_0", "target": "plot_0",}],
+    "plots": [{"id": "plot_0", "type": "line"}, {"id": "plot_1", "type": "colorer", palette: "palette_0", "target": "plot_0",}],
     palettes: {
         palette_0: {
             valToIndex: {
@@ -42,8 +42,8 @@ export const configFutureCoi = {
         palettes: {
             palette_0: {
                 colors: {
-                    0 : { color: "#ff4c1e"},
-                    1 : { color: "#16ff22" }
+                    0 : { color: "#F10C45", width: 1, style: 1},
+                    1 : { color: "#20C073", width: 1, style: 1 }
                 }
             }
         },
