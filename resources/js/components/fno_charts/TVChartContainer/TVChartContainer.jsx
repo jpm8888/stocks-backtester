@@ -10,6 +10,8 @@ import {configOptionCoi} from "./indicators/opt_coi/meta";
 import {OptionCoi} from "./indicators/opt_coi/code";
 import {MaxStrike} from "./indicators/max_strike/code";
 import {configMaxStrike} from "./indicators/max_strike/meta";
+import {PCR} from "./indicators/pcr/code";
+import {configPCR} from "./indicators/pcr/meta";
 
 
 function getLanguageFromURL() {
@@ -72,11 +74,13 @@ class TVChartContainer extends Component {
                 FutureCoi.prototype.PineJS = PineJS;
 				OptionCoi.prototype.PineJS = PineJS;
 				MaxStrike.prototype.PineJS = PineJS;
+				PCR.prototype.PineJS = PineJS;
                 return Promise.resolve([
 					// { name: "Equity", metainfo : configEquity, constructor : Equity},
 					{ name: "FutureCOI", metainfo : configFutureCoi, constructor : FutureCoi},
 					{ name: "OptionCOI", metainfo : configOptionCoi, constructor : OptionCoi},
 					{ name: "MaxStrike", metainfo : configMaxStrike, constructor : MaxStrike},
+					{ name: "PCR", metainfo : configPCR, constructor : PCR},
                 ]);
             },
 		};
@@ -91,6 +95,7 @@ class TVChartContainer extends Component {
             tvWidget.activeChart().createStudy('FutureCOI', false, false);
             tvWidget.activeChart().createStudy('OptionCOI', false, false);
             tvWidget.activeChart().createStudy('MaxStrike', false, false);
+            tvWidget.activeChart().createStudy('PCR', false, false);
 
 			// tvWidget.getSavedCharts(function (chartRecord) {
 			// 	chartRecord.map((item)=>{

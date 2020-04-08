@@ -57,6 +57,9 @@ class ControllerFNOCharts extends Controller
             case 'FOI':
                 $use_second_series = true;
                 break;
+            case 'OTHER':
+                $use_second_series = true;
+                break;
         }
 
         $m = ModelMasterStocksFO::where('symbol','=', "$symbol")->first();
@@ -104,6 +107,9 @@ class ControllerFNOCharts extends Controller
             case 'FOI':
                 return $this->history_foi($symbol, $from, $to, $resolution);
                 break;
+            case 'OTHER':
+                return $this->history_other($symbol, $from, $to, $resolution);
+                break;
             default:
                 return $this->history_symbol($symbol, $from, $to, $resolution);
         }
@@ -129,6 +135,37 @@ class ControllerFNOCharts extends Controller
 
                 $l[] = $d->max_pe_oi_strike;
                 $v[] = $d->max_ce_oi_strike;
+            }
+            return response()->json([
+                's' => $s, 't' => $t, 'c' => $c, 'o' => $o, 'h' => $h, 'l' => $l, 'v' => $v
+            ]);
+        }catch (\Exception $e){
+            return response()->json([
+                's' => 'error',
+                'error_msg' => $e->getMessage(),
+            ]);
+        }
+    }
+
+    private function history_other($symbol, $from, $to, $resolution){
+        try{
+            $data = ModelBhavcopyProcessed::where('symbol', '=', "$symbol")->whereBetween('date', [$from, $to])->orderBy('date', 'asc')->get();
+
+            $s = "ok";
+            $t = [];
+            $c = []; //pcr
+            $o = []; //
+            $h = []; //
+            $l = []; //
+            $v = []; //
+            foreach ($data as $d){
+                $t[] = Carbon::createFromFormat('Y-m-d', $d->date)->timestamp;
+                $c[] = $d->pcr;
+                $o[] = $d->pcr;
+                $h[] = $d->pcr;
+
+                $l[] = $d->pcr;
+                $v[] = $d->pcr;
             }
             return response()->json([
                 's' => $s, 't' => $t, 'c' => $c, 'o' => $o, 'h' => $h, 'l' => $l, 'v' => $v
