@@ -162,9 +162,9 @@ class ControllerFNOCharts extends Controller
                 $t[] = Carbon::createFromFormat('Y-m-d', $d->date)->timestamp;
                 $c[] = $d->pcr;
 
-                $o[] = $d->avg_volume_fifteen;
-                $h[] = $d->avg_volume_ten;
-                $l[] = $d->avg_volume_five;
+                $o[] = $d->dlv_qty;
+                $h[] = 0;
+                $l[] = 0;
 
                 $v[] = $d->volume;
             }
