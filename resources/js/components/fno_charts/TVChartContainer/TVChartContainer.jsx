@@ -12,6 +12,8 @@ import {MaxStrike} from "./indicators/max_strike/code";
 import {configMaxStrike} from "./indicators/max_strike/meta";
 import {PCR} from "./indicators/pcr/code";
 import {configPCR} from "./indicators/pcr/meta";
+import {configCustomVolume} from "./indicators/volume/meta";
+import {CustomVolume} from "./indicators/volume/code";
 
 
 function getLanguageFromURL() {
@@ -75,12 +77,14 @@ class TVChartContainer extends Component {
 				OptionCoi.prototype.PineJS = PineJS;
 				MaxStrike.prototype.PineJS = PineJS;
 				PCR.prototype.PineJS = PineJS;
+				CustomVolume.prototype.PineJS = PineJS;
                 return Promise.resolve([
 					// { name: "Equity", metainfo : configEquity, constructor : Equity},
 					{ name: "FutureCOI", metainfo : configFutureCoi, constructor : FutureCoi},
 					{ name: "OptionCOI", metainfo : configOptionCoi, constructor : OptionCoi},
 					{ name: "MaxStrike", metainfo : configMaxStrike, constructor : MaxStrike},
 					{ name: "PCR", metainfo : configPCR, constructor : PCR},
+					{ name: "CustomVolume", metainfo : configCustomVolume, constructor : CustomVolume},
                 ]);
             },
 		};
@@ -96,6 +100,7 @@ class TVChartContainer extends Component {
             tvWidget.activeChart().createStudy('OptionCOI', false, false);
             tvWidget.activeChart().createStudy('MaxStrike', false, false);
             tvWidget.activeChart().createStudy('PCR', false, false);
+            tvWidget.activeChart().createStudy('CustomVolume', false, false);
 
 			// tvWidget.getSavedCharts(function (chartRecord) {
 			// 	chartRecord.map((item)=>{

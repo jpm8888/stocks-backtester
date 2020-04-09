@@ -161,10 +161,11 @@ class ControllerFNOCharts extends Controller
             foreach ($data as $d){
                 $t[] = Carbon::createFromFormat('Y-m-d', $d->date)->timestamp;
                 $c[] = $d->pcr;
-                $o[] = $d->pcr;
-                $h[] = $d->pcr;
 
-                $l[] = $d->pcr;
+                $o[] = $d->avg_volume_fifteen;
+                $h[] = $d->avg_volume_ten;
+                $l[] = $d->avg_volume_five;
+
                 $v[] = $d->pcr;
             }
             return response()->json([
