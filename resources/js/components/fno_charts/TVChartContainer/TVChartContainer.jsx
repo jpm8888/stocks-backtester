@@ -99,8 +99,8 @@ class TVChartContainer extends Component {
             tvWidget.activeChart().createStudy('FutureCOI', false, false);
             tvWidget.activeChart().createStudy('OptionCOI', false, false);
             tvWidget.activeChart().createStudy('MaxStrike', false, false);
-            tvWidget.activeChart().createStudy('PCR', false, false);
-            tvWidget.activeChart().createStudy('CustomVolume', false, false);
+            // tvWidget.activeChart().createStudy('PCR', false, false);
+            // tvWidget.activeChart().createStudy('CustomVolume', false, false);
 
 			// tvWidget.getSavedCharts(function (chartRecord) {
 			// 	chartRecord.map((item)=>{

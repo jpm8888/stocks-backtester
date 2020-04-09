@@ -166,7 +166,7 @@ class ControllerFNOCharts extends Controller
                 $h[] = $d->avg_volume_ten;
                 $l[] = $d->avg_volume_five;
 
-                $v[] = $d->pcr;
+                $v[] = $d->volume;
             }
             return response()->json([
                 's' => $s, 't' => $t, 'c' => $c, 'o' => $o, 'h' => $h, 'l' => $l, 'v' => $v

@@ -15,36 +15,45 @@ export const configCustomVolume = {
     "isCustomIndicator": true,
     isTVScript: false,
     isTVScriptStub: true,
-    "plots": [{"id": "volume_15", "type": "line"}, {"id": "volume_10", "type": "line"}, {"id": "volume_5", "type": "line"}],
+    "plots": [{"id": "volume", "type": "line"}],
     "defaults": {
         "styles": {
-            "volume_15": {
+            "volume": {
                 "linestyle": 0,
                 "visible": true,
                 "linewidth": 2,
-                "plottype": plotType,
+                "plottype": 5,
                 "trackPrice": false,
                 "transparency": 0,
-                "color": "#FD4659"
+                "color": "#00022E"
             },
-            "volume_10": {
-                "linestyle": 0,
-                "visible": true,
-                "linewidth": 2,
-                "plottype": plotType,
-                "trackPrice": false,
-                "transparency": 0,
-                "color": "#0800fd"
-            },
-            "volume_5": {
-                "linestyle": 0,
-                "visible": true,
-                "linewidth": 2,
-                "plottype": plotType,
-                "trackPrice": false,
-                "transparency": 0,
-                "color": "#1cfd17"
-            }
+            // "volume_15": {
+            //     "linestyle": 0,
+            //     "visible": true,
+            //     "linewidth": 2,
+            //     "plottype": plotType,
+            //     "trackPrice": false,
+            //     "transparency": 0,
+            //     "color": "#FFAB0F"
+            // },
+            // "volume_10": {
+            //     "linestyle": 0,
+            //     "visible": true,
+            //     "linewidth": 2,
+            //     "plottype": plotType,
+            //     "trackPrice": false,
+            //     "transparency": 0,
+            //     "color": "#247AFD"
+            // },
+            // "volume_5": {
+            //     "linestyle": 0,
+            //     "visible": true,
+            //     "linewidth": 2,
+            //     "plottype": plotType,
+            //     "trackPrice": false,
+            //     "transparency": 0,
+            //     "color": "#FE46A5"
+            // }
         },
         "precision": 0, // Precision is set to one digit, e.g. 777.7
         "inputs": {}

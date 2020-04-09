@@ -26,7 +26,7 @@ export const configMaxStrike = {
                 "plottype": plotType,
                 "trackPrice": false,
                 "transparency": 0,
-                "color": "#FD4659"
+                "color": "#32BF84"
             },
             "CE": {
                 "linestyle": 0,
@@ -35,7 +35,7 @@ export const configMaxStrike = {
                 "plottype": plotType,
                 "trackPrice": false,
                 "transparency": 0,
-                "color": "#32BF84"
+                "color": "#FD4659"
             }
         },
         "precision": 2, // Precision is set to one digit, e.g. 777.7
