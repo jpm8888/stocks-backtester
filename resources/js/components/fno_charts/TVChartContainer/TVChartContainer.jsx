@@ -106,20 +106,20 @@ class TVChartContainer extends Component {
             tvWidget.activeChart().createStudy('Delivery', false, false);
 
 
-			// tvWidget.getSavedCharts(function (chartRecord) {
-			// 	chartRecord.map((item)=>{
-			// 		if (item.name === 'default'){
-			// 			tvWidget.loadChartFromServer(item);
-			// 		}
-			// 	});
-			// });
-			//
-			// tvWidget.subscribe('onAutoSaveNeeded', ()=>{
-			// 		tvWidget.saveChartToServer(function () {
-			// 	}, function () {
-			// 			console.log('on fail')
-			// 	}, {defaultChartName : 'default', chartName : 'default'});
-			// });
+			tvWidget.getSavedCharts(function (chartRecord) {
+				chartRecord.map((item)=>{
+					if (item.name === 'default'){
+						tvWidget.loadChartFromServer(item);
+					}
+				});
+			});
+
+			tvWidget.subscribe('onAutoSaveNeeded', ()=>{
+					tvWidget.saveChartToServer(function () {
+				}, function () {
+						console.log('on fail')
+				}, {defaultChartName : 'default', chartName : 'default'});
+			});
 		});
 	}
 
