@@ -10,6 +10,6 @@ php artisan route:cache
 php artisan view:clear
 php artisan config:cache
 php artisan config:clear
-yarn install --production=true
+yarn install
 yarn run production
 echo "all done for now..."
