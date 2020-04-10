@@ -10,7 +10,7 @@ class ComponentIndex extends Component {
     render() {
         return (
             <div style={{width : '100%'}}>
-                <div style={{width : '80%', float : 'left'}}>
+                <div style={{width : '88%', float : 'left'}}>
                     <TVChartContainer user_id={this.props.user_id}/>
                 </div>
                 <SymbolsWatchlist/>
