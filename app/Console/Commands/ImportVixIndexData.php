@@ -152,10 +152,11 @@ class ImportVixIndexData extends Command
     public function get_html($url, $referer_url){
         $client = new Client([
             'headers' => [
-                'referer' => $referer_url,
+                'Referer' => $referer_url,
                 'User-Agent' => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:72.0) Gecko/20100101 Firefox/72.0',
                 'Accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
                 'Accept-Encoding' => 'gzip, deflate, br',
+                'Cookie' => '_ga=GA1.2.890571748.1554353107; pointer=1; sym1=ADANIENT; RT="z=1&dm=nseindia.com&si=9550db99-e592-4f55-a9a3-950cfb2c47e5&ss=k8zl7eo5&sl=0&tt=0&bcn=%2F%2F684d0d3b.akstat.io%2F"; NSE-TEST-1=1944068106.20480.0000; JSESSIONID=811CD88AE123FCA233FB11D348087A77.tomcat2; bm_sv=0C75B1D59D936ED5B46FA28E3C802BAD~bzAFCjRoFlsiJUZnnadSEYIuUh25cmEiq/8/JQfp+rf8ols6fiCHBuXfJP61WjeDdObCtUnECJnBgCIoxlc8XjB8bFAKEJgynaDT8IAcX6UZqoUN3w/U/wzeyUAn/EWRDF8jttT4ek86ELGavovpbRxv3EQF9sFr7am3J/nDqDM=; ak_bmsc=578DC99F3CFF4710262C35FE48D4A2CD6011A90FB81800003D67955EF2B4D71E~plb46leFvQa53mdrS+fKWGTKao9VDeVHA0/y+psEIJmOsWQjOrVgWuuExkvTQxoYGy/BwT+fo+CS/Q8QdyHqUrSGQHcsWKiuVnIpIq52cc9ZE6gUUo0qtC7ZN/kGjsUkiUdPvGOVCIeSUUhhV125Bal4BDsIKdW1cY1NB9Zmylq+xnRBcM5237MgFchdA8InqyfswUtjX2rkE45IIjR6qITaGFw0k0p1QFavFDdgsdUgw=; bm_mi=B00A8C4483E49DFC45E5B0F6C24C4277~5L+9s6U4szN6PisWvTS+fZ76Y25bIFum5w87EuO43Sjz2I4ywn1dud/eBZE4E3bNMJAKEsCYjq9HJAmcmSDx9BW26MGN0FNxz8NkoyQZSfgEzNs/Fu0OI60L/tEkF1KPDXKS3ZTMUsO7Ik8lOyPQvV/iFxWMuTVl/hBRlnEUV8fa8w6poNw4xmfw414F/e2LFWFHuIpAX1luR/rWQ5XLK4p4fCaOU7xerAt0WAbI5JIPTXF/kNylQD4G+BOA1eIEE7R7l55uBsR8Dvi56yOcc2uUIEae5w9hiY3zdewaaUAaL+cvrjup+WWQ/l9mAJeT'
             ],
         ]);
 
@@ -165,7 +166,7 @@ class ImportVixIndexData extends Command
 //            'curl' => array( CURLOPT_SSL_VERIFYPEER => false, CURLOPT_SSL_VERIFYHOST => false ),
             'verify' => false,
             //'timeout' => 10, // 10 seconds
-            'allow_redirects' => true,
+//            'allow_redirects' => true,
             'debug' => true
 //            'cookies' => $jar,
 //            'referer' => true,
