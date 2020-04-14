@@ -160,7 +160,7 @@ class ImportVixIndexData extends Command
         ]);
 
 
-        $jar = new \GuzzleHttp\Cookie\CookieJar();
+       // $jar = new \GuzzleHttp\Cookie\CookieJar();
         $response = $client->request('GET', $url, [
 //            'curl' => array( CURLOPT_SSL_VERIFYPEER => false, CURLOPT_SSL_VERIFYHOST => false ),
             'verify' => false,
