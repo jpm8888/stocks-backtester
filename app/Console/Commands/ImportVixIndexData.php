@@ -166,6 +166,7 @@ class ImportVixIndexData extends Command
             'verify' => false,
             'timeout' => 10, // 10 seconds
             'allow_redirects' => true,
+            'debug' => true
 //            'cookies' => $jar,
 //            'referer' => true,
 //            'strict' => false,
