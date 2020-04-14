@@ -161,6 +161,7 @@ class ImportVixIndexData extends Command
 
         $response = $client->request('GET', $url, [
             'verify' => false,
+            'timeout' => 5 // 5 seconds
         ]);
 
         $this->info('got response...');
