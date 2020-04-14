@@ -26,7 +26,7 @@ class ImportVixIndexData extends Command
         $toDate = Carbon::now();
 
         try{
-            $this->vix($fromDate->format('d-M-Y'), $toDate->format('d-M-Y'));
+//            $this->vix($fromDate->format('d-M-Y'), $toDate->format('d-M-Y'));
             $this->index($fromDate->format('d-m-Y'), $toDate->format('d-m-Y'), 'NIFTY');
             $this->index($fromDate->format('d-m-Y'), $toDate->format('d-m-Y'), 'BANKNIFTY');
         }catch (\Exception $e){
