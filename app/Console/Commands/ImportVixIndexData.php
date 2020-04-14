@@ -84,7 +84,7 @@ class ImportVixIndexData extends Command
                         $this->info('added new vix for date : ' . $date->format('d-m-Y'));
                     }
                 }catch (\Exception $e){
-                    $this->error($e->getMessage());
+//                    $this->error($e->getMessage());
                 }
             }
         }
@@ -143,7 +143,7 @@ class ImportVixIndexData extends Command
                         $this->info("added new $symbol for date : " . $date->format('d-m-Y'));
                     }
                 }catch (\Exception $e){
-                    $this->error($e->getMessage());
+//                    $this->error($e->getMessage());
                 }
             }
         }
@@ -162,6 +162,8 @@ class ImportVixIndexData extends Command
         $response = $client->request('GET', $url, [
             'verify' => false,
         ]);
+
+        $this->info('got response...');
 
         $html = $response->getBody();
 
