@@ -165,6 +165,7 @@ class ImportVixIndexData extends Command
 
 
         $response = $client->request('GET', $url, [
+            'verify' => '/etc/ssl/certs/cacert.pem',
             'debug' => true
         ]);
 
