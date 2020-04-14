@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Http\Controllers\Utils\Version;
 use App\ModelIndices;
 use App\ModelVix;
 use Carbon\Carbon;
@@ -158,7 +159,6 @@ class ImportVixIndexData extends Command
                 'Accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
                 'Accept-Encoding' => 'gzip, deflate, br',
                 'X-Requested-With' => 'XMLHttpRequest',
-//                'Cookie' => '_ga=GA1.2.890571748.1554353107; pointer=1; sym1=ADANIENT; RT="z=1&dm=nseindia.com&si=9550db99-e592-4f55-a9a3-950cfb2c47e5&ss=k8zl7eo5&sl=0&tt=0&bcn=%2F%2F684fc538.akstat.io%2F"; NSE-TEST-1=1944068106.20480.0000; JSESSIONID=811CD88AE123FCA233FB11D348087A77.tomcat2; ak_bmsc=20F709DD97970B724939FED3CA6943736011A90D384A0000878F955EBCD32355~plHzwajQSsts8aDiMs3oriR4XL2rtCRsN+lqLFAcOaOr9gf0LC/7fUeXfNP29bzB4ipKolQnfgYcmSBY5+lAY0UUTt12pMD/tnd33hXXzWdQTaH+HdktXab4MnlziJ1fzpOPvzO4KmHQgK/9PwdMXicktNPoY9baofaLPw7uvlF9Ks1RA+ytYvga1gX+zbAsSw8NiQZQTytGM8NSdtBhEmuHy8GVwPvxxByyseAXNPnz4=; bm_sv=53DC274F332964556BCDDE0ABF5BF514~qouneVNylrMy+3YA2+XYnHbDLE3HfvwCwHor9EV1aeOfjqTnsFH4M2y8Uj+aiRCDpz3YXGQbh9ww+FRlZIDb3yW/I1XFegSyJUPtjxocmnPTBEjHYChGxW+L79HlJ4gTkeYrcjzYNlFwLtQWnCECd31YvJtr767EGqSYHbNZVGc=',
                 'Pragma' => 'no-cache',
                 'Cache-Control' => 'no-cache',
                 'Connection' => 'keep-alive',
@@ -168,8 +168,8 @@ class ImportVixIndexData extends Command
 
 
         $response = $client->request('GET', $url, [
-            'verify' => '/etc/ssl/certs/cacert.pem',
-            'debug' => true
+            'verify' => (Version::isDebug()) ? false : '/etc/ssl/certs/cacert.pem',
+            'debug' => false
         ]);
 
         $this->info('got response...');
