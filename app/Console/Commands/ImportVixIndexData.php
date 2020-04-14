@@ -24,21 +24,33 @@ class ImportVixIndexData extends Command
     public function handle(){
         $fromDate = Carbon::now()->subDays(5);
         $toDate = Carbon::now();
-        $this->vix($fromDate->format('d-M-Y'), $toDate->format('d-M-Y'));
-        $this->index($fromDate->format('d-m-Y'), $toDate->format('d-m-Y'), 'NIFTY');
-        $this->index($fromDate->format('d-m-Y'), $toDate->format('d-m-Y'), 'BANKNIFTY');
+
+        try{
+            $this->vix($fromDate->format('d-M-Y'), $toDate->format('d-M-Y'));
+            $this->index($fromDate->format('d-m-Y'), $toDate->format('d-m-Y'), 'NIFTY');
+            $this->index($fromDate->format('d-m-Y'), $toDate->format('d-m-Y'), 'BANKNIFTY');
+        }catch (\Exception $e){
+            $this->error($e->getMessage());
+        }
+
         $this->info('all done.');
     }
 
     private function vix($from_date, $to_date){
+        $this->info('staring to import vix...');
         $referer_url = "https://www1.nseindia.com/products/content/equities/indices/historical_vix.htm";
 
         $url = "https://www1.nseindia.com/products/dynaContent/equities/indices/hist_vix_data.jsp?&fromDate=$from_date&toDate=$to_date";
 
+
+        $this->info('getting html');
         $html = $this->get_html($url, $referer_url);
+        $this->info('getting html done');
         $internalErrors = libxml_use_internal_errors(true); //do not delete it.
         $dom = new DOMDocument();
+        $this->info('loading html');
         $dom->loadHTML($html);
+        $this->info('loading html done');
         $dom->preserveWhiteSpace = false;
 
         $tables = $dom->getElementsByTagName('table');
@@ -72,23 +84,28 @@ class ImportVixIndexData extends Command
                         $this->info('added new vix for date : ' . $date->format('d-m-Y'));
                     }
                 }catch (\Exception $e){
-                    //$this->error($e->getMessage());
+                    $this->error($e->getMessage());
                 }
             }
         }
     }
 
     private function index($from_date, $to_date, $symbol){
+        $this->info("starting to import $symbol...");
         $referer_url = "https://www1.nseindia.com/products/content/equities/indices/historical_index_data.htm";
 
         $indexType = ($symbol == 'NIFTY') ? "NIFTY%2050" : "NIFTY%20BANK";
 
         $url = "https://www1.nseindia.com/products/dynaContent/equities/indices/historicalindices.jsp?indexType=$indexType&fromDate=$from_date&toDate=$to_date";
 
+        $this->info('getting html');
         $html = $this->get_html($url, $referer_url);
+        $this->info('getting html done');
         $internalErrors = libxml_use_internal_errors(true); //do not delete it.
         $dom = new DOMDocument();
+        $this->info('loading html');
         $dom->loadHTML($html);
+        $this->info('loading html done');
         $dom->preserveWhiteSpace = false;
 
         $tables = $dom->getElementsByTagName('table');
@@ -126,7 +143,7 @@ class ImportVixIndexData extends Command
                         $this->info("added new $symbol for date : " . $date->format('d-m-Y'));
                     }
                 }catch (\Exception $e){
-                    //$this->error($e->getMessage());
+                    $this->error($e->getMessage());
                 }
             }
         }
