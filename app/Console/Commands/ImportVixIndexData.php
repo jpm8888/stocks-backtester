@@ -162,10 +162,14 @@ class ImportVixIndexData extends Command
 
         $jar = new \GuzzleHttp\Cookie\CookieJar();
         $response = $client->request('GET', $url, [
-            'curl' => array( CURLOPT_SSL_VERIFYPEER => false, CURLOPT_SSL_VERIFYHOST => false ),
+//            'curl' => array( CURLOPT_SSL_VERIFYPEER => false, CURLOPT_SSL_VERIFYHOST => false ),
             'verify' => false,
             'timeout' => 10, // 10 seconds
-            'cookies' => $jar,
+            'allow_redirects' => true,
+//            'cookies' => $jar,
+//            'referer' => true,
+//            'strict' => false,
+//            'protocols' => ['http', 'https'],
         ]);
 
         $this->info('got response...');
