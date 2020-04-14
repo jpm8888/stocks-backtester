@@ -160,8 +160,10 @@ class ImportVixIndexData extends Command
         ]);
 
         $response = $client->request('GET', $url, [
+            'curl' => array( CURLOPT_SSL_VERIFYPEER => false, CURLOPT_SSL_VERIFYHOST => false ),
             'verify' => false,
-            'timeout' => 5 // 5 seconds
+            'timeout' => 5, // 5 seconds
+            //'cookies' => true,
         ]);
 
         $this->info('got response...');
