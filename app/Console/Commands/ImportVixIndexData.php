@@ -164,7 +164,7 @@ class ImportVixIndexData extends Command
         $response = $client->request('GET', $url, [
 //            'curl' => array( CURLOPT_SSL_VERIFYPEER => false, CURLOPT_SSL_VERIFYHOST => false ),
             'verify' => false,
-            'timeout' => 10, // 10 seconds
+            //'timeout' => 10, // 10 seconds
             'allow_redirects' => true,
             'debug' => true
 //            'cookies' => $jar,
