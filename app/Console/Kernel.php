@@ -4,6 +4,7 @@ namespace App\Console;
 
 use App\Console\Commands\DeleteTemp;
 use App\Console\Commands\DeleteTempFiles;
+use App\Console\Commands\ImportVixIndexData;
 use App\Console\Commands\MakeStocksCMList;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
@@ -24,6 +25,7 @@ class Kernel extends ConsoleKernel
         DeleteTempFiles::class,
         DeleteTemp::class,
         MakeStocksCMList::class,
+        ImportVixIndexData::class,
     ];
 
 
@@ -35,13 +37,12 @@ class Kernel extends ConsoleKernel
         $schedule->command('download:delv_wise_positions')->weekdays()->at('18:35');
         $schedule->command('download:bhavcopy_fo')->weekdays()->at('18:40');
 
-//        $schedule->command('import:vix_data')->weekdays()->at('21:00');
-//        $schedule->command('import:indices')->weekdays()->at('21:00');
-
         $schedule->command('process:bhavcopy_v1')->weekdays()->at('18:50');
-        $schedule->command('process:bhavcopy_indices_v1')->weekdays()->at('19:00');
-        $schedule->command('send_mail:logs')->weekdays()->at('19:10');
 
+        $schedule->command('import:vix_indices_data')->weekdays()->at('18:55');
+        $schedule->command('process:bhavcopy_indices_v1')->weekdays()->at('19:00');
+
+        $schedule->command('send_mail:logs')->weekdays()->at('19:10');
 
         $schedule->command('delete:temp')->dailyAt('00:00');
         $schedule->command('delete:temporary_files')->dailyAt('00:00');
