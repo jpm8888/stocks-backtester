@@ -151,6 +151,7 @@ class ImportVixIndexData extends Command
 
     public function get_html($url, $referer_url){
         $client = new Client([
+            'verify' => false,
             'headers' => [
                 'Referer' => $referer_url,
                 'User-Agent' => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:72.0) Gecko/20100101 Firefox/72.0',
@@ -164,7 +165,6 @@ class ImportVixIndexData extends Command
 
 
         $response = $client->request('GET', $url, [
-            'verify' => false,
             'debug' => true
         ]);
 
