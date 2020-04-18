@@ -24,17 +24,28 @@ class DownloadBhavCopyCM extends Command
     // max_days -> max_days from from_date;
 
     private $MAX_DAYS = 20;
-    protected $signature = 'download:bhavcopy_cm {from_date?} {max_days?}';
+
+
+    /*
+     * modes :
+     * fo -> will download only master fo stocks
+     * all -> all stocks will be fetched and stored.
+     * */
+    protected $signature = 'download:bhavcopy_cm {from_date?} {max_days?} {--overwrite=no} {--mode=fo}';
     protected $description = 'Download bhavcopy cash market from NSE website.';
+    protected $mode;
+
     public function __construct(){
         parent::__construct();
     }
 
 
-
     public function handle(){
         $from_date = $this->argument('from_date');
         $max_days = $this->argument('max_days');
+        $overwrite = $this->option('overwrite');
+        $this->mode = $this->option('mode');
+
 
         if (trim($max_days) == '') $max_days = $this->MAX_DAYS;
 
@@ -46,19 +57,17 @@ class DownloadBhavCopyCM extends Command
 
         for($i = 0; $i < $max_days; $i++){
             $date = $from_date->addDay();
-            $this->info($date);
+            if ($overwrite == 'yes'){
+                $this->info('deleting all records for date : ' . $date->format('d-m-Y'));
+                DB::table('bhavcopy_cm')->whereDate('date', $date)->delete();
+            }
             $this->start_download($date);
         }
 
-         //$mail = new MailController();
-         //$msg = "Successfully imported cash market data for date : " .  Carbon::now()->format('d-m-Y');
-         //$mail->send_basic_email(['msg' => $msg], 'Cash market copy added');
     }
 
     public function start_download(Carbon $date){
         try{
-//            $flag = $date->isWeekday();
-//            if (!$flag) return false;
 
             $flag = $this->check_already_imported($date);
             if (!$flag) return false;
@@ -95,7 +104,7 @@ class DownloadBhavCopyCM extends Command
         $this->output->title('Starting import');
 
         $fo_stocks = ModelMasterStocksFO::select('symbol')->get()->pluck('symbol')->toArray();
-        (new ExcelModelBhavCopyCM($fo_stocks))->withOutput($this->output)->import("$filepath/$filename");
+        (new ExcelModelBhavCopyCM($this->mode, $fo_stocks))->withOutput($this->output)->import("$filepath/$filename");
 
         $logger = new Logger();
         $msg = "Successfully imported CM records...";

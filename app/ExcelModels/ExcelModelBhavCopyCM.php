@@ -20,16 +20,18 @@ use Maatwebsite\Excel\Concerns\WithProgressBar;
 class ExcelModelBhavCopyCM implements ToModel, WithChunkReading, WithBatchInserts, WithHeadingRow, WithProgressBar {
 
     var $fo_stocks = null;
-    public function __construct($fo_stocks){
+    private $mode;
+    public function __construct($mode, $fo_stocks){
         $this->fo_stocks = $fo_stocks;
+        $this->mode = $mode;
     }
 
     use Importable;
-    public function model(array $row)
-    {
-
-        $val = $this->is_present(trim($row['symbol']));
-        if (!$val) return null;
+    public function model(array $row){
+        if($this->mode == 'fo'){
+            $val = $this->is_present(trim($row['symbol']));
+            if (!$val) return null;
+        }
 
         if ($row['series'] != 'EQ') return null;
 
