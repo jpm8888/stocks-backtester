@@ -20,8 +20,9 @@ class DownloadSecurityWiseDelvPos extends Command
     //url : https://www.nseindia.com/archives/equities/mto/MTO_04122019.DAT
 
     private $MAX_DAYS = 20;
-    protected $signature = 'download:delv_wise_positions {from_date?} {max_days?}';
+    protected $signature = 'download:delv_wise_positions {from_date?} {max_days?} {--overwrite=no} {--mode=fo}';
     protected $description = 'Download security wise delivery position in cash market';
+    protected $mode;
 
     var $fo_stocks = null;
     public function __construct(){
@@ -32,6 +33,8 @@ class DownloadSecurityWiseDelvPos extends Command
     public function handle(){
         $from_date = $this->argument('from_date');
         $max_days = $this->argument('max_days');
+        $overwrite = $this->option('overwrite');
+        $this->mode = $this->option('mode');
 
         if (trim($max_days) == '') $max_days = $this->MAX_DAYS;
 
@@ -43,6 +46,10 @@ class DownloadSecurityWiseDelvPos extends Command
 
         for($i = 0; $i < $max_days; $i++){
             $date = $from_date->addDay();
+            if ($overwrite == 'yes'){
+                $this->info('deleting all records for date : ' . $date->format('d-m-Y'));
+                DB::table('bhavcopy_delv_position')->whereDate('date', $date)->delete();
+            }
             $this->start_download($date);
         }
 
@@ -122,6 +129,7 @@ class DownloadSecurityWiseDelvPos extends Command
     }
 
     function is_present($symbol){
+        if ($this->mode === 'all') return true;
         return (in_array(trim($symbol), $this->fo_stocks)) ? true : false;
     }
 }
