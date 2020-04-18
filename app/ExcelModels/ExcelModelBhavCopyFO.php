@@ -20,7 +20,9 @@ use Maatwebsite\Excel\Concerns\WithProgressBar;
 class ExcelModelBhavCopyFO implements ToModel, WithChunkReading, WithBatchInserts, WithHeadingRow, WithProgressBar {
 
     var $fo_stocks = null;
-    public function __construct($fo_stocks){
+    private $mode;
+    public function __construct($mode, $fo_stocks){
+        $this->mode = $mode;
         $this->fo_stocks = $fo_stocks;
     }
 
@@ -28,8 +30,11 @@ class ExcelModelBhavCopyFO implements ToModel, WithChunkReading, WithBatchInsert
     public function model(array $row)
     {
 
-        $val = $this->is_present(trim($row['symbol']));
-        if (!$val) return null;
+        if ($this->mode == 'fo'){
+            $val = $this->is_present(trim($row['symbol']));
+            if (!$val) return null;
+        }
+
 
         if(intval($row['open_int']) == 0 && intval($row['chg_in_oi']) == 0) return null;
 

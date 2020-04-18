@@ -21,9 +21,15 @@ class DownloadBhavCopyFO extends Command
 
     //url : https://www.nseindia.com/content/historical/DERIVATIVES/2019/NOV/fo27NOV2019bhav.csv.zip
 
+    /*
+     * modes :
+     * fo -> will download only master fo stocks
+     * all -> all stocks will be fetched and stored.
+     * */
     private $MAX_DAYS = 20;
-    protected $signature = 'download:bhavcopy_fo {from_date?} {max_days?}';
+    protected $signature = 'download:bhavcopy_fo {from_date?} {max_days?} {--overwrite=no} {--mode=fo}';
     protected $description = 'Download bhavcopy future market from NSE website.';
+    protected $mode;
 
     public function __construct(){
         parent::__construct();
@@ -33,6 +39,9 @@ class DownloadBhavCopyFO extends Command
     public function handle(){
         $from_date = $this->argument('from_date');
         $max_days = $this->argument('max_days');
+
+        $overwrite = $this->option('overwrite');
+        $this->mode = $this->option('mode');
 
         if (trim($max_days) == '') $max_days = $this->MAX_DAYS;
 
@@ -44,6 +53,10 @@ class DownloadBhavCopyFO extends Command
 
         for($i = 0; $i < $max_days; $i++){
             $date = $from_date->addDay();
+            if ($overwrite == 'yes'){
+                $this->info('deleting all records for date : ' . $date->format('d-m-Y'));
+                DB::table('bhavcopy_fo')->whereDate('date', $date)->delete();
+            }
             $this->start_download($date);
         }
     }
@@ -85,7 +98,8 @@ class DownloadBhavCopyFO extends Command
         $this->output->title('Starting import');
 
         $fo_stocks = ModelMasterStocksFO::select('symbol')->get()->pluck('symbol')->toArray();
-        (new ExcelModelBhavCopyFO($fo_stocks))->withOutput($this->output)->import("$filepath/$filename");
+        $this->info('mode--->' . $this->mode);
+        (new ExcelModelBhavCopyFO($this->mode, $fo_stocks))->withOutput($this->output)->import("$filepath/$filename");
 
         $msg = "Successfully imported FNO records...";
         $this->output->success($msg);
