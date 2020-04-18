@@ -6,11 +6,11 @@ use App\ExcelModels\ExcelModelBhavCopyFO;
 use App\Http\Controllers\Utils\Logger;
 use App\ModelLog;
 use App\ModelMasterStocksFO;
+use Carbon\Carbon;
 use Chumper\Zipper\Zipper;
 use Exception;
 use GuzzleHttp\Client;
 use Illuminate\Console\Command;
-use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Ramsey\Uuid\Uuid;
@@ -54,11 +54,17 @@ class DownloadBhavCopyFO extends Command
         for($i = 0; $i < $max_days; $i++){
             $date = $from_date->addDay();
             if ($overwrite == 'yes'){
-                $this->info('deleting all records for date : ' . $date->format('d-m-Y'));
-                DB::table('bhavcopy_fo')->whereDate('date', $date)->delete();
+                $this->delete_existing_records($date);
             }
             $this->start_download($date);
         }
+    }
+
+    private function delete_existing_records(Carbon $date){
+        $this->info('deleting all records for date : ' . $date->format('d-m-Y'));
+        $pname = "p_" . $date->year;
+        $formatted_date = $date->format('Y-m-d');
+        $output = DB::statement("delete from bhavcopy_fo partition($pname) where date = '$formatted_date'");
     }
 
     private function start_download(Carbon $date){
