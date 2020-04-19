@@ -104,7 +104,6 @@ class DownloadBhavCopyFO extends Command
         $this->output->title('Starting import');
 
         $fo_stocks = ModelMasterStocksFO::select('symbol')->get()->pluck('symbol')->toArray();
-        $this->info('mode--->' . $this->mode);
         (new ExcelModelBhavCopyFO($this->mode, $fo_stocks))->withOutput($this->output)->import("$filepath/$filename");
 
         $msg = "Successfully imported FNO records...";
