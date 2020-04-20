@@ -51,7 +51,7 @@ export const configOptionCoi = {
             "histogramBase": 0,
         }
     },
-    "inputs": [10],
+    "inputs": [],
 };
 
 // Plot type:

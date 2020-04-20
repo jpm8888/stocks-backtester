@@ -52,7 +52,7 @@ export const configMaxStrike = {
             "histogramBase": 1,
         }
     },
-    "inputs": [10],
+    "inputs": [],
 };
 
 // Plot type:
