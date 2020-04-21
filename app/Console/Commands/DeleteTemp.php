@@ -2,7 +2,9 @@
 
 namespace App\Console\Commands;
 
+use Carbon\Carbon;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
 
@@ -21,6 +23,7 @@ class DeleteTemp extends Command
         $this->delete_csv_files('public/vix_data');
         $this->delete_csv_files('public/nifty_data');
         $this->delete_csv_files('public/bnf_data');
+        $this->delete_logs_from_db();
         $this->info('All done for now');
     }
 
@@ -38,5 +41,10 @@ class DeleteTemp extends Command
                 Storage::delete($f);
             }
         }
+    }
+
+    private function delete_logs_from_db(){
+        $date = Carbon::now()->subDays(45);
+        DB::table('log')->whereDate('created_at', '<', $date)->delete();
     }
 }
