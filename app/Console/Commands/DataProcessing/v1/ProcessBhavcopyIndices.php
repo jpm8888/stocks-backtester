@@ -47,7 +47,7 @@ class ProcessBhavcopyIndices extends Command
 
         $this->process();
 
-        $this->write_log('all data processed');
+        $this->write_log('---------------------------- Indices all data processed ----------------------------');
     }
 
     public function process(){

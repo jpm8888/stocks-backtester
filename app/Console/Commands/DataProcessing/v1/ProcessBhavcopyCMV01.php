@@ -46,7 +46,7 @@ class ProcessBhavcopyCMV01 extends Command
 
         $this->process();
 
-        $this->write_log('all data processed');
+        $this->write_log('---------------------------- CM/FNO all data processed ----------------------------');
     }
 
     public function process(){

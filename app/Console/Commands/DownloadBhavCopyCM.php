@@ -152,7 +152,6 @@ class DownloadBhavCopyCM extends Command
             $this->info('Downloaded bhavcopy...');
             return $path;
         }catch (Exception $e){
-            $this->write_download_error_log($date);
             $this->error('Download error...');
             return null;
         }
