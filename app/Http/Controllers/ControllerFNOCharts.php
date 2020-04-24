@@ -129,7 +129,7 @@ class ControllerFNOCharts extends Controller
             $v = []; // max_ce_oi_strike
             foreach ($data as $d){
                 $t[] = Carbon::createFromFormat('Y-m-d', $d->date)->timestamp;
-                $c[] = $d->change_cum_fut_oi_val;
+                $c[] = $d->cum_fut_oi;
                 $o[] = $d->cum_pe_oi;
                 $h[] = $d->cum_ce_oi;
 

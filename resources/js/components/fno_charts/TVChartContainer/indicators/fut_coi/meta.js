@@ -1,6 +1,6 @@
 export const id = "FutureCOI"; //id should be same as title without spaces
-export const title = "Change in Fut COI";
-export const shortDesc = "Chng. Fut COI";
+export const title = "Fut COI";
+export const shortDesc = "Fut COI";
 
 export const configFutureCoi = {
     "_metainfoVersion": 40,
@@ -33,7 +33,7 @@ export const configFutureCoi = {
                 "linestyle": 0,
                 "visible": true,
                 "linewidth": 2,
-                "plottype": 5,
+                "plottype": 2,
                 "trackPrice": false,
                 "transparency": 20,
                 "color": "#247AFD"
@@ -42,8 +42,8 @@ export const configFutureCoi = {
         palettes: {
             palette_0: {
                 colors: {
-                    0 : { color: "#F10C45", width: 1, style: 1},
-                    1 : { color: "#048243", width: 1, style: 1 }
+                    0 : { color: "#F10C45", width: 2, style: 1},
+                    1 : { color: "#048243", width: 2, style: 1 }
                 }
             }
         },
