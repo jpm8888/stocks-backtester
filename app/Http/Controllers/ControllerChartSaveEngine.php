@@ -38,10 +38,10 @@ class ControllerChartSaveEngine extends Controller
 
             $model = ($chart_id == 0) ? new ModelSavedCharts() : ModelSavedCharts::where('id', $chart_id)->first();
 
-            if ($chart_id == 0){
-                $temp = ModelSavedCharts::where('user_id', $user_id)->where('symbol', $symbol)->where('name', $name)->first();
-                if ($temp) $model = $temp;
-            }
+//            if ($chart_id == 0){
+//                $temp = ModelSavedCharts::where('user_id', $user_id)->where('symbol', $symbol)->where('name', $name)->first();
+//                if ($temp) $model = $temp;
+//            }
 
 
             $model->name = $name;
