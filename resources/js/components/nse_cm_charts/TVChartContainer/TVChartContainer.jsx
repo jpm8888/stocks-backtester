@@ -44,6 +44,7 @@ class TVChartContainer extends Component {
 		const widgetOptions = {
 			symbol: this.props.symbol,
             time_frames : this.props.time_frames,
+            theme : 'Dark',
 			datafeed: new window.Datafeeds.UDFCompatibleDatafeed(this.props.datafeedUrl, (60 * 1000)),
 			interval: 'D',
 			container_id: 'tv_chart_container',
