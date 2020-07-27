@@ -39,6 +39,7 @@ class TVChartContainer extends Component {
 		chartsStorageApiVersion: 'v1',
 		clientId: 'shivafno',
 		// userId: this.props.user_id,
+        // theme: "Dark",
         time_frames: [
             { text: "100y", resolution: "M", description: "100 Years", title: "100yr" },
             { text: "3y", resolution: "W", description: "3 Years", title: "3yr" },
@@ -56,6 +57,7 @@ class TVChartContainer extends Component {
 		const widgetOptions = {
 			symbol: this.props.symbol,
             time_frames : this.props.time_frames,
+            theme : 'Dark',
 			datafeed: new window.Datafeeds.UDFCompatibleDatafeed(this.props.datafeedUrl, (60 * 1000)),
 			interval: 'D',
 			container_id: 'tv_chart_container',
