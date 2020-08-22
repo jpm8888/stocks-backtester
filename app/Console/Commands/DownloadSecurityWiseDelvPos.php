@@ -27,10 +27,10 @@ class DownloadSecurityWiseDelvPos extends Command
     var $fo_stocks = null;
     public function __construct(){
         parent::__construct();
-        $this->fo_stocks = ModelMasterStocksFO::select('symbol')->get()->pluck('symbol')->toArray();
     }
 
     public function handle(){
+        $this->fo_stocks = ModelMasterStocksFO::select('symbol')->get()->pluck('symbol')->toArray();
         $from_date = $this->argument('from_date');
         $max_days = $this->argument('max_days');
         $overwrite = $this->option('overwrite');
