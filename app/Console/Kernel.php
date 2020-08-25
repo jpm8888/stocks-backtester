@@ -31,21 +31,21 @@ class Kernel extends ConsoleKernel
 
     protected function schedule(Schedule $schedule)
     {
-        $schedule->command('download:bhavcopy_cm')->weekdays()->at('08:30');
-        $schedule->command('download:bhavcopy_nse_cm')->weekdays()->at('08:31');
-        $schedule->command('make:stocks_cm')->weekdays()->at('08:32');
-        $schedule->command('download:delv_wise_positions')->weekdays()->at('08:33');
-        $schedule->command('download:bhavcopy_fo')->weekdays()->at('08:34');
+        // $schedule->command('download:bhavcopy_cm')->weekdays()->at('08:30');
+        // $schedule->command('download:bhavcopy_nse_cm')->weekdays()->at('08:31');
+        // $schedule->command('make:stocks_cm')->weekdays()->at('08:32');
+        // $schedule->command('download:delv_wise_positions')->weekdays()->at('08:33');
+        // $schedule->command('download:bhavcopy_fo')->weekdays()->at('08:34');
 
-        $schedule->command('process:bhavcopy_v1')->weekdays()->at('08:35');
+        // $schedule->command('process:bhavcopy_v1')->weekdays()->at('08:35');
 
-        $schedule->command('import:vix_indices_data')->weekdays()->at('08:36');
-        $schedule->command('process:bhavcopy_indices_v1')->weekdays()->at('08:37');
+        // $schedule->command('import:vix_indices_data')->weekdays()->at('08:36');
+        // $schedule->command('process:bhavcopy_indices_v1')->weekdays()->at('08:37');
 
         // $schedule->command('send_mail:logs')->weekdays()->at('10:10');
 
-        $schedule->command('delete:temp')->dailyAt('11:00');
-        $schedule->command('delete:temporary_files')->dailyAt('11:00');
+        // $schedule->command('delete:temp')->dailyAt('11:00');
+        // $schedule->command('delete:temporary_files')->dailyAt('11:00');
     }
 
     protected function commands(){
