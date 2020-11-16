@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import './index.css';
-import {widget} from "../../../charting_library/charting_library.min";
+import {widget} from "../../../charting_library/charting_library";
 import connect from "react-redux/es/connect/connect";
 import {bindActionCreators} from "redux";
 import {fetch_app_info, setWidget} from "../actions/indexActions";
